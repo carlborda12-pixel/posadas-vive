@@ -1,9 +1,30 @@
-<!DOCTYPE html>
+<!DOCTYPE <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Posadas Vive · Guía viva de la ciudad</title>
+    <meta name="description" content="La agenda viva de Posadas, Misiones: qué hacer hoy, paseos guiados gratuitos, atardeceres sobre el Paraná y el mapa de la ciudad en tu bolsillo.">
+    <meta name="theme-color" content="#0f0b08">
+    <link rel="canonical" href="https://REEMPLAZAR-DOMINIO/">
+
+    <!-- Vista previa al compartir por WhatsApp / Facebook / X -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Posadas Vive">
+    <meta property="og:title" content="Posadas Vive · Guía viva de la ciudad">
+    <meta property="og:description" content="Qué hay hoy en Posadas: paseos guiados, atardeceres en el Paraná y la agenda de la ciudad, actualizada.">
+    <meta property="og:url" content="https://REEMPLAZAR-DOMINIO/">
+    <meta property="og:locale" content="es_AR">
+    <!-- REVISAR: subir una portada propia de 1200x630 px al host y apuntar acá -->
+    <meta property="og:image" content="https://public.youware.com/users-website-assets/prod/d9801d5e-b9a5-4695-925c-d937bff38a4f/7ce22f5cf01549289eb4a7d776a8e035">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon: pin dorado sobre fondo oscuro, sin archivos externos -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0b08'/%3E%3Cpath d='M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z' fill='%23e8c37e'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0b08'/%3E%3Cpath d='M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z' fill='%23e8c37e'/%3E%3C/svg%3E">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -324,6 +345,12 @@
     .btn-close { width: 100%; margin-top: 16px; padding: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; font-weight: 700; }
 
     /* ================= TICKET MODAL ================= */
+    .ticket-aviso { display: none; gap: 8px; align-items: flex-start; font-size: 0.8rem; line-height: 1.45; border-radius: 14px; padding: 11px 13px; margin-bottom: 12px; }
+    .ticket-aviso.on { display: flex; }
+    .ticket-aviso.info { background: rgba(55,181,164,0.14); color: #8fd8cd; border: 1px solid rgba(55,181,164,0.3); }
+    .ticket-aviso.warn { background: rgba(245,148,61,0.14); color: #f3b979; border: 1px solid rgba(245,148,61,0.32); }
+    .ticket-aviso.err  { background: rgba(224,86,86,0.16); color: #f0a4a4; border: 1px solid rgba(224,86,86,0.34); }
+    .ticket-submit[disabled] { opacity: 0.45; pointer-events: none; }
     .ticket-overlay { position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); display: flex; align-items: flex-end; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s var(--ease); }
     .ticket-overlay.on { opacity: 1; visibility: visible; }
     .ticket-panel { background: var(--paper-2); border: 1px solid var(--line); border-radius: 28px 28px 0 0; width: 100%; max-width: 440px; max-height: 92dvh; overflow-y: auto; padding: 0 0 calc(24px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s var(--bounce); }
@@ -642,7 +669,7 @@
         <a href="tel:100" class="sos-item"><div class="sos-l"><i class="ph-fill ph-fire-extinguisher"></i> Bomberos</div><strong>100</strong></a>
         <a href="tel:103" class="sos-item"><div class="sos-l"><i class="ph-fill ph-lifebuoy"></i> Defensa Civil</div><strong>103</strong></a>
         <a href="tel:137" class="sos-item"><div class="sos-l"><i class="ph-fill ph-hand-palm" style="color:var(--purple)"></i> Violencia de género</div><strong style="color:var(--purple)">137</strong></a>
-        <a href="https://wa.me/5493764578395" target="_blank" class="sos-item"><div class="sos-l"><i class="ph-fill ph-whatsapp-logo" style="color:#25d366"></i> Turismo (WhatsApp)</div><i class="ph ph-arrow-up-right" style="color:var(--sunset)"></i></a>
+        <a href="#" id="sos-wapp" target="_blank" rel="noopener" class="sos-item"><div class="sos-l"><i class="ph-fill ph-whatsapp-logo" style="color:#25d366"></i> Turismo (WhatsApp)</div><i class="ph ph-arrow-up-right" style="color:var(--sunset)"></i></a>
         <button class="btn-close" onclick="closeSOS()">Cerrar</button>
     </div>
 </div>
@@ -678,6 +705,7 @@
                 <span class="ticket-total-label">Total</span>
                 <span class="ticket-total-val" id="ticket-total-val"></span>
             </div>
+            <div class="ticket-aviso" id="ticket-aviso"></div>
             <button class="ticket-submit pay" id="ticket-submit" onclick="submitTicket()"><i class="ph-fill ph-credit-card"></i> <span id="ticket-submit-text">Pagar con Mercado Pago</span></button>
             <div class="ticket-mp-note" id="ticket-mp-note"><i class="ph-fill ph-shield-check"></i> Pago seguro vía Mercado Pago</div>
         </div>
@@ -685,6 +713,35 @@
 </div>
 
 <script>
+/* ===================================================================
+   CONFIGURACION — lo unico que hay que tocar para el dia a dia
+   =================================================================== */
+const CONFIG = {
+  // WhatsApp que recibe consultas, reservas y compras.
+  // Formato internacional sin "+": 54 9 + codigo de area sin 0 + numero sin 15.
+  // REVISAR: hoy apunta a un numero personal. Reemplazar por el de la Casa de Turismo.
+  wapp: '5493764578395',
+
+  // Evento destacado del feed. Si vencio o no existe, se elige el proximo automaticamente.
+  destacado: 'murales',
+
+  // Zona horaria de referencia para la agenda.
+  tz: 'America/Argentina/Buenos_Aires',
+
+  // Backend de inscripciones (Supabase).
+  // Con url vacia la app sigue funcionando: los cupos no se muestran
+  // y la inscripcion vuelve a ser solo un mensaje de WhatsApp.
+  // La anon key es publica por diseno: las tablas estan cerradas con RLS
+  // y solo se puede llamar a las funciones cupos_estado y reservar.
+  supabase: {
+    url:     'https://vqkjldyqgitzrhksiofd.supabase.co',
+    anonKey: 'sb_publishable_ZEaBonm4MGXbL1O4gjckUQ_A1MBjWX0'
+  },
+
+  // Tope de lugares por inscripcion
+  maxPorPersona: 6
+};
+
 const CDN = 'https://public.youware.com/users-website-assets/prod/d9801d5e-b9a5-4695-925c-d937bff38a4f/';
 const IMG = {
   costanera: CDN+'7ce22f5cf01549289eb4a7d776a8e035',
@@ -707,177 +764,177 @@ const IMG = {
 // ============ DATA MODEL (honesto: agenda real, sin distancias inventadas) ============
 const PLACES = [
   {
-    id:'catamaran', type:'lugar', group:'hoy', order:1,
+    id:'catamaran', type:'lugar', order:1,
     name:'Atardecer en Catamarán', addr:'Muelle 4to tramo, Costanera',
     img:IMG.catamaran, coords:[-27.3591,-55.8893],
-    when:{label:'Todos los días · 18:30 hs', sub:'Zarpa al caer el sol', ico:'ph-boat'},
+    schedule:{kind:'diario', hora:'18:30', sub:'Zarpa al caer el sol', ico:'ph-boat'},
     moods:['mates','rio'], routes:['rio'],
     tags:[['🌅 Atardecer','river'],['🍵 Ideal mates','mate']],
-    price:'Desde $4.500', cupo:null, wapp:true,
+    price:'Desde $4.500', cupoTotal:null, wapp:true,
     ticketType:'paid', ticketPrice:4500,
     story:'El clásico posadeño de manual: subirse al catamarán cuando el sol se hunde detrás de Encarnación y el Paraná se pinta de naranja. Cuarenta minutos de río, camalotes flotando y la mejor postal del Puente San Roque González.',
     fact:'El río Paraná es el segundo más largo de Sudamérica. Desde acá ves dos países en una sola foto: Argentina y Paraguay.',
     audio:'El Paraná contado desde el agua'
   },
   {
-    id:'costanera', type:'lugar', group:'hoy', order:2,
+    id:'costanera', type:'lugar', order:2,
     name:'Mates en la Costanera', addr:'Costanera Monseñor Kemerer',
     img:IMG.costanera, coords:[-27.36100941979234, -55.88905070985583],
-    when:{label:'Siempre abierta · Gratis', sub:'El living de la ciudad', ico:'ph-sun-horizon'},
+    schedule:{kind:'siempre', label:'Siempre abierta · Gratis', sub:'El living de la ciudad', ico:'ph-sun-horizon'},
     moods:['mates','familia'], routes:['rio'],
     tags:[['🍵 Ritual local','mate'],['🆓 Gratis','free']],
-    price:'Gratis', cupo:null, wapp:false,
+    price:'Gratis', cupoTotal:null, wapp:false,
     story:'No hay plan más posadeño que sentarse en el pasto de la Costanera con el termo bajo el brazo. Al atardecer se llena de familias, ciclistas y grupos cebando mate frente al río. Traé reposera y disfrutá el show del cielo.',
     fact:'La Costanera tiene más de 15 km sobre el Paraná. La ampliación borró para siempre las viejas casas del río, pero la Bajada Vieja quedó como testigo.',
     audio:null
   },
   {
-    id:'holy', type:'lugar', group:'hoy', order:3,
+    id:'holy', type:'lugar', order:3,
     name:'Noche en Holy Cervecería', addr:'Coronel López 2138',
     img:IMG.holy, coords:[-27.358764547152962, -55.89043815282248],
-    when:{label:'Todas las noches · 20 hs', sub:'Patio cervecero frente al río', ico:'ph-beer-stein'},
+    schedule:{kind:'diario', hora:'20:00', label:'Todas las noches · 20 hs', sub:'Patio cervecero frente al río', ico:'ph-beer-stein'},
     moods:['noche'], routes:['noche','rio'],
     tags:[['🍻 Birra artesanal','sunset'],['🎶 Música en vivo','']],
-    price:'Pinta desde $2.800', cupo:null, wapp:false,
+    price:'Pinta desde $2.800', cupoTotal:null, wapp:false,
     ticketType:'paid', ticketPrice:2800,
     story:'Para arrancar la noche posadeña: patio al aire libre, pintas artesanales de la región y música que se estira hasta tarde. Los viernes hay bandas en vivo y la barra no descansa.',
     fact:'Misiones vive un boom cervecero: el clima subtropical y el agua de la zona le dan un perfil único a las birras artesanales locales.',
     audio:null
   },
   {
-    id:'casco', type:'evento', group:'finde', order:1,
+    id:'casco', type:'evento', order:1,
     name:'Paseo: Casco Histórico', addr:'Punto de encuentro: Plaza 9 de Julio',
     img:IMG.casco, coords:[-27.3660,-55.8965],
-    when:{label:'Sábado 22 de agosto · 16 hs', sub:'Duración 90 min · Cupos limitados', ico:'ph-calendar-check'},
+    schedule:{kind:'semanal', dias:[6], hora:'16:00', sub:'Duración 90 min · Cupos limitados', ico:'ph-calendar-check'},
     moods:['historia','familia'], routes:['guiados'],
     tags:[['🏛️ Patrimonio','sunset'],['🎧 Audioguía','audio'],['🆓 Gratis','free']],
-    price:'Gratis con inscripción', cupo:'20 cupos', wapp:true,
+    price:'Gratis con inscripción', cupoTotal:20, wapp:true,
     ticketType:'free_reg',
     story:'Una caminata guiada por el corazón fundacional de Posadas. Arranca en la Plaza 9 de Julio, frente a la Catedral, y recorre los edificios que cuentan cómo una aldea a orillas del Paraná se transformó en capital provincial.',
     fact:'Posadas se llamó "Trinchera de San José" antes de adoptar su nombre actual en homenaje a Gervasio Antonio de Posadas, primer Director Supremo de las Provincias Unidas.',
     audio:'Arquitectura posadeña, edificio por edificio'
   },
   {
-    id:'jardin', type:'evento', group:'finde', order:2,
+    id:'jardin', type:'evento', order:2,
     name:'Paseo: Jardín Botánico', addr:'SUM del Jardín Botánico A. Roth',
     img:IMG.jardin, coords:[-27.408679010488967, -55.89676324525683],
-    when:{label:'Domingo 23 de agosto · 16 hs', sub:'Duración 60 min · Apto niños', ico:'ph-calendar-check'},
+    schedule:{kind:'semanal', dias:[0], hora:'16:00', sub:'Duración 60 min · Apto niños', ico:'ph-calendar-check'},
     moods:['familia','mates','historia'], routes:['verde'],
     tags:[['🍃 Naturaleza','free'],['🎧 Audioguía','audio'],['👨‍👩‍👧 Familiar','']],
-    price:'Gratis con inscripción', cupo:'30 cupos', wapp:true,
+    price:'Gratis con inscripción', cupoTotal:30, wapp:true,
     ticketType:'free_reg',
     story:'Un recorrido guiado por el pulmón verde de la ciudad. Especies nativas de la selva misionera, senderos a la sombra y un guardián que te cuenta el legado de Alberto Roth, el creador de este oasis urbano.',
     fact:'El Jardín Botánico de Posadas ya superó los 45 años. Conserva especies de la selva paranaense que hoy escasean en estado silvestre.',
     audio:'Biodiversidad de la selva misionera'
   },
   {
-    id:'murales', type:'evento', group:'pronto', order:1,
+    id:'murales', type:'evento', order:1,
     name:'Murales en Bici + Luna Llena', addr:'Punto EcoBicis, Costanera',
     img:IMG.murales, coords:[-27.369821377959507, -55.885708632367724],
-    when:{label:'Viernes 28 de agosto · 18 hs', sub:'Traé tu bici o alquilá EcoBici', ico:'ph-bicycle'},
+    schedule:{kind:'fecha', fecha:'2026-09-25', hora:'18:00', sub:'Traé tu bici o alquilá EcoBici', ico:'ph-bicycle'},
     moods:['noche','movida'], routes:['noche'],
     tags:[['🚴 En bici','sunset'],['🌕 Luna llena','']],
-    price:'Gratis con inscripción', cupo:'25 cupos', wapp:true,
+    price:'Gratis con inscripción', cupoTotal:25, wapp:true,
     ticketType:'free_reg',
     story:'Pedaleá la ciudad de noche recorriendo los murales que le dan color a Posadas, justo bajo la luna llena. Un circuito de arte urbano que conecta más de 60 intervenciones repartidas por los barrios.',
     fact:'Posadas ya registra más de 60 murales urbanos. El arte callejero transformó paredones grises en una galería a cielo abierto.',
     audio:null
   },
   {
-    id:'cementerio', type:'evento', group:'pronto', order:2,
+    id:'cementerio', type:'evento', order:2,
     name:'Cementerio Nocturno', addr:'Cementerio La Piedad',
     img:IMG.cementerio, coords:[-27.379563916079253, -55.912587187676344],
-    when:{label:'Sábado 29 de agosto · 18 hs', sub:'Duración 75 min · +12 años', ico:'ph-moon-stars'},
+    schedule:{kind:'fecha', fecha:'2026-09-26', hora:'18:00', sub:'Duración 75 min · +12 años', ico:'ph-moon-stars'},
     moods:['historia','noche'], routes:['noche'],
     tags:[['🌙 Nocturno','sunset'],['🎧 Audioguía','audio']],
-    price:'Gratis con inscripción', cupo:'20 cupos', wapp:true,
+    price:'Gratis con inscripción', cupoTotal:20, wapp:true,
     ticketType:'free_reg',
     story:'Un paseo entre mausoleos a la luz de faroles, donde la historia de Posadas se cruza con sus mitos. Personajes ilustres, leyendas del río y arquitectura funeraria de otro siglo. No es de terror: es memoria y patrimonio.',
     fact:'Los antiguos cementerios de las capitales provinciales son verdaderos museos a cielo abierto: sus mausoleos cuentan quién fundó y dio forma a la ciudad.',
     audio:'Mitos y leyendas de La Piedad'
   },
   {
-    id:'bajada', type:'evento', group:'pronto', order:3,
+    id:'bajada', type:'evento', order:3,
     name:'Paseo: Bajada Vieja', addr:'Monumento a Andrés Guacurarí',
     img:IMG.bajada, coords:[-27.360522205734593, -55.88782735220992],
-    when:{label:'Domingo 30 de agosto · 16 hs', sub:'Duración 90 min', ico:'ph-calendar-check'},
+    schedule:{kind:'semanal', dias:[0], hora:'16:00', sub:'Duración 90 min', ico:'ph-calendar-check'},
     moods:['historia','mates'], routes:['guiados'],
     tags:[['🚶 Guiado','sunset'],['📸 Patrimonio','audio']],
-    price:'Gratis con inscripción', cupo:'20 cupos', wapp:true,
+    price:'Gratis con inscripción', cupoTotal:20, wapp:true,
     ticketType:'free_reg',
     story:'El barrio del Mensú, la puerta de entrada original a la ciudad por el río. Adoquines, escalinatas y la historia de los trabajadores del yerbatal que marcaron la identidad de Misiones. El rincón que dio origen a Posadas.',
     fact:'La Bajada Vieja es el único tramo del casco antiguo que sobrevivió a la ampliación de la Costanera: un pedazo de la Posadas de 1900 intacto.',
     audio:'El camino del Mensú'
   },
   {
-    id:'parque', type:'evento', group:'pronto', order:4,
+    id:'parque', type:'evento', order:4,
     name:'Paseo: Parque Paraguayo', addr:'Frente al Museo Aníbal Cambas',
     img:IMG.parque, coords:[-27.355543040894478, -55.89354964734455],
-    when:{label:'Domingo 30 de agosto · 10 hs', sub:'Duración 60 min · Familiar', ico:'ph-tree'},
+    schedule:{kind:'semanal', dias:[0], hora:'10:00', sub:'Duración 60 min · Familiar', ico:'ph-tree'},
     moods:['historia','familia','mates'], routes:['guiados','verde'],
     tags:[['🌳 Historia','free'],['👨‍👩‍👧 Familiar','']],
-    price:'Gratis con inscripción', cupo:'30 cupos', wapp:true,
+    price:'Gratis con inscripción', cupoTotal:30, wapp:true,
     ticketType:'free_reg',
     story:'Un paseo por el parque que homenajea la hermandad con el Paraguay, a pasos del río. Monolitos, especies añosas y el Museo Aníbal Cambas al lado para completar la mañana con historia regional.',
     fact:'El nombre del parque refleja el vínculo profundo entre Posadas y Encarnación: dos ciudades hermanas separadas apenas por el ancho del Paraná.',
     audio:null
   },
   {
-    id:'catedral', type:'lugar', group:'hoy', order:4,
+    id:'catedral', type:'lugar', order:4,
     name:'Catedral San José', addr:'Plaza 9 de Julio, centro',
     img:IMG.catedral, coords:[-27.36594616927107, -55.89401523317657],
-    when:{label:'Todos los días · Entrada libre', sub:'El corazón del centro', ico:'ph-church'},
+    schedule:{kind:'siempre', label:'Todos los días · Entrada libre', sub:'El corazón del centro', ico:'ph-church'},
     moods:['historia','familia','cultura'], routes:['guiados'],
     tags:[['⛪ Ícono','sunset'],['🆓 Gratis','free'],['📸 Foto obligada','']],
-    price:'Gratis', cupo:null, wapp:false,
+    price:'Gratis', cupoTotal:null, wapp:false,
     story:'Frente a la Plaza 9 de Julio se levanta la Catedral de Posadas, el edificio que marca el kilómetro cero de la ciudad. Sus torres blancas dominan el skyline del centro y adentro guarda un silencio fresco perfecto para hacer una pausa entre paseo y paseo.',
     fact:'La plaza y la catedral forman el núcleo fundacional: alrededor de esta manzana se organizó toda la Posadas del siglo XIX.',
     audio:'La catedral y el corazón fundacional'
   },
   {
-    id:'brete', type:'lugar', group:'hoy', order:5,
+    id:'brete', type:'lugar', order:5,
     name:'Playa El Brete', addr:'Zona norte, sobre el Paraná',
     img:IMG.brete, coords:[-27.354086043734497, -55.902548192484936],
-    when:{label:'Verano · Playa urbana', sub:'Arena y río en la ciudad', ico:'ph-umbrella'},
+    schedule:{kind:'siempre', label:'Verano · Playa urbana', sub:'Arena y río en la ciudad', ico:'ph-umbrella'},
     moods:['rio','familia','mates'], routes:['rio'],
     tags:[['🏖️ Playa de río','river'],['👨‍👩‍👧 Familiar','free']],
-    price:'Gratis', cupo:null, wapp:false,
+    price:'Gratis', cupoTotal:null, wapp:false,
     story:'La playa urbana de Posadas: arena sobre el Paraná donde los posadeños se refrescan en verano. Sombrillas, mate, gurises jugando en la orilla y el río tibio como pileta natural. Un plan clásico para las tardes de calor misionero.',
     fact:'El Brete es una de las pocas playas de río habilitadas dentro del ejido urbano de una capital argentina. Ciudad y naturaleza, todo junto.',
     audio:null
   },
   {
-    id:'mirador', type:'lugar', group:'hoy', order:6,
+    id:'mirador', type:'lugar', order:6,
     name:'Vista al Puente San Roque', addr:'Costanera, tramo norte',
     img:IMG.mirador, coords:[-27.3520,-55.8850],
-    when:{label:'Mejor al atardecer', sub:'Dos países en una postal', ico:'ph-binoculars'},
+    schedule:{kind:'siempre', label:'Mejor al atardecer', sub:'Dos países en una postal', ico:'ph-binoculars'},
     moods:['rio','historia'], routes:['rio'],
     tags:[['🌉 Panorámica','river'],['🌅 Atardecer','sunset']],
-    price:'Gratis', cupo:null, wapp:false,
+    price:'Gratis', cupoTotal:null, wapp:false,
     story:'Desde este tramo de la Costanera se abre la mejor panorámica del Puente Internacional San Roque González de Santa Cruz, que une Argentina con Paraguay sobre el Paraná. Al atardecer, las luces de Encarnación empiezan a titilar del otro lado del agua.',
     fact:'El puente tiene 2,55 km de largo y conecta Posadas con Encarnación. Es uno de los pasos fronterizos más transitados del país.',
     audio:'Un puente entre dos países'
   },
   {
-    id:'feria', type:'lugar', group:'finde', order:3,
+    id:'feria', type:'lugar', order:3,
     name:'Feria Franca y La Placita', addr:'Centro de Posadas',
     img:IMG.feria, coords:[-27.373221630573084, -55.907199144091635],
-    when:{label:'Sábados · Desde las 7 hs', sub:'Productos de la tierra colorada', ico:'ph-basket'},
+    schedule:{kind:'semanal', dias:[6], hora:'07:00', display:'patron', label:'Sábados · Desde las 7 hs', sub:'Productos de la tierra colorada', ico:'ph-basket'},
     moods:['mates','familia','cultura'], routes:['guiados'],
     tags:[['🧺 Feria local','mate'],['🍯 Productos regionales','free']],
-    price:'Entrada libre', cupo:null, wapp:false,
+    price:'Entrada libre', cupoTotal:null, wapp:false,
     story:'El sábado a la mañana la ciudad huele a feria: puestos de yerba, miel, mandioca, chipa recién hecha y verduras que llegan directo de las chacras misioneras. La Feria Franca es el punto de encuentro entre el productor y el posadeño, con precio justo y charla incluida.',
     fact:'Las Ferias Francas nacieron en Misiones en los años 90 como movimiento de agricultura familiar. Hoy son un modelo replicado en todo el país.',
     audio:null
   },
   {
-    id:'conocimiento', type:'evento', group:'pronto', order:5,
+    id:'conocimiento', type:'evento', order:5,
     name:'Noche en el Parque del Conocimiento', addr:'Av. Ulises López, Villa Cabello',
     img:IMG.conocimiento, coords:[-27.4030,-55.9260],
-    when:{label:'Según cartelera · Ver funciones', sub:'Teatro Lírico y muestras', ico:'ph-mask-happy'},
+    schedule:{kind:'siempre', label:'Según cartelera · Ver funciones', sub:'Teatro Lírico y muestras', ico:'ph-mask-happy'},
     moods:['noche','cultura','familia'], routes:['noche'],
     tags:[['🎭 Cultura','sunset'],['🌙 Nocturno','']],
-    price:'Según función', cupo:null, wapp:true,
+    price:'Según función', cupoTotal:null, wapp:true,
     ticketType:'paid', ticketPrice:null,
     story:'Un complejo cultural imponente que ilumina la noche posadeña: el Teatro Lírico, el planetario, la biblioteca y salas de muestras. De día un paseo familiar, de noche un plan de espectáculos, conciertos y cine bajo las estrellas del planetario.',
     fact:'El Parque del Conocimiento alberga uno de los teatros líricos más modernos del norte argentino, con acústica de nivel internacional.',
@@ -900,8 +957,187 @@ const MOODS = [
 const GROUPS = [
   {id:'hoy', label:'Hoy podés', dot:'', count:'siempre'},
   {id:'finde', label:'Este fin de semana', dot:'finde', count:''},
-  {id:'pronto', label:'Más adelante en agosto', dot:'pronto', count:''}
+  {id:'pronto', label:'Más adelante', dot:'pronto', count:''}
 ];
+
+/* ===================================================================
+   MOTOR DE AGENDA
+   Calcula fecha, etiqueta y grupo de cada actividad a partir de
+   schedule{}. Lo que ya paso no se muestra: no hay fechas escritas
+   a mano en la interfaz.
+   =================================================================== */
+const DIAS  = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const capit = t => t.charAt(0).toUpperCase() + t.slice(1);
+
+function hoyCero(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
+
+// Fin del proximo fin de semana (domingo 23:59). Si hoy es sabado o domingo,
+// el "finde" es el que esta corriendo.
+function finDeSemana(){
+  const h = hoyCero(), dow = h.getDay();
+  const faltan = dow === 0 ? 0 : 7 - dow;   // 0=domingo
+  const fin = new Date(h); fin.setDate(h.getDate() + faltan); fin.setHours(23,59,59,999);
+  return fin;
+}
+
+function conHora(fecha, hora){
+  const d = new Date(fecha);
+  if(hora){ const [hh,mm] = hora.split(':').map(Number); d.setHours(hh, mm||0, 0, 0); }
+  else d.setHours(23,59,59,999);
+  return d;
+}
+
+// Proxima ocurrencia de un evento semanal (incluye hoy si todavia no empezo)
+function proximaSemanal(dias, hora){
+  const ahora = new Date();
+  for(let i=0; i<14; i++){
+    const d = new Date(hoyCero()); d.setDate(d.getDate() + i);
+    if(!dias.includes(d.getDay())) continue;
+    const cuando = conHora(d, hora);
+    if(cuando >= ahora) return cuando;
+  }
+  return null;
+}
+
+function etiquetaFecha(d, hora){
+  const h = hoyCero();
+  const dif = Math.round((new Date(d).setHours(0,0,0,0) - h) / 86400000);
+  const hs = hora ? ' · ' + hora.replace(':00','') + ' hs' : '';
+  if(dif === 0) return 'Hoy' + hs;
+  if(dif === 1) return 'Mañana' + hs;
+  if(dif > 1 && dif < 7) return capit(DIAS[d.getDay()]) + hs;
+  return capit(DIAS[d.getDay()]) + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] + hs;
+}
+
+// Completa p.when y p.group. Marca como vencido lo que ya paso.
+function hydrateAgenda(){
+  const finde = finDeSemana();
+  const vencidos = [];
+
+  PLACES.forEach(p => {
+    const sc = p.schedule || {};
+    p._fecha = null; p._vencido = false;
+
+    if(sc.kind === 'fecha'){
+      const d = conHora(new Date(sc.fecha + 'T00:00:00'), sc.hora);
+      p._fecha = d;
+      // se considera vigente hasta el final del dia del evento
+      const finDelDia = new Date(d); finDelDia.setHours(23,59,59,999);
+      if(finDelDia < new Date()){ p._vencido = true; vencidos.push(p.name + ' (' + sc.fecha + ')'); }
+    } else if(sc.kind === 'semanal' && sc.display !== 'patron'){
+      p._fecha = proximaSemanal(sc.dias, sc.hora);
+    }
+
+    // etiqueta visible
+    let label = sc.label;
+    if(!label){
+      if(sc.kind === 'diario') label = 'Todos los días · ' + (sc.hora||'').replace(':00','') + ' hs';
+      else if(p._fecha)        label = etiquetaFecha(p._fecha, sc.hora);
+      else                     label = 'Consultar horarios';
+    }
+    p.when = { label: label, sub: sc.sub || '', ico: sc.ico || 'ph-calendar-check' };
+
+    // grupo
+    if(p._vencido)            p.group = 'vencido';
+    else if(!p._fecha)        p.group = 'hoy';
+    else if(p._fecha <= conHora(hoyCero(), null)) p.group = 'hoy';
+    else if(p._fecha <= finde) p.group = 'finde';
+    else                      p.group = 'pronto';
+
+    // orden dentro del grupo: primero por fecha, si no por el order manual
+    p._orden = p._fecha ? p._fecha.getTime() : (p.order || 99);
+  });
+
+  // etiqueta del grupo "pronto" segun el mes de lo que quede
+  const pronto = PLACES.filter(p => p.group === 'pronto' && p._fecha);
+  const g = GROUPS.find(x => x.id === 'pronto');
+  if(pronto.length){
+    const meses = new Set(pronto.map(p => p._fecha.getMonth()));
+    g.label = meses.size === 1 ? 'Más adelante en ' + MESES[[...meses][0]] : 'Próximamente';
+  }
+
+  if(vencidos.length){
+    console.warn('[PosadasVive] Actividades vencidas, ocultas del listado:\n  · ' + vencidos.join('\n  · '));
+  }
+  if(!PLACES.some(p => p.group === 'finde' || p.group === 'pronto')){
+    console.warn('[PosadasVive] No hay ningun evento con fecha futura cargado. Actualizar la agenda.');
+  }
+}
+
+// Actividades visibles (excluye lo vencido)
+const vigentes = () => PLACES.filter(p => !p._vencido);
+
+/* ===================================================================
+   CUPOS REALES (Supabase)
+   El navegador nunca toca las tablas: solo llama a dos funciones.
+   La cuenta de lugares la hace la base, no el front, asi que dos
+   personas no pueden quedarse con el mismo ultimo lugar.
+   =================================================================== */
+const SB_ON = () => !!(CONFIG.supabase.url && CONFIG.supabase.anonKey);
+const CUPOS = {};              // 'casco|2026-09-12' -> {total, disponibles}
+let cuposCargados = false;
+
+function fechaISO(d){
+  if(!d) return null;
+  const z = n => String(n).padStart(2,'0');
+  return d.getFullYear() + '-' + z(d.getMonth()+1) + '-' + z(d.getDate());
+}
+const cupoKey = p => p.id + '|' + fechaISO(p._fecha);
+
+// Actividades que requieren inscripcion con cupo y tienen fecha concreta
+const conCupo = () => vigentes().filter(p => p.cupoTotal && p._fecha);
+
+function cupoDe(p){
+  if(!p.cupoTotal) return null;
+  const c = CUPOS[cupoKey(p)];
+  // sin backend o antes de que responda, mostramos el cupo nominal
+  if(!c) return { total: p.cupoTotal, disponibles: null, estimado: true };
+  return c;
+}
+
+async function sbRpc(fn, body){
+  const r = await fetch(CONFIG.supabase.url + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': CONFIG.supabase.anonKey,
+      'Authorization': 'Bearer ' + CONFIG.supabase.anonKey
+    },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok) throw new Error('Supabase ' + r.status + ': ' + (await r.text()).slice(0,200));
+  return r.json();
+}
+
+async function cargarCupos(){
+  if(!SB_ON()) return;
+  const items = conCupo().map(p => ({ id: p.id, fecha: fechaISO(p._fecha) }));
+  if(!items.length) return;
+  try {
+    const filas = await sbRpc('cupos_estado', { p_items: items });
+    filas.forEach(f => {
+      CUPOS[f.actividad_id + '|' + f.fecha_evento] = {
+        total: f.total, disponibles: f.disponibles, estimado: false
+      };
+    });
+    cuposCargados = true;
+    renderTimeline();
+  } catch(e){
+    console.warn('[PosadasVive] No se pudieron leer los cupos:', e.message);
+  }
+}
+
+// Texto de la pastilla de cupo en las tarjetas
+function cupoTexto(p){
+  const c = cupoDe(p);
+  if(!c) return null;
+  if(c.estimado) return c.total + ' cupos';
+  if(c.disponibles <= 0) return 'Sin cupos';
+  if(c.disponibles === 1) return 'Último lugar';
+  if(c.disponibles <= 5) return 'Últimos ' + c.disponibles + ' lugares';
+  return 'Quedan ' + c.disponibles + ' de ' + c.total;
+}
 
 const ROUTES = {
   guiados:{name:'Ruta de Paseos Guiados', desc:'Los recorridos a pie por el casco histórico, sus barrios fundacionales y la feria.', color:'#f5943d', cls:'', dist:'~4 km', time:'A pie', ids:['bajada','catedral','casco','parque','feria'],
@@ -929,16 +1165,29 @@ function switchView(v){
 }
 
 // ============ FEED HERO ============
+function heroPlace(){
+  // 1) el destacado de CONFIG, si sigue vigente
+  const elegido = byId(CONFIG.destacado);
+  if(elegido && !elegido._vencido) return elegido;
+  // 2) el proximo evento con fecha
+  const proximo = vigentes().filter(p=>p._fecha && p.group!=='hoy').sort((a,b)=>a._orden-b._orden)[0];
+  if(proximo) return proximo;
+  // 3) cualquier cosa vigente
+  return vigentes()[0];
+}
+
 function renderHero(){
+  const p = heroPlace();
+  if(!p) return;
   document.getElementById('feed-hero').innerHTML =
-    `<img src="${IMG.costanera}" alt="Costanera de Posadas">
+    `<img src="${p.img}" alt="${p.name}">
      <div class="feed-hero-grad"></div>
      <div class="feed-hero-body">
         <span class="feed-hero-tag"><i class="ph-fill ph-star"></i> Destacado de la semana</span>
-        <div class="feed-hero-title">Luna llena en bici por los murales</div>
-        <div class="feed-hero-meta"><i class="ph-fill ph-calendar-dots"></i> Viernes 28 · 18 hs · Costanera</div>
+        <div class="feed-hero-title">${p.name}</div>
+        <div class="feed-hero-meta"><i class="ph-fill ph-calendar-dots"></i> ${p.when.label} · ${p.addr}</div>
      </div>`;
-  document.getElementById('feed-hero').onclick=()=>openSheet('murales');
+  document.getElementById('feed-hero').onclick=()=>openSheet(p.id);
 }
 
 // ============ MOODS ============
@@ -968,12 +1217,12 @@ function renderTimeline(){
   const wrap = document.getElementById('timeline');
   let html='';
   GROUPS.forEach(g=>{
-    let items = PLACES.filter(p=>p.group===g.id && (currentMood==='all'||p.moods.includes(currentMood)));
+    let items = vigentes().filter(p=>p.group===g.id && (currentMood==='all'||p.moods.includes(currentMood)));
     if(currentMood==='cerca' && userPos){
       items = items.filter(p=>p.coords && haversine(userPos.lat,userPos.lng,p.coords[0],p.coords[1])<=2000);
       items.sort((a,b)=> haversine(userPos.lat,userPos.lng,a.coords[0],a.coords[1]) - haversine(userPos.lat,userPos.lng,b.coords[0],b.coords[1]) );
     } else {
-      items.sort((a,b)=>a.order-b.order);
+      items.sort((a,b)=>a._orden-b._orden);
     }
     if(!items.length) return;
     html += `<div class="tl-group">
@@ -989,7 +1238,8 @@ function renderTimeline(){
 function cardHTML(p, idx){
   const foot = [];
   if(p.audio) foot.push(`<span class="pill pill-audio"><i class="ph-fill ph-headphones"></i> Audioguía</span>`);
-  if(p.cupo) foot.push(`<span class="pill pill-cupo"><i class="ph-fill ph-users"></i> ${p.cupo}</span>`);
+  const cupoTxt = cupoTexto(p);
+  if(cupoTxt) foot.push(`<span class="pill pill-cupo"><i class="ph-fill ph-users"></i> ${cupoTxt}</span>`);
   if(p.price==='Gratis'||String(p.price).includes('Gratis')||String(p.price).includes('libre')) foot.push(`<span class="pill pill-free">Gratis</span>`);
   else foot.push(`<span class="pill pill-hour">${p.price}</span>`);
   if(p.ticketType==='paid') foot.push(`<span class="pill pill-ticket"><i class="ph-fill ph-ticket"></i> Entradas</span>`);
@@ -1067,7 +1317,7 @@ function mainAction(){
   if(current.ticketType){ openTicketModal(current); }
   else if(current.wapp){
     const msg = encodeURIComponent(`¡Hola! Quiero reservar para "${current.name}" (${current.when.label}).`);
-    window.open('https://wa.me/5493764578395?text='+msg, '_blank');
+    window.open('https://wa.me/'+CONFIG.wapp+'?text='+msg, '_blank');
   } else {
     saved.add(current.id);
     const btn=document.getElementById('btn-main');
@@ -1308,7 +1558,7 @@ function clearMarkers(){ routeLayers.forEach(l=>map.removeLayer(l)); routeLayers
 
 // ============ LUGARES MODE ============
 function renderPlaceMarkers(){
-  PLACES.forEach(p=>{
+  vigentes().forEach(p=>{
     const cls=catPinClass(p);
     const ico=PIN_ICO[p.moods.find(m=>PIN_ICO[m])]||'ph-map-pin';
     const html=`<div class="place-pin ${cls}" data-pin="${p.id}"><div class="pin-dot"></div><i class="ph-fill ${ico} pin-ico"></i></div>`;
@@ -1355,10 +1605,12 @@ function selectRoute(key){
   document.querySelectorAll('.route-tab').forEach(t=>t.classList.toggle('active', t.dataset.c===key));
   clearMarkers();
   const r=ROUTES[key];
-  const pts=r.path||r.ids.map(id=>byId(id).coords);
+  // no mostramos como parada un evento que ya paso
+  const ids=r.ids.filter(id=>{ const q=byId(id); return q && !q._vencido; });
+  const pts=r.path||ids.map(id=>byId(id).coords);
   const line=L.polyline(pts,{color:r.color,weight:4,opacity:0.9,dashArray:'2,11',lineCap:'round'}).addTo(map);
   routeLayers.push(line);
-  r.ids.forEach((id,i)=>{
+  ids.forEach((id,i)=>{
     const p=byId(id);
     const html=`<div class="stop-marker"><div class="stop-num ${r.cls}">${i+1}</div><div class="stop-tip">${p.name.replace(/^.*: /,'')}</div></div>`;
     const m=L.marker(p.coords,{icon:L.divIcon({className:'stopwrap',html,iconSize:null})}).addTo(map).on('click',()=>{ map.flyTo([p.coords[0]-0.004,p.coords[1]],15,{duration:0.8}); document.querySelectorAll('.mcard').forEach(el=>el.classList.toggle('active', el.dataset.card===id)); const c=document.querySelector(`.mcard[data-card="${id}"]`); if(c) c.scrollIntoView({behavior:'smooth',inline:'center'}); });
@@ -1369,10 +1621,10 @@ function selectRoute(key){
   info.classList.add('on');
   info.innerHTML =
     `<h3>${r.name}</h3><p>${r.desc}</p>
-     <div class="rt-meta"><span><i class="ph-fill ph-map-pin-line" style="color:${r.color}"></i> ${r.ids.length} paradas</span>
+     <div class="rt-meta"><span><i class="ph-fill ph-map-pin-line" style="color:${r.color}"></i> ${ids.length} paradas</span>
      <span><i class="ph-fill ph-ruler" style="color:${r.color}"></i> ${r.dist}</span>
      <span><i class="ph-fill ph-clock" style="color:${r.color}"></i> ${r.time}</span></div>`;
-  renderCarousel(r.ids.map(byId), 'rutas');
+  renderCarousel(ids.map(byId), 'rutas');
 }
 
 // ============ SOS ============
@@ -1381,7 +1633,8 @@ function closeSOS(){ document.getElementById('sos-modal').classList.remove('on')
 
 // ============ TICKET MODAL ============
 let ticketQtyNum = 1, ticketPlace = null;
-const MAX_TICKETS = 6;
+const MAX_TICKETS = CONFIG.maxPorPersona;
+let ticketMax = CONFIG.maxPorPersona;
 
 function openTicketModal(p){
   ticketPlace = p;
@@ -1435,92 +1688,245 @@ function openTicketModal(p){
     qtyRow.style.display = 'flex';
   }
 
+  aplicarCupo(p);
   document.getElementById('ticket-overlay').classList.add('on');
 }
+
+// Muestra disponibilidad real y bloquea el boton si no hay lugar
+function aplicarCupo(p){
+  const aviso = document.getElementById('ticket-aviso');
+  const submit = document.getElementById('ticket-submit');
+  const c = cupoDe(p);
+  ticketMax = CONFIG.maxPorPersona;
+  submit.removeAttribute('disabled');
+  aviso.className = 'ticket-aviso';
+
+  if(!c) return;
+
+  if(c.estimado){
+    // todavia no respondio la base (o no hay backend configurado)
+    setAviso('info', '<i class="ph-fill ph-users"></i> Cupo limitado: ' + c.total +
+             ' lugares. Confirmamos disponibilidad al enviar tu inscripción.');
+    return;
+  }
+  if(c.disponibles <= 0){
+    setAviso('err', '<i class="ph-fill ph-prohibit"></i> Esta fecha ya no tiene lugares disponibles. ' +
+             'Escribinos por WhatsApp para consultar por la próxima.');
+    submit.setAttribute('disabled', 'disabled');
+    return;
+  }
+  ticketMax = Math.min(CONFIG.maxPorPersona, c.disponibles);
+  if(ticketQtyNum > ticketMax){ ticketQtyNum = ticketMax; document.getElementById('ticket-qty-num').textContent = ticketMax; }
+  if(c.disponibles <= 5){
+    setAviso('warn', '<i class="ph-fill ph-fire"></i> Quedan ' + c.disponibles +
+             (c.disponibles === 1 ? ' lugar' : ' lugares') + ' para esta fecha.');
+  } else {
+    setAviso('info', '<i class="ph-fill ph-users"></i> Quedan ' + c.disponibles + ' de ' + c.total + ' lugares.');
+  }
+}
+
+function setAviso(tipo, html){
+  const a = document.getElementById('ticket-aviso');
+  a.className = 'ticket-aviso on ' + tipo;
+  a.innerHTML = html;
+}
+
 function closeTicketModal(){
   document.getElementById('ticket-overlay').classList.remove('on');
   ticketPlace = null;
 }
 
 function ticketQty(delta){
-  ticketQtyNum = Math.max(1, Math.min(MAX_TICKETS, ticketQtyNum + delta));
+  ticketQtyNum = Math.max(1, Math.min(ticketMax, ticketQtyNum + delta));
   document.getElementById('ticket-qty-num').textContent = ticketQtyNum;
   if(ticketPlace && ticketPlace.ticketPrice){
     document.getElementById('ticket-total-val').textContent = '$' + (ticketPlace.ticketPrice * ticketQtyNum).toLocaleString('es-AR');
   }
 }
 
-function submitTicket(){
+function armarMensaje(p, name, email, phone, qty, reserva){
+  const isPaid = p.ticketType === 'paid';
+  if(isPaid){
+    const priceLine = p.ticketPrice
+      ? `💰 *Precio por entrada:* $${p.ticketPrice.toLocaleString('es-AR')}\n🎟️ *Entradas:* ${qty}\n💵 *Total:* $${(p.ticketPrice*qty).toLocaleString('es-AR')}`
+      : `🎟️ *Entradas solicitadas:* ${qty}`;
+    return `Hola! Me interesa comprar entradas para un evento de *PosadasVive* 🎟️\n\n`
+      + `📍 *${p.name}*\n📅 ${p.when.label}\n📌 ${p.addr}\n\n`
+      + `👤 *Nombre:* ${name}\n📧 *Email:* ${email}\n`
+      + (phone ? `📱 *Teléfono:* ${phone}\n` : '')
+      + `\n${priceLine}\n\n¿Cuál es el precio y la disponibilidad? ¡Gracias! 😊`;
+  }
+  if(reserva){
+    return `Hola! Ya tengo mi lugar reservado en *PosadasVive* ✅\n\n`
+      + `📍 *${p.name}*\n📅 ${p.when.label}\n📌 ${p.addr}\n\n`
+      + `👤 *Nombre:* ${name}\n📧 *Email:* ${email}\n`
+      + (phone ? `📱 *Teléfono:* ${phone}\n` : '')
+      + `\n🎟️ *Personas:* ${qty}\n🔖 *Código:* ${reserva}\n\n¡Gracias! 😊`;
+  }
+  return `Hola! Me quiero anotar en una actividad de *PosadasVive* 🌿\n\n`
+    + `📍 *${p.name}*\n📅 ${p.when.label}\n📌 ${p.addr}\n\n`
+    + `👤 *Nombre:* ${name}\n📧 *Email:* ${email}\n`
+    + (phone ? `📱 *Teléfono:* ${phone}\n` : '')
+    + `\n🎟️ *Personas:* ${qty}\n\n¿Hay lugar? ¡Gracias! 😊`;
+}
+
+const MOTIVOS = {
+  sin_cupo:            'Se agotaron los lugares mientras completabas el formulario.',
+  duplicado:           'Ese email ya está anotado en esta fecha. Si necesitás cambiar algo, escribinos por WhatsApp.',
+  email_invalido:      'Revisá el email, parece que tiene un error.',
+  datos_invalidos:     'Revisá que el nombre esté completo.',
+  cantidad_invalida:   'La cantidad de lugares no es válida.',
+  fecha_invalida:      'Esta fecha ya pasó. Mirá las próximas en la agenda.',
+  actividad_inexistente: 'Esta actividad ya no está tomando inscripciones.'
+};
+
+async function submitTicket(){
   if(!ticketPlace) return;
-  const name = document.getElementById('ticket-name-input').value.trim();
+  const p = ticketPlace;
+  const name  = document.getElementById('ticket-name-input').value.trim();
   const email = document.getElementById('ticket-email-input').value.trim();
   const phone = document.getElementById('ticket-phone-input').value.trim();
+  const qty   = ticketQtyNum;
+  const isPaid = p.ticketType === 'paid';
 
   if(!name){ document.getElementById('ticket-name-input').style.borderColor='var(--red)'; document.getElementById('ticket-name-input').focus(); return; }
   if(!email || !email.includes('@')){ document.getElementById('ticket-email-input').style.borderColor='var(--red)'; document.getElementById('ticket-email-input').focus(); return; }
   document.getElementById('ticket-name-input').style.borderColor='var(--line)';
   document.getElementById('ticket-email-input').style.borderColor='var(--line)';
 
-  const p = ticketPlace;
-  const isPaid = p.ticketType === 'paid';
-  const qty = ticketQtyNum;
+  const total = isPaid && p.ticketPrice
+    ? '$' + (p.ticketPrice*qty).toLocaleString('es-AR')
+    : (isPaid ? 'A consultar' : 'Gratis');
 
-  // Build well-crafted WhatsApp message
-  let msg = '';
-  if(isPaid){
-    const priceLine = p.ticketPrice ? `💰 *Precio por entrada:* $${p.ticketPrice.toLocaleString('es-AR')}\n🎟️ *Entradas:* ${qty}\n💵 *Total:* $${(p.ticketPrice*qty).toLocaleString('es-AR')}` : `🎟️ *Entradas solicitadas:* ${qty}`;
-    msg = `Hola! Me interesa comprar entradas para un evento de *PosadasVive* 🎟️\n\n`
-      + `📍 *${p.name}*\n`
-      + `📅 ${p.when.label}\n`
-      + `📌 ${p.addr}\n\n`
-      + `👤 *Nombre:* ${name}\n`
-      + `📧 *Email:* ${email}\n`
-      + (phone ? `📱 *Teléfono:* ${phone}\n` : '')
-      + `\n${priceLine}\n\n`
-      + `¿Cuál es el precio y la disponibilidad? ¡Gracias! 😊`;
-  } else {
-    msg = `Hola! Me quiero anotar en una actividad de *PosadasVive* 🌿\n\n`
-      + `📍 *${p.name}*\n`
-      + `📅 ${p.when.label}\n`
-      + `📌 ${p.addr}\n\n`
-      + `👤 *Nombre:* ${name}\n`
-      + `📧 *Email:* ${email}\n`
-      + (phone ? `📱 *Teléfono:* ${phone}\n` : '')
-      + `\n🎟️ *Personas:* ${qty}\n`
-      + (p.cupo ? ` cupos disponibles: ${p.cupo}\n` : '')
-      + `\n¿Hay lugar? ¡Gracias! 😊`;
+  // --- Caso 1: entrada paga o sin cupo administrado -> consulta por WhatsApp
+  const reservable = !isPaid && p.cupoTotal && p._fecha && SB_ON();
+  if(!reservable){
+    const msg = armarMensaje(p, name, email, phone, qty, null);
+    window.open('https://wa.me/'+CONFIG.wapp+'?text='+encodeURIComponent(msg), '_blank');
+    showTicketSuccess(p, name, email, qty, total, { confirmada:false });
+    return;
   }
 
-  const total = isPaid && p.ticketPrice ? '$'+(p.ticketPrice*qty).toLocaleString('es-AR') : (isPaid ? 'A consultar' : 'Gratis');
-  window.open('https://wa.me/5493764578395?text='+encodeURIComponent(msg), '_blank');
-  showTicketSuccess(p, name, email, qty, total);
+  // --- Caso 2: inscripcion con cupo real -> la reserva la decide la base
+  // Abrimos la pestana de WhatsApp AHORA, todavia dentro del clic del usuario.
+  // Si esperaramos la respuesta de la base, el navegador la bloquearia por popup.
+  // Queda en blanco unos segundos y despues le cargamos el mensaje.
+  let wapTab = null;
+  try { wapTab = window.open('', '_blank'); } catch(e){ wapTab = null; }
+
+  const submit = document.getElementById('ticket-submit');
+  const textoOriginal = submit.innerHTML;
+  submit.setAttribute('disabled','disabled');
+  submit.innerHTML = '<i class="ph ph-circle-notch"></i> <span>Confirmando lugar…</span>';
+
+  try {
+    const r = await sbRpc('reservar', {
+      p_actividad: p.id,
+      p_fecha:     fechaISO(p._fecha),
+      p_nombre:    name,
+      p_email:     email,
+      p_telefono:  phone || null,
+      p_cantidad:  qty
+    });
+
+    if(!r || !r.ok){
+      const motivo = (r && r.motivo) || 'error';
+      setAviso('err', '<i class="ph-fill ph-warning-circle"></i> ' +
+               (MOTIVOS[motivo] || 'No pudimos confirmar la inscripción. Probá de nuevo en un momento.'));
+      if(motivo === 'sin_cupo' && r.disponibles !== undefined){
+        CUPOS[cupoKey(p)] = { total: p.cupoTotal, disponibles: r.disponibles, estimado:false };
+        renderTimeline();
+        aplicarCupo(p);
+        setAviso('err', '<i class="ph-fill ph-prohibit"></i> ' + MOTIVOS.sin_cupo);
+      }
+      if(wapTab && !wapTab.closed) wapTab.close();
+      submit.removeAttribute('disabled');
+      submit.innerHTML = textoOriginal;
+      return;
+    }
+
+    // reserva confirmada
+    if(r.disponibles !== undefined){
+      CUPOS[cupoKey(p)] = { total: p.cupoTotal, disponibles: r.disponibles, estimado:false };
+      renderTimeline();
+    }
+    const codigo = String(r.id || '').slice(0,8).toUpperCase();
+    const wappURL = 'https://wa.me/'+CONFIG.wapp+'?text='+
+                    encodeURIComponent(armarMensaje(p, name, email, phone, qty, codigo));
+
+    // la pestana ya esta abierta: solo le damos la direccion
+    let abierto = false;
+    if(wapTab && !wapTab.closed){ wapTab.location.href = wappURL; abierto = true; }
+    else { const w = window.open(wappURL, '_blank'); abierto = !!w; }
+
+    showTicketSuccess(p, name, email, qty, total, {
+      confirmada: true,
+      codigo: codigo,
+      wapp: wappURL,
+      wappAbierto: abierto
+    });
+
+  } catch(e){
+    console.warn('[PosadasVive] Error al reservar:', e.message);
+    setAviso('err', '<i class="ph-fill ph-wifi-slash"></i> No pudimos conectarnos para confirmar tu lugar. ' +
+             'Revisá tu conexión o escribinos por WhatsApp.');
+    if(wapTab && !wapTab.closed) wapTab.close();
+    submit.removeAttribute('disabled');
+    submit.innerHTML = textoOriginal;
+  }
 }
 
-function showTicketSuccess(p, name, email, qty, total){
+function showTicketSuccess(p, name, email, qty, total, estado){
   const body = document.getElementById('ticket-body');
   const isPaid = p.ticketType === 'paid';
+  const conf = estado && estado.confirmada;
+
+  const titulo = conf ? '¡Lugar confirmado!' : (isPaid ? 'Consulta enviada' : 'Solicitud enviada');
+  const texto  = conf
+    ? (estado.wappAbierto
+        ? 'Tu lugar está reservado y te abrimos WhatsApp para que termines de coordinar con el organizador. Guardá el código.'
+        : 'Tu lugar está reservado. Tocá el botón para avisarle al organizador por WhatsApp. Guardá el código.')
+    : (isPaid
+        ? 'Te abrimos WhatsApp con tus datos. El organizador te confirma precio y disponibilidad.'
+        : 'Te abrimos WhatsApp con tus datos. Tu lugar queda sujeto a confirmación del organizador.');
+
+  const codigoHTML = conf
+    ? `<div class="ticket-success-detail" style="margin-top:10px"><span style="color:var(--muted);font-size:0.72rem">CÓDIGO DE RESERVA</span><br><strong style="font-size:1.25rem;letter-spacing:2px;color:var(--gold)">${estado.codigo}</strong></div>`
+    : '';
+
+  const wappHTML = conf && estado.wapp
+    ? `<a href="${estado.wapp}" target="_blank" rel="noopener" class="ticket-submit free" style="display:flex;text-decoration:none;margin-top:14px"><i class="ph-fill ph-whatsapp-logo"></i> <span>${estado.wappAbierto ? 'Volver a abrir WhatsApp' : 'Avisar por WhatsApp'}</span></a>`
+    : '';
+
   body.innerHTML = `
     <div class="ticket-success">
       <div class="ticket-success-icon"><i class="ph-fill ph-check"></i></div>
-      <h3>${isPaid ? '¡Consulta enviada!' : '¡Inscripción enviada!'}</h3>
-      <p>${isPaid ? 'Te abrimos WhatsApp con todos tus datos. Consultá precio y disponibilidad directamente con el organizador.' : 'Te abrimos WhatsApp para confirmar tu lugar. ¡No cierres la conversación!'}</p>
+      <h3>${titulo}</h3>
+      <p>${texto}</p>
       <div class="ticket-success-detail">
         <strong>${p.name}</strong><br>
         📅 ${p.when.label}<br>
         👤 ${name} · ${email}<br>
-        🎟️ ${qty} ${qty===1?'entrada':'entradas'} · ${total}
+        🎟️ ${qty} ${qty===1?'lugar':'lugares'} · ${total}
       </div>
+      ${codigoHTML}
+      ${wappHTML}
       <button class="btn-close" onclick="closeTicketModal()">Cerrar</button>
     </div>`;
 }
 
 // ============ INIT ============
+hydrateAgenda();
+document.getElementById('sos-wapp').href = 'https://wa.me/' + CONFIG.wapp;
 renderHero(); renderMoods(); renderTimeline();
+cargarCupos();   // disponibilidad real; si falla, la app sigue andando
 document.querySelector('.app-head').classList.add('over-map');
 setTimeout(()=>{ map.invalidateSize(); setMapMode('lugares'); }, 300);
 // Auto-request geolocation silently for distance display
 requestGeo(false);
+
+// Al volver a la pestana, revalidamos disponibilidad
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) cargarCupos(); });
 </script>
 </body>
 </html>
-
