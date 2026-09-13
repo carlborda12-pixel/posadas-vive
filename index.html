@@ -23,7 +23,13 @@
 
     <!-- Favicon: pin dorado sobre fondo oscuro, sin archivos externos -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0b08'/%3E%3Cpath d='M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z' fill='%23e8c37e'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0b08'/%3E%3Cpath d='M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z' fill='%23e8c37e'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
+
+    <!-- App instalable -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Posadas Vive">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,19 +92,15 @@
         @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
         /* ================= APP HEADER ================= */
-        .app-head { position: sticky; top: 0; z-index: 40; padding: calc(20px + env(safe-area-inset-top)) 18px 18px; background: linear-gradient(to bottom, var(--paper) 62%, transparent); }
+        .app-head { position: sticky; top: 0; z-index: 40; padding: calc(12px + env(safe-area-inset-top)) 16px 10px; background: linear-gradient(to bottom, var(--paper) 62%, transparent); }
         .app-head.over-map { position: fixed; left: 0; right: 0; z-index: 600; background: linear-gradient(to bottom, rgba(15,11,8,0.85) 30%, rgba(15,11,8,0.35) 75%, transparent); }
-        .head-row { display: flex; align-items: center; justify-content: space-between; }
-        .brand { display: flex; align-items: center; gap: 8px; }
-        .brand-mark { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(140deg, var(--gold), var(--clay)); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: #2a1405; box-shadow: 0 6px 16px rgba(214,90,26,0.4); }
-        .brand-name { font-family: 'Fraunces', serif; font-weight: 900; font-size: 1.3rem; line-height: 1; letter-spacing: -0.5px; }
-        .brand-name span { background: linear-gradient(100deg, var(--gold), var(--sunset)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .brand-sub { font-size: 0.66rem; color: var(--muted); font-weight: 700; letter-spacing: 0.8px; margin-top: 3px; text-transform: uppercase; }
+        .head-row { display: flex; align-items: center; justify-content: flex-end; }
         .head-actions { display: flex; gap: 8px; align-items: center; }
         .ico-btn { width: 38px; height: 38px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; color: var(--ink); }
         .ico-btn.sos { color: var(--red); border-color: rgba(224,86,86,0.35); }
         .weather-inline { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 800; color: var(--gold); background: rgba(232,195,126,0.1); border: 1px solid rgba(232,195,126,0.2); padding: 8px 12px; border-radius: 14px; }
         .weather-inline i { color: #f6b73c; font-size: 0.95rem; }
+        .weather-inline.off { display: none; }
 
         /* ================= FEED / AGENDA ================= */
         .feed { padding: 4px 18px 130px; }
@@ -177,7 +179,7 @@
             radial-gradient(130% 90% at 50% 40%, transparent 55%, rgba(15,11,8,0.55) 100%),
             linear-gradient(to bottom, rgba(15,11,8,0.55) 0%, transparent 22%, transparent 55%, rgba(15,11,8,0.75) 100%); }
 
-    .map-topbar { position: absolute; top: calc(76px + env(safe-area-inset-top)); left: 12px; right: 12px; z-index: 500; display: flex; flex-direction: column; gap: 9px; }
+    .map-topbar { position: absolute; top: calc(var(--head-h, 60px) + 8px); left: 12px; right: 12px; z-index: 500; display: flex; flex-direction: column; gap: 9px; }
     .mode-seg { display: inline-flex; align-self: flex-start; gap: 4px; background: rgba(15,11,8,0.72); border: 1px solid var(--line); border-radius: 16px; padding: 5px; box-shadow: var(--shadow-sm); }
     .mode-btn { padding: 9px 16px; border-radius: 12px; font-weight: 800; font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 6px; transition: transform 0.25s var(--ease), background 0.25s, border-color 0.25s, color 0.25s; }
     .mode-btn i { font-size: 0.95rem; }
@@ -202,10 +204,10 @@
     .route-info .rt-meta span { display: flex; align-items: center; gap: 5px; }
     .route-info .rt-meta i { font-size: 0.95rem; }
 
-    .layer-toggle { position: absolute; right: 12px; z-index: 500; top: calc(76px + env(safe-area-inset-top)); width: 38px; height: 38px; border-radius: 12px; background: rgba(15,11,8,0.8); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .layer-toggle { position: absolute; right: 12px; z-index: 500; top: calc(var(--head-h, 60px) + 8px); width: 38px; height: 38px; border-radius: 12px; background: rgba(15,11,8,0.8); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
 
     /* locate-me button */
-    .locate-btn { position: absolute; right: 12px; z-index: 500; top: calc(122px + env(safe-area-inset-top)); width: 38px; height: 38px; border-radius: 12px; background: rgba(15,11,8,0.8); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--ink); transition: background 0.25s, color 0.25s; }
+    .locate-btn { position: absolute; right: 12px; z-index: 500; top: calc(var(--head-h, 60px) + 54px); width: 38px; height: 38px; border-radius: 12px; background: rgba(15,11,8,0.8); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--ink); transition: background 0.25s, color 0.25s; }
     .locate-btn.active { background: rgba(55,181,164,0.25); border-color: rgba(55,181,164,0.5); color: var(--river); }
     .locate-btn.locating i { animation: locate-spin 1s linear infinite; }
     @keyframes locate-spin { to { transform: rotate(360deg); } }
@@ -354,6 +356,25 @@
 
     .btn-close { width: 100%; margin-top: 16px; padding: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; font-weight: 700; }
 
+    /* ================= AVISOS DE ESTADO ================= */
+    .aviso-app {
+      position: fixed; left: 12px; right: 12px;
+      bottom: calc(84px + env(safe-area-inset-bottom));
+      z-index: 3000; display: none; align-items: center; gap: 9px;
+      padding: 11px 14px; border-radius: 14px;
+      font-size: 0.78rem; font-weight: 700; line-height: 1.35;
+      box-shadow: var(--shadow); animation: fade 0.3s var(--ease);
+    }
+    .aviso-app.on { display: flex; }
+    .aviso-app.offline { background: rgba(60,45,30,0.97); color: #f0d7b4; border: 1px solid rgba(232,195,126,0.3); }
+    .aviso-app.update  { background: rgba(22,17,13,0.97); color: var(--ink); border: 1px solid rgba(55,181,164,0.35); }
+    .aviso-app i { font-size: 1.05rem; flex-shrink: 0; }
+    .aviso-app button {
+      margin-left: auto; flex-shrink: 0; background: var(--river); color: #04231f;
+      border: 0; border-radius: 9px; padding: 6px 11px;
+      font-weight: 800; font-size: 0.72rem; cursor: pointer;
+    }
+
     /* ================= TICKET MODAL ================= */
     .ticket-aviso { display: none; gap: 8px; align-items: flex-start; font-size: 0.8rem; line-height: 1.45; border-radius: 14px; padding: 11px 13px; margin-bottom: 12px; }
     .ticket-aviso.on { display: flex; }
@@ -423,8 +444,6 @@
         .splash-title { font-size: 2.6rem; letter-spacing: -1px; }
         .splash-sub { font-size: 0.9rem; }
         .splash-enter { padding: 15px; font-size: 0.92rem; }
-        .brand-name { font-size: 1.1rem; }
-        .brand-mark { width: 34px; height: 34px; font-size: 1rem; }
         .weather-inline { padding: 6px 10px; font-size: 0.75rem; }
         .ico-btn { width: 34px; height: 34px; }
         .tab { padding: 7px 15px; font-size: 0.6rem; }
@@ -497,7 +516,7 @@
 
     /* Safe area handling for notched devices */
     @supports (padding: env(safe-area-inset-top)) {
-        .app-head { padding-top: calc(20px + env(safe-area-inset-top)); }
+        .app-head { padding-top: calc(12px + env(safe-area-inset-top)); }
         .tabbar { bottom: calc(14px + env(safe-area-inset-bottom)); }
         .map-carousel { bottom: calc(84px + env(safe-area-inset-bottom)); }
         .dir-panel { bottom: calc(84px + env(safe-area-inset-bottom)); }
@@ -552,18 +571,21 @@
 
 <div id="app">
 
+    <div class="aviso-app offline" id="aviso-offline">
+        <i class="ph-fill ph-wifi-slash"></i>
+        <span>Sin conexión. Estás viendo la información guardada.</span>
+    </div>
+    <div class="aviso-app update" id="aviso-update">
+        <i class="ph-fill ph-arrows-clockwise"></i>
+        <span>Hay una versión nueva de la guía.</span>
+        <button onclick="aplicarActualizacion()">Actualizar</button>
+    </div>
+
     <!-- ============ HEADER ============ -->
     <div class="app-head">
         <div class="head-row">
-            <div class="brand">
-                <div class="brand-mark"><i class="ph-fill ph-map-pin"></i></div>
-                <div>
-                    <div class="brand-name">Posadas<span>Vive</span></div>
-                    <div class="brand-sub">Guía viva · Misiones</div>
-                </div>
-            </div>
             <div class="head-actions">
-                <div class="weather-inline"><i class="ph-fill ph-sun"></i> 28°</div>
+                <div class="weather-inline off" id="clima" title=""></div>
                 <button class="ico-btn sos" onclick="openSOS()"><i class="ph-fill ph-first-aid-kit"></i></button>
             </div>
         </div>
@@ -756,7 +778,10 @@ const CONFIG = {
   },
 
   // Tope de lugares por inscripcion
-  maxPorPersona: 6
+  maxPorPersona: 6,
+
+  // Punto de referencia para el clima del encabezado
+  clima: { lat: -27.3671, lon: -55.8961 }
 };
 
 const CDN = 'https://public.youware.com/users-website-assets/prod/d9801d5e-b9a5-4695-925c-d937bff38a4f/';
@@ -1127,6 +1152,63 @@ async function sbRpc(fn, body){
   return r.json();
 }
 
+/* ===================================================================
+   CATALOGO REMOTO
+   Los lugares y actividades viven en la tabla "lugares" de Supabase,
+   editable desde su panel. La copia que viene dentro del HTML queda
+   como respaldo: si la base no responde, la app igual muestra todo.
+   =================================================================== */
+function mapearLugar(f){
+  return {
+    id: f.id, type: f.tipo, order: f.orden,
+    name: f.nombre, addr: f.direccion || '',
+    img: f.imagen || '', coords: [f.lat, f.lng],
+    schedule: {
+      kind:    f.horario_tipo || 'siempre',
+      dias:    f.horario_dias || undefined,
+      hora:    f.horario_hora || undefined,
+      fecha:   f.horario_fecha || undefined,
+      label:   f.horario_etiqueta || undefined,
+      sub:     f.horario_detalle || '',
+      ico:     f.horario_icono || 'ph-calendar-check',
+      display: f.horario_display || undefined
+    },
+    moods: f.moods || [], routes: f.rutas || [],
+    tags: f.etiquetas || [],
+    price: f.precio || '', cupoTotal: f.cupo || null, wapp: !!f.wapp,
+    ticketType: f.tipo_entrada || undefined,
+    ticketPrice: f.precio_entrada || undefined,
+    story: f.historia || '', fact: f.dato || '', audio: f.audio || ''
+  };
+}
+
+async function cargarCatalogo(){
+  if(!SB_ON()) return;
+  try {
+    const r = await fetch(CONFIG.supabase.url +
+      '/rest/v1/lugares?select=*&publicado=eq.true&order=orden.asc', {
+      headers: {
+        'apikey': CONFIG.supabase.anonKey,
+        'Authorization': 'Bearer ' + CONFIG.supabase.anonKey
+      }
+    });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const filas = await r.json();
+    if(!Array.isArray(filas) || !filas.length) throw new Error('catálogo vacío');
+
+    // reemplazo en el lugar: otras partes del codigo guardan la referencia
+    PLACES.splice(0, PLACES.length, ...filas.map(mapearLugar));
+
+    hydrateAgenda();
+    renderHero(); renderTimeline();
+    try { renderPlaceMarkers(); renderCarousel(PLACES.slice(), mapMode); } catch(e){}
+    cargarCupos();
+    console.info('[PosadasVive] Catálogo cargado desde Supabase:', filas.length, 'lugares.');
+  } catch(e){
+    console.warn('[PosadasVive] No se pudo leer el catálogo remoto. Se usa el incluido en la app:', e.message);
+  }
+}
+
 async function cargarCupos(){
   if(!SB_ON()) return;
   const items = conCupo().map(p => ({ id: p.id, fecha: fechaISO(p._fecha) }));
@@ -1181,6 +1263,114 @@ function enterApp(){
 
 /* Equipos modestos: menos memoria, menos nucleos o el usuario pidio
    menos animacion. Se apagan los desenfoques y los bucles infinitos. */
+/* ===================================================================
+   CLIMA
+   Open-Meteo: gratuito y sin API key. Si falla, el chip queda oculto:
+   preferimos no mostrar nada antes que un numero inventado.
+   =================================================================== */
+const WMO = [
+  [[0],            'ph-sun',            'ph-moon',        'Despejado'],
+  [[1,2],          'ph-cloud-sun',      'ph-cloud-moon',  'Parcialmente nublado'],
+  [[3],            'ph-cloud',          'ph-cloud',       'Nublado'],
+  [[45,48],        'ph-cloud-fog',      'ph-cloud-fog',   'Niebla'],
+  [[51,53,55,56,57],'ph-drop',          'ph-drop',        'Llovizna'],
+  [[61,63,65,66,67,80,81,82], 'ph-cloud-rain', 'ph-cloud-rain', 'Lluvia'],
+  [[71,73,75,77,85,86], 'ph-snowflake', 'ph-snowflake',   'Nieve'],
+  [[95,96,99],     'ph-cloud-lightning','ph-cloud-lightning','Tormenta']
+];
+
+function climaIcono(code, esDia){
+  const f = WMO.find(x => x[0].includes(code));
+  if(!f) return ['ph-thermometer-simple', ''];
+  return [esDia ? f[1] : f[2], f[3]];
+}
+
+async function cargarClima(){
+  const chip = document.getElementById('clima');
+  if(!chip) return;
+  try {
+    const u = 'https://api.open-meteo.com/v1/forecast'
+            + '?latitude='  + CONFIG.clima.lat
+            + '&longitude=' + CONFIG.clima.lon
+            + '&current=temperature_2m,weather_code,is_day'
+            + '&timezone=' + encodeURIComponent(CONFIG.tz);
+    const r = await fetch(u);
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    const c = d && d.current;
+    if(!c || typeof c.temperature_2m !== 'number') throw new Error('respuesta sin datos');
+
+    const [ico, texto] = climaIcono(c.weather_code, c.is_day === 1);
+    chip.innerHTML = '<i class="ph-fill ' + ico + '"></i> ' + Math.round(c.temperature_2m) + '°';
+    chip.title = texto ? texto + ' en Posadas' : '';
+    chip.classList.remove('off');
+  } catch(e){
+    chip.classList.add('off');
+    console.warn('[PosadasVive] Clima no disponible:', e.message);
+  }
+}
+
+/* ===================================================================
+   MODO SIN CONEXION
+   El service worker guarda la app, las tiles del mapa ya vistas, las
+   fotos y el ultimo catalogo. Pensado para el turista con datos
+   contados o roaming, parado en la vereda.
+   =================================================================== */
+let swEsperando = null;
+
+function mostrarAviso(id, on){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('on', on);
+}
+
+function aplicarActualizacion(){
+  if(swEsperando) swEsperando.postMessage('actualizar');
+  mostrarAviso('aviso-update', false);
+  setTimeout(()=>location.reload(), 300);
+}
+
+function registrarSW(){
+  if(!('serviceWorker' in navigator)) return;
+  // file:// no admite service workers; solo tiene sentido servido por http(s)
+  if(location.protocol === 'file:') return;
+
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    if(reg.waiting){ swEsperando = reg.waiting; mostrarAviso('aviso-update', true); }
+    reg.addEventListener('updatefound', () => {
+      const nuevo = reg.installing;
+      if(!nuevo) return;
+      nuevo.addEventListener('statechange', () => {
+        if(nuevo.state === 'installed' && navigator.serviceWorker.controller){
+          swEsperando = nuevo;
+          mostrarAviso('aviso-update', true);
+        }
+      });
+    });
+  }).catch(e => console.warn('[PosadasVive] Service worker no registrado:', e.message));
+
+  let recargando = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if(recargando) return; recargando = true; location.reload();
+  });
+}
+
+function vigilarConexion(){
+  const pintar = () => mostrarAviso('aviso-offline', !navigator.onLine);
+  window.addEventListener('online',  () => { pintar(); cargarCatalogo(); cargarCupos(); cargarClima(); });
+  window.addEventListener('offline', pintar);
+  pintar();
+}
+
+// El encabezado cambia de alto segun el equipo (notch, fuentes, zoom).
+// Lo medimos y lo publicamos como variable CSS, asi los controles del
+// mapa se acomodan solos y no quedan flotando.
+function medirEncabezado(){
+  const h = document.querySelector('.app-head');
+  if(h) document.documentElement.style.setProperty('--head-h', h.offsetHeight + 'px');
+}
+window.addEventListener('resize', medirEncabezado);
+window.addEventListener('orientationchange', ()=>setTimeout(medirEncabezado, 150));
+
 function detectarPerf(){
   const nav = navigator;
   const pocaRam    = nav.deviceMemory && nav.deviceMemory <= 4;
@@ -1966,17 +2156,23 @@ function showTicketSuccess(p, name, email, qty, total, estado){
 
 // ============ INIT ============
 detectarPerf();
+medirEncabezado();
+registrarSW();
+vigilarConexion();
 hydrateAgenda();
 document.getElementById('sos-wapp').href = 'https://wa.me/' + CONFIG.wapp;
 renderHero(); renderMoods(); renderTimeline();
-cargarCupos();   // disponibilidad real; si falla, la app sigue andando
+cargarCatalogo();  // agenda editable; si falla, queda la copia local
+cargarCupos();     // disponibilidad real; si falla, la app sigue andando
+cargarClima();
+setInterval(()=>{ if(!document.hidden) cargarClima(); }, 20*60*1000);
 document.querySelector('.app-head').classList.add('over-map');
 setTimeout(()=>{ map.invalidateSize(); setMapMode('lugares'); }, 300);
 // Auto-request geolocation silently for distance display
 requestGeo(false);
 
 // Al volver a la pestana, revalidamos disponibilidad
-document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) cargarCupos(); });
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ cargarCupos(); cargarClima(); } });
 </script>
 </body>
 </html>
