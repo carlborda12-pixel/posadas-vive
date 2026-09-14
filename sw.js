@@ -5,7 +5,7 @@
    Al cambiar el contenido de la app hay que subir VERSION, si no los
    navegadores que ya la visitaron siguen mostrando la version vieja.
    =================================================================== */
-const VERSION = 'pv-2026-09-13-1';
+const VERSION = 'pv-2026-09-13-2';
 
 const CACHE_APP    = VERSION + '-app';     // la app en si
 const CACHE_MAPA   = VERSION + '-mapa';    // tiles del mapa

@@ -356,6 +356,9 @@
 
     .btn-close { width: 100%; margin-top: 16px; padding: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; font-weight: 700; }
 
+    /* Imagen que no carga: degradado sobrio en vez del icono roto */
+    img.img-rota { object-fit: cover; background: linear-gradient(140deg, #2a2118, #16110d); }
+
     /* ================= AVISOS DE ESTADO ================= */
     .aviso-app {
       position: fixed; left: 12px; right: 12px;
@@ -579,6 +582,35 @@
         <i class="ph-fill ph-arrows-clockwise"></i>
         <span>Hay una versión nueva de la guía.</span>
         <button onclick="aplicarActualizacion()">Actualizar</button>
+    </div>
+
+    <!-- ============ CANCELAR INSCRIPCIÓN ============ -->
+    <div class="ticket-overlay" id="cancel-overlay">
+      <div class="ticket-modal">
+        <div class="ticket-content" id="cancel-body">
+          <div class="ticket-form">
+            <h2 class="ticket-name">Cancelar inscripción</h2>
+            <p style="color:var(--muted);font-size:0.82rem;line-height:1.5;margin:6px 0 16px">
+              Ingresá el código que recibiste al anotarte y el mismo email que usaste.
+            </p>
+            <div class="ticket-aviso" id="cancel-aviso"></div>
+            <div class="ticket-field">
+              <label>Código de reserva</label>
+              <input type="text" id="cancel-cod" placeholder="Ej: A1B2C3D4"
+                     autocomplete="off" spellcheck="false"
+                     style="text-transform:uppercase;letter-spacing:2px">
+            </div>
+            <div class="ticket-field">
+              <label>Email con el que te anotaste</label>
+              <input type="email" id="cancel-email" placeholder="tu@email.com" autocomplete="email">
+            </div>
+            <button class="ticket-submit pay" id="cancel-submit" onclick="confirmarCancelacion()">
+              <i class="ph-fill ph-x-circle"></i> <span>Liberar mi lugar</span>
+            </button>
+            <button class="btn-close" onclick="cerrarCancelacion()">Volver</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ============ HEADER ============ -->
@@ -1162,7 +1194,7 @@ function mapearLugar(f){
   return {
     id: f.id, type: f.tipo, order: f.orden,
     name: f.nombre, addr: f.direccion || '',
-    img: f.imagen || '', coords: [f.lat, f.lng],
+    img: f.imagen || '', coords: [Number(f.lat), Number(f.lng)],
     schedule: {
       kind:    f.horario_tipo || 'siempre',
       dias:    f.horario_dias || undefined,
@@ -1201,7 +1233,12 @@ async function cargarCatalogo(){
 
     hydrateAgenda();
     renderHero(); renderTimeline();
-    try { renderPlaceMarkers(); renderCarousel(PLACES.slice(), mapMode); } catch(e){}
+    try {
+      renderPlaceMarkers();
+      renderCarousel(PLACES.slice(), mapMode);
+    } catch(e){
+      console.warn('[PosadasVive] El catálogo cargó pero el mapa no se pudo redibujar:', e.message);
+    }
     cargarCupos();
     console.info('[PosadasVive] Catálogo cargado desde Supabase:', filas.length, 'lugares.');
   } catch(e){
@@ -1327,6 +1364,96 @@ function aplicarActualizacion(){
   if(swEsperando) swEsperando.postMessage('actualizar');
   mostrarAviso('aviso-update', false);
   setTimeout(()=>location.reload(), 300);
+}
+
+// Las fotos salen de un servidor externo. Si alguna falla, dejamos un
+// fondo sobrio en lugar del icono de imagen rota del navegador.
+document.addEventListener('error', e => {
+  const t = e.target;
+  if(t && t.tagName === 'IMG' && !t.classList.contains('img-rota')){
+    t.classList.add('img-rota');
+    t.removeAttribute('src');
+  }
+}, true);
+
+/* ===================================================================
+   CANCELACION
+   Se entra por el enlace que va en el mensaje de WhatsApp, o a mano
+   con codigo + email desde la pantalla de confirmacion.
+   =================================================================== */
+const MOTIVOS_CANCEL = {
+  codigo_invalido: 'El código parece incompleto. Son 8 caracteres.',
+  no_encontrada:   'No encontramos una inscripción con ese código y ese email. Revisá que sean los mismos que usaste al anotarte.',
+  ya_cancelada:    'Esa inscripción ya estaba cancelada. El lugar quedó libre.',
+  evento_pasado:   'Esa actividad ya pasó, así que no hay nada para liberar.'
+};
+
+function enlaceCancelacion(codigo){
+  return location.origin + location.pathname + '?cancelar=' + codigo;
+}
+
+function abrirCancelacion(codigo){
+  const cod = document.getElementById('cancel-cod');
+  if(codigo && cod) cod.value = codigo;
+  document.getElementById('cancel-aviso').className = 'ticket-aviso';
+  document.getElementById('cancel-overlay').classList.add('on');
+}
+
+function cerrarCancelacion(){
+  document.getElementById('cancel-overlay').classList.remove('on');
+  // limpiamos el parametro para que al recargar no reabra el modal
+  if(location.search.includes('cancelar=')){
+    history.replaceState({}, '', location.origin + location.pathname);
+  }
+}
+
+function avisoCancel(tipo, html){
+  const a = document.getElementById('cancel-aviso');
+  a.className = 'ticket-aviso on ' + tipo;
+  a.innerHTML = html;
+}
+
+async function confirmarCancelacion(){
+  const codigo = document.getElementById('cancel-cod').value.trim().toUpperCase();
+  const email  = document.getElementById('cancel-email').value.trim();
+  const btn    = document.getElementById('cancel-submit');
+
+  if(codigo.length < 6){ avisoCancel('err', 'Revisá el código: son 8 caracteres.'); return; }
+  if(!email.includes('@')){ avisoCancel('err', 'Falta el email con el que te anotaste.'); return; }
+  if(!SB_ON()){ avisoCancel('err', 'No podemos procesar cancelaciones en este momento.'); return; }
+
+  const textoOriginal = btn.innerHTML;
+  btn.setAttribute('disabled','disabled');
+  btn.innerHTML = '<i class="ph ph-circle-notch"></i> <span>Liberando…</span>';
+
+  try {
+    const r = await sbRpc('cancelar', { p_codigo: codigo, p_email: email });
+    if(!r || !r.ok){
+      avisoCancel('err', MOTIVOS_CANCEL[r && r.motivo] ||
+        'No pudimos cancelar la inscripción. Probá de nuevo en un momento.');
+      btn.removeAttribute('disabled'); btn.innerHTML = textoOriginal;
+      return;
+    }
+    document.getElementById('cancel-body').innerHTML =
+      '<div class="ticket-success">'
+      + '<div class="ticket-success-icon"><i class="ph-fill ph-check"></i></div>'
+      + '<h3>Lugar liberado</h3>'
+      + '<p>Cancelamos tu inscripción y el cupo vuelve a estar disponible para otra persona. '
+      + 'Gracias por avisar.</p>'
+      + '<div class="ticket-success-detail"><strong>' + r.actividad + '</strong><br>📅 ' + r.fecha + '</div>'
+      + '<button class="btn-close" onclick="location.href=location.origin+location.pathname">Cerrar</button>'
+      + '</div>';
+    cargarCupos();   // el cupo liberado se refleja enseguida
+  } catch(e){
+    avisoCancel('err', 'No pudimos conectarnos. Revisá tu conexión e intentá otra vez.');
+    btn.removeAttribute('disabled'); btn.innerHTML = textoOriginal;
+  }
+}
+
+// Si entran por el enlace del mensaje, abrimos el modal con el codigo puesto
+function revisarEnlaceCancelacion(){
+  const cod = new URLSearchParams(location.search).get('cancelar');
+  if(cod) abrirCancelacion(cod.trim().toUpperCase());
 }
 
 function registrarSW(){
@@ -1686,15 +1813,26 @@ function toggleAudio(){
 function resetAudio(){ audioEl.pause(); audioEl.currentTime=0; clearInterval(audioTimer); playing=false; const f=document.getElementById('audio-fill'); if(f)f.style.width='0%'; const i=document.querySelector('#audio-btn i'); if(i)i.className='ph-fill ph-play'; }
 
 // ============ MAP + THEMED ROUTES ============
-const map = L.map('map',{zoomControl:false, tap:false, attributionControl:true}).setView([-27.372,-55.892],13);
+const LEAFLET_OK = (typeof L !== 'undefined' && typeof L.map === 'function');
+if(!LEAFLET_OK) console.error('[PosadasVive] Leaflet no cargó. El mapa queda desactivado; el resto de la app sigue funcionando.');
+
+const map = LEAFLET_OK
+  ? L.map('map',{zoomControl:false, tap:false, attributionControl:true}).setView([-27.372,-55.892],13)
+  : null;
 const ATRIB_ESRI = 'Esri';
-const dark = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-  {maxZoom:19, maxNativeZoom:16, attribution:ATRIB_ESRI});
-const labels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
-  {maxZoom:19, maxNativeZoom:16, attribution:ATRIB_ESRI});
-const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-  {maxZoom:19, maxNativeZoom:18, attribution:ATRIB_ESRI});
-dark.addTo(map); labels.addTo(map);
+const dark = LEAFLET_OK ? L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+  {maxZoom:19, maxNativeZoom:16, attribution:ATRIB_ESRI}) : null;
+const labels = LEAFLET_OK ? L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+  {maxZoom:19, maxNativeZoom:16, attribution:ATRIB_ESRI}) : null;
+const sat = LEAFLET_OK ? L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {maxZoom:19, maxNativeZoom:18, attribution:ATRIB_ESRI}) : null;
+if(map){ dark.addTo(map); labels.addTo(map); }
+else {
+  const cont = document.getElementById('map');
+  if(cont) cont.innerHTML = '<div style="display:flex;height:100%;align-items:center;justify-content:center;'
+    + 'padding:32px;text-align:center;color:var(--muted);font-size:0.85rem;line-height:1.5">'
+    + 'No pudimos cargar el mapa.<br>Revisá tu conexión y volvé a abrir la app.</div>';
+}
 let isSat=false;
 function toggleLayer(){ isSat=!isSat; const i=document.getElementById('layer-ico'); if(isSat){ map.removeLayer(dark); sat.addTo(map); i.className='ph-fill ph-map-trifold'; } else { map.removeLayer(sat); dark.addTo(map); i.className='ph-fill ph-globe-hemisphere-west'; } labels.bringToFront(); }
 
@@ -1795,7 +1933,12 @@ function clearMarkers(){ routeLayers.forEach(l=>map.removeLayer(l)); routeLayers
 
 // ============ LUGARES MODE ============
 function renderPlaceMarkers(){
+  if(!map) return;
   vigentes().forEach(p=>{
+    if(!Array.isArray(p.coords) || !isFinite(p.coords[0]) || !isFinite(p.coords[1])){
+      console.warn('[PosadasVive] Sin coordenadas válidas, no se ubica en el mapa:', p.id);
+      return;
+    }
     const cls=catPinClass(p);
     const ico=PIN_ICO[p.moods.find(m=>PIN_ICO[m])]||'ph-map-pin';
     const html=`<div class="place-pin ${cls}" data-pin="${p.id}"><div class="pin-dot"></div><i class="ph-fill ${ico} pin-ico"></i></div>`;
@@ -2000,7 +2143,8 @@ function armarMensaje(p, name, email, phone, qty, reserva){
       + `📍 *${p.name}*\n📅 ${p.when.label}\n📌 ${p.addr}\n\n`
       + `👤 *Nombre:* ${name}\n📧 *Email:* ${email}\n`
       + (phone ? `📱 *Teléfono:* ${phone}\n` : '')
-      + `\n🎟️ *Personas:* ${qty}\n🔖 *Código:* ${reserva}\n\n¡Gracias! 😊`;
+      + `\n🎟️ *Personas:* ${qty}\n🔖 *Código:* ${reserva}\n\n`
+      + `Si no podés venir, liberá tu lugar acá: ${enlaceCancelacion(reserva)}\n\n¡Gracias! 😊`;
   }
   return `Hola! Me quiero anotar en una actividad de *PosadasVive* 🌿\n\n`
     + `📍 *${p.name}*\n📅 ${p.when.label}\n📌 ${p.addr}\n\n`
@@ -2150,24 +2294,44 @@ function showTicketSuccess(p, name, email, qty, total, estado){
       </div>
       ${codigoHTML}
       ${wappHTML}
+      ${conf ? `<button onclick="closeTicketModal();abrirCancelacion('${estado.codigo}')" style="background:none;border:0;color:var(--muted);font-size:0.74rem;text-decoration:underline;margin-top:14px;cursor:pointer">¿No vas a poder venir? Cancelar inscripción</button>` : ''}
       <button class="btn-close" onclick="closeTicketModal()">Cerrar</button>
     </div>`;
 }
 
 // ============ INIT ============
-detectarPerf();
-medirEncabezado();
-registrarSW();
-vigilarConexion();
-hydrateAgenda();
-document.getElementById('sos-wapp').href = 'https://wa.me/' + CONFIG.wapp;
-renderHero(); renderMoods(); renderTimeline();
-cargarCatalogo();  // agenda editable; si falla, queda la copia local
-cargarCupos();     // disponibilidad real; si falla, la app sigue andando
-cargarClima();
-setInterval(()=>{ if(!document.hidden) cargarClima(); }, 20*60*1000);
-document.querySelector('.app-head').classList.add('over-map');
-setTimeout(()=>{ map.invalidateSize(); setMapMode('lugares'); }, 300);
+// Cada paso va aislado: si uno falla, los demas siguen. Antes una sola
+// excepcion aca dejaba la app entera en blanco.
+function paso(nombre, fn){
+  try { fn(); }
+  catch(e){ console.error('[PosadasVive] Falló "' + nombre + '":', e.message); }
+}
+
+paso('rendimiento', detectarPerf);
+paso('encabezado',  medirEncabezado);
+paso('offline',     registrarSW);
+paso('conexión',    vigilarConexion);
+paso('agenda',      hydrateAgenda);
+paso('emergencias', ()=>{
+  const el = document.getElementById('sos-wapp');
+  if(el) el.href = 'https://wa.me/' + CONFIG.wapp;
+});
+paso('portada',  renderHero);
+paso('filtros',  renderMoods);
+paso('listado',  renderTimeline);
+paso('catálogo', cargarCatalogo);
+paso('cupos',    cargarCupos);
+paso('clima',    cargarClima);
+paso('cancelación', revisarEnlaceCancelacion);
+
+setInterval(()=>{ if(!document.hidden) paso('clima', cargarClima); }, 20*60*1000);
+
+paso('encabezado sobre mapa', ()=>document.querySelector('.app-head').classList.add('over-map'));
+setTimeout(()=>paso('mapa', ()=>{
+  if(!map) return;
+  map.invalidateSize();
+  setMapMode('lugares');
+}), 300);
 // Auto-request geolocation silently for distance display
 requestGeo(false);
 
@@ -2176,3 +2340,4 @@ document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ cargar
 </script>
 </body>
 </html>
+
