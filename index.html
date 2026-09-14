@@ -356,6 +356,10 @@
 
     .btn-close { width: 100%; margin-top: 16px; padding: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; font-weight: 700; }
 
+    /* Campo trampa: fuera de la vista sin usar display:none, que
+       algunos bots ya saben detectar */
+    .campo-trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
     /* Imagen que no carga: degradado sobrio en vez del icono roto */
     img.img-rota { object-fit: cover; background: linear-gradient(140deg, #2a2118, #16110d); }
 
@@ -775,6 +779,10 @@
             <div class="ticket-total" id="ticket-total-row">
                 <span class="ticket-total-label">Total</span>
                 <span class="ticket-total-val" id="ticket-total-val"></span>
+            </div>
+            <div class="campo-trampa" aria-hidden="true">
+              <label for="ticket-web">No completar este campo</label>
+              <input type="text" id="ticket-web" name="website" tabindex="-1" autocomplete="off">
             </div>
             <div class="ticket-aviso" id="ticket-aviso"></div>
             <button class="ticket-submit pay" id="ticket-submit" onclick="submitTicket()"><i class="ph-fill ph-credit-card"></i> <span id="ticket-submit-text">Pagar con Mercado Pago</span></button>
@@ -2160,7 +2168,10 @@ const MOTIVOS = {
   datos_invalidos:     'Revisá que el nombre esté completo.',
   cantidad_invalida:   'La cantidad de lugares no es válida.',
   fecha_invalida:      'Esta fecha ya pasó. Mirá las próximas en la agenda.',
-  actividad_inexistente: 'Esta actividad ya no está tomando inscripciones.'
+  actividad_inexistente: 'Esta actividad ya no está tomando inscripciones.',
+  demasiadas:          'Ya hiciste varias inscripciones seguidas. Esperá un rato o escribinos por WhatsApp.',
+  repetida:            'Desde esta conexión ya se anotaron a esta fecha. Si sos vos y necesitás sumar gente, escribinos por WhatsApp.',
+  rechazado:           'No pudimos procesar la inscripción. Escribinos por WhatsApp y lo resolvemos.'
 };
 
 async function submitTicket(){
@@ -2203,13 +2214,15 @@ async function submitTicket(){
   submit.innerHTML = '<i class="ph ph-circle-notch"></i> <span>Confirmando lugar…</span>';
 
   try {
+    const trampa = document.getElementById('ticket-web');
     const r = await sbRpc('reservar', {
       p_actividad: p.id,
       p_fecha:     fechaISO(p._fecha),
       p_nombre:    name,
       p_email:     email,
       p_telefono:  phone || null,
-      p_cantidad:  qty
+      p_cantidad:  qty,
+      p_trampa:    trampa ? trampa.value : null
     });
 
     if(!r || !r.ok){
