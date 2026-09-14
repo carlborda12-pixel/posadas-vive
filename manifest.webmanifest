@@ -1,0 +1,34 @@
+{
+  "name": "Posadas Vive · Guía viva de la ciudad",
+  "short_name": "Posadas Vive",
+  "description": "Qué hacer hoy en Posadas: agenda, paseos guiados, atardeceres sobre el Paraná y el mapa de la ciudad.",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f0b08",
+  "theme_color": "#0f0b08",
+  "categories": ["travel", "navigation", "lifestyle"],
+  "icons": [
+    {
+      "src": "iconos/icono-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "iconos/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "iconos/icono-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
