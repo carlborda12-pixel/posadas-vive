@@ -356,6 +356,29 @@
 
     .btn-close { width: 100%; margin-top: 16px; padding: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; font-weight: 700; }
 
+    /* Nota de privacidad del formulario */
+    .nota-privacidad {
+      color: var(--muted); font-size: 0.69rem; line-height: 1.5;
+      margin: -2px 0 14px; padding-left: 2px;
+    }
+
+    /* Aviso de agenda sin fechas cargadas */
+    .agenda-vacia {
+      display: flex; gap: 12px; align-items: flex-start;
+      margin: 4px 0 28px; padding: 16px 18px;
+      background: rgba(232,195,126,0.07);
+      border: 1px dashed rgba(232,195,126,0.3);
+      border-radius: 18px;
+    }
+    .agenda-vacia > i { color: var(--gold); font-size: 1.3rem; margin-top: 1px; flex-shrink: 0; }
+    .agenda-vacia strong { font-size: 0.88rem; color: var(--ink); }
+    .agenda-vacia p { color: var(--muted); font-size: 0.79rem; line-height: 1.5; margin: 5px 0 9px; }
+    .agenda-vacia a {
+      display: inline-flex; align-items: center; gap: 5px;
+      color: var(--river); font-weight: 800; font-size: 0.76rem; text-decoration: none;
+      border-bottom: 1px solid rgba(55,181,164,0.4); padding-bottom: 1px;
+    }
+
     /* Campo trampa: fuera de la vista sin usar display:none, que
        algunos bots ya saben detectar */
     .campo-trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
@@ -785,6 +808,10 @@
               <input type="text" id="ticket-web" name="website" tabindex="-1" autocomplete="off">
             </div>
             <div class="ticket-aviso" id="ticket-aviso"></div>
+            <p class="nota-privacidad">
+              Usamos tus datos únicamente para gestionar esta inscripción y avisarte
+              si hay cambios. No se comparten con terceros y se eliminan a los seis meses.
+            </p>
             <button class="ticket-submit pay" id="ticket-submit" onclick="submitTicket()"><i class="ph-fill ph-credit-card"></i> <span id="ticket-submit-text">Pagar con Mercado Pago</span></button>
             <div class="ticket-mp-note" id="ticket-mp-note"><i class="ph-fill ph-shield-check"></i> Pago seguro vía Mercado Pago</div>
         </div>
@@ -1146,6 +1173,10 @@ function hydrateAgenda(){
     console.warn('[PosadasVive] No hay ningun evento con fecha futura cargado. Actualizar la agenda.');
   }
 }
+
+// Queda alguna actividad con fecha por delante?
+const hayAgendaFutura = () =>
+  PLACES.some(p => !p._vencido && p._fecha && (p.group === 'finde' || p.group === 'pronto'));
 
 // Actividades visibles (excluye lo vencido)
 const vigentes = () => PLACES.filter(p => !p._vencido);
@@ -1596,6 +1627,20 @@ function renderTimeline(){
     if(currentMood==='cerca' && !userPos) html = `<div class="feed-foot" style="padding:40px 0">📍 Activalo tu ubicación para ver lo más cercano<br><strong>Tocá el botón de ubicación en el mapa</strong>.</div>`;
     else html = `<div class="feed-foot" style="padding:40px 0">No hay planes con ese filtro 🤔<br>Probá con <strong>Todo</strong>.</div>`;
   }
+  // Si no hay nada con fecha por delante, lo decimos. Solo cuando el
+  // usuario esta viendo todo: con un filtro puesto seria confuso.
+  if(html && currentMood === 'all' && !hayAgendaFutura()){
+    html += `<div class="agenda-vacia">
+      <i class="ph-fill ph-calendar-x"></i>
+      <div>
+        <strong>Todavía no hay actividades con fecha programada.</strong>
+        <p>Los lugares de arriba están abiertos igual. Escribinos y te contamos qué se viene.</p>
+        <a href="https://wa.me/${CONFIG.wapp}?text=${encodeURIComponent('Hola! Quería saber qué actividades hay próximamente en Posadas 🌿')}"
+           target="_blank" rel="noopener">Consultar por WhatsApp</a>
+      </div>
+    </div>`;
+  }
+
   wrap.classList.toggle('feed-first-load', !feedYaRenderizado);
   wrap.innerHTML = html;
   if(!feedYaRenderizado){
