@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Reporte PosadasVive</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0b08'/%3E%3Cpath d='M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z' fill='%23e8c37e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Tokens. Los colores de los gráficos están validados para daltonismo y
+     contraste en claro y oscuro (naranja = serie principal). */
+  :root {
+    color-scheme: light;
+    --page: #f6f2ec;
+    --surface: #fcfcfb;
+    --ink: #1e1712;
+    --ink-2: #5c5047;
+    --muted: #898781;
+    --grid: #e7e2da;
+    --axis: #c3c2b7;
+    --line: rgba(30,23,18,0.10);
+    --serie: #eb6834;
+    --serie-suave: rgba(235,104,52,0.12);
+    --brand: #1e1712;
+    --brand-ink: #e8c37e;
+    --sube: #006300;
+    --baja: #b42318;
+    --aviso-bg: #fff4e0;
+    --aviso-ink: #7a4a00;
+    --sombra: 0 1px 2px rgba(30,23,18,0.05), 0 6px 20px rgba(30,23,18,0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page: #0f0b08; --surface: #1a1714; --ink: #f3ece2; --ink-2: #c9bcaa; --muted: #93877a;
+      --grid: #2c2622; --axis: #3d3530; --line: rgba(255,255,255,0.09);
+      --serie: #d95926; --serie-suave: rgba(217,89,38,0.16);
+      --brand: #1e1712; --brand-ink: #e8c37e; --sube: #3fbf3f; --baja: #f08a80;
+      --aviso-bg: #2b2112; --aviso-ink: #f0c779; --sombra: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0f0b08; --surface: #1a1714; --ink: #f3ece2; --ink-2: #c9bcaa; --muted: #93877a;
+    --grid: #2c2622; --axis: #3d3530; --line: rgba(255,255,255,0.09);
+    --serie: #d95926; --serie-suave: rgba(217,89,38,0.16);
+    --brand: #1e1712; --brand-ink: #e8c37e; --sube: #3fbf3f; --baja: #f08a80;
+    --aviso-bg: #2b2112; --aviso-ink: #f0c779; --sombra: none;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--page); color: var(--ink); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.5; }
+  button, input { font-family: inherit; font-size: inherit; }
+  h1, h2 { font-family: 'Fraunces', Georgia, serif; letter-spacing: -0.3px; margin: 0; }
+
+  .envoltura { max-width: 1080px; margin: 0 auto; padding: 0 16px 48px; }
+
+  /* ---------- encabezado ---------- */
+  .top { background: var(--brand); color: #f3ece2; }
+  .top .envoltura { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; padding-top: 18px; padding-bottom: 18px; }
+  .marca { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .marca svg { width: 34px; height: 34px; flex-shrink: 0; }
+  .marca b { display: block; color: var(--brand-ink); font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; }
+  .marca h1 { font-size: 1.35rem; color: #f3ece2; }
+  .controles { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .mes { display: flex; align-items: center; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; }
+  .mes button { background: none; border: 0; color: #f3ece2; width: 40px; height: 40px; cursor: pointer; font-size: 1.1rem; border-radius: 12px; }
+  .mes button:hover { background: rgba(255,255,255,0.08); }
+  .mes button[disabled] { opacity: 0.3; cursor: default; }
+  .mes span { min-width: 150px; text-align: center; font-weight: 700; }
+  .btn { display: inline-flex; align-items: center; gap: 7px; border-radius: 12px; padding: 10px 15px; font-weight: 700; cursor: pointer; border: 1px solid transparent; }
+  .btn-claro { background: var(--brand-ink); color: #2a1405; }
+  .btn-borde { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* ---------- avisos y acceso ---------- */
+  .aviso { margin: 18px 0 0; padding: 12px 16px; border-radius: 12px; background: var(--aviso-bg); color: var(--aviso-ink); font-size: 0.88rem; font-weight: 600; }
+  .acceso { max-width: 440px; margin: 40px auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px; box-shadow: var(--sombra); }
+  .acceso h2 { font-size: 1.3rem; margin-bottom: 6px; }
+  .acceso p { color: var(--ink-2); margin: 0 0 16px; font-size: 0.9rem; }
+  .acceso input { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--axis); background: var(--page); color: var(--ink); margin-bottom: 12px; }
+  .acceso .fila { display: flex; gap: 8px; flex-wrap: wrap; }
+  .acceso .error { color: var(--baja); font-size: 0.85rem; font-weight: 600; min-height: 1.3em; margin-bottom: 8px; }
+
+  /* ---------- números ---------- */
+  .resumen { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr); gap: 14px; margin-top: 22px; }
+  .tarjeta { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--sombra); min-width: 0; }
+  .hero .et { color: var(--ink-2); font-weight: 600; font-size: 0.9rem; }
+  .hero .num { font-size: 3.4rem; font-weight: 800; line-height: 1.05; margin: 6px 0 6px; letter-spacing: -1px; }
+  .hero .comp { font-size: 0.85rem; color: var(--ink-2); }
+  .delta { font-weight: 700; }
+  .delta.sube { color: var(--sube); }
+  .delta.baja { color: var(--baja); }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .tile .et { color: var(--ink-2); font-size: 0.8rem; font-weight: 600; line-height: 1.3; }
+  .tile .num { font-size: 1.65rem; font-weight: 800; margin-top: 4px; letter-spacing: -0.5px; }
+  .tile .sub { color: var(--muted); font-size: 0.74rem; }
+
+  /* ---------- gráficos ---------- */
+  .grilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+  .ancho { margin-top: 14px; }
+  .chart h2 { font-size: 1.08rem; }
+  .chart .bajada { color: var(--ink-2); font-size: 0.82rem; margin: 2px 0 12px; }
+  .lienzo { position: relative; width: 100%; }
+  .lienzo svg { display: block; width: 100%; overflow: visible; }
+  .lienzo .vacio { color: var(--muted); font-size: 0.85rem; padding: 26px 0; text-align: center; }
+  svg text { fill: var(--muted); font-size: 11px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+  svg .et-barra { fill: var(--ink-2); font-size: 12px; font-variant-numeric: normal; }
+  svg .valor { fill: var(--ink); font-size: 12px; font-weight: 700; }
+  svg .grid { stroke: var(--grid); stroke-width: 1; }
+  svg .base { stroke: var(--axis); stroke-width: 1; }
+  /* la barra no captura el puntero: lo recibe la zona transparente, más grande */
+  svg .marca-dato { fill: var(--serie); pointer-events: none; }
+  svg .hit { fill: transparent; cursor: default; outline: none; }
+  svg .hit:hover + .marca-dato, svg .hit:focus + .marca-dato,
+  svg g.on .marca-dato { opacity: 0.75; }
+  svg .hit:focus-visible { stroke: var(--ink); stroke-width: 1.5; }
+  .tip { position: fixed; z-index: 10; pointer-events: none; background: var(--ink); color: var(--page); border-radius: 9px; padding: 7px 10px; font-size: 0.8rem; line-height: 1.35; box-shadow: 0 6px 20px rgba(0,0,0,0.25); opacity: 0; transition: opacity 0.12s; max-width: 240px; }
+  .tip.on { opacity: 1; }
+  .tip b { display: block; font-size: 0.95rem; }
+  details.tabla { margin-top: 10px; font-size: 0.82rem; }
+  details.tabla summary { cursor: pointer; color: var(--ink-2); font-weight: 600; }
+  details.tabla table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  details.tabla th, details.tabla td { text-align: left; padding: 5px 4px; border-bottom: 1px solid var(--grid); }
+  details.tabla td.n, details.tabla th.n { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .pie { margin-top: 26px; color: var(--ink-2); font-size: 0.8rem; line-height: 1.6; }
+  .pie b { color: var(--ink); }
+  .cargando { opacity: 0.45; transition: opacity 0.2s; }
+
+  @media (max-width: 860px) {
+    .resumen { grid-template-columns: 1fr; }
+    .grilla { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero .num { font-size: 2.8rem; }
+    .mes span { min-width: 120px; }
+    .marca h1 { font-size: 1.15rem; }
+  }
+
+  /* Impresión / PDF: siempre en claro, sin controles */
+  @page { size: A4; margin: 12mm; }
+  @media print {
+    :root, :root[data-theme="dark"] {
+      color-scheme: light; --page: #fff; --surface: #fff; --ink: #1e1712; --ink-2: #5c5047; --muted: #7a756f;
+      --grid: #e7e2da; --axis: #c3c2b7; --line: rgba(30,23,18,0.14); --serie: #eb6834; --sombra: none;
+      --sube: #006300; --baja: #b42318; --aviso-bg: #fff4e0; --aviso-ink: #7a4a00;
+    }
+    body { font-size: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .top { background: #1e1712 !important; }
+    .controles, details.tabla, .tip { display: none !important; }
+    .tarjeta { break-inside: avoid; box-shadow: none; }
+    .resumen { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+    .grilla { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="envoltura">
+    <div class="marca">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2a2018"/><path d="M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z" fill="#e8c37e"/></svg>
+      <div><b>PosadasVive</b><h1>Reporte de uso</h1></div>
+    </div>
+    <div class="controles">
+      <div class="mes" role="group" aria-label="Mes del reporte">
+        <button id="mes-ant" aria-label="Mes anterior">‹</button>
+        <span id="mes-txt" aria-live="polite"></span>
+        <button id="mes-sig" aria-label="Mes siguiente">›</button>
+      </div>
+      <button class="btn btn-claro" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6z"/></svg>
+        Imprimir o guardar PDF
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="envoltura">
+  <div class="aviso" id="aviso-demo" hidden>
+    Datos de ejemplo. Así se ve el reporte cuando la app esté publicada y registrando uso real; estos números no son reales.
+  </div>
+  <div class="aviso" id="aviso-curso" hidden></div>
+
+  <section class="acceso" id="acceso" hidden>
+    <h2>Acceso al reporte</h2>
+    <p>Ingresá la clave del reporte de PosadasVive.</p>
+    <form id="form-clave">
+      <label for="clave" style="position:absolute;left:-9999px">Clave</label>
+      <input type="password" id="clave" autocomplete="current-password" placeholder="Clave" required>
+      <div class="error" id="clave-error" role="alert"></div>
+      <div class="fila">
+        <button class="btn btn-claro" type="submit">Ver reporte</button>
+        <button class="btn btn-borde" type="button" id="ver-demo">Ver con datos de ejemplo</button>
+      </div>
+    </form>
+  </section>
+
+  <main id="reporte" hidden>
+    <div class="resumen">
+      <div class="tarjeta hero">
+        <div class="et">Visitas en el mes</div>
+        <div class="num" id="hero-num">—</div>
+        <div class="comp" id="hero-comp"></div>
+      </div>
+      <div class="tiles" id="tiles"></div>
+    </div>
+
+    <section class="tarjeta chart ancho">
+      <h2>Visitas por día</h2>
+      <p class="bajada">Cada visita es una persona que abrió la app (se cuenta una vez por sesión).</p>
+      <div class="lienzo" id="g-dias"></div>
+      <details class="tabla"><summary>Ver tabla</summary><div id="t-dias"></div></details>
+    </section>
+
+    <div class="grilla">
+      <section class="tarjeta chart">
+        <h2>Lo más visto</h2>
+        <p class="bajada">Veces que se abrió la ficha de cada lugar o actividad.</p>
+        <div class="lienzo" id="g-lugares"></div>
+        <details class="tabla"><summary>Ver tabla</summary><div id="t-lugares"></div></details>
+      </section>
+      <section class="tarjeta chart">
+        <h2>Inscripciones por actividad</h2>
+        <p class="bajada">Personas inscriptas desde la app en paseos con cupo.</p>
+        <div class="lienzo" id="g-actividades"></div>
+        <details class="tabla"><summary>Ver tabla</summary><div id="t-actividades"></div></details>
+      </section>
+      <section class="tarjeta chart">
+        <h2>¿A qué hora la usan?</h2>
+        <p class="bajada">Visitas según la hora de Posadas.</p>
+        <div class="lienzo" id="g-horas"></div>
+        <details class="tabla"><summary>Ver tabla</summary><div id="t-horas"></div></details>
+      </section>
+      <section class="tarjeta chart">
+        <h2>¿Por dónde llegan?</h2>
+        <p class="bajada">Carteles con código QR y enlaces con origen marcado.</p>
+        <div class="lienzo" id="g-origenes"></div>
+        <details class="tabla"><summary>Ver tabla</summary><div id="t-origenes"></div></details>
+      </section>
+    </div>
+
+    <p class="pie">
+      <b>Cómo se mide.</b> La app registra eventos anónimos: no usa cookies ni guarda nombres, emails, IP ni ubicación.
+      Las inscripciones se cuentan cuando la base confirma el lugar; si después alguien cancela, sigue contando acá.
+      Para medir carteles, el código QR de cada uno lleva su propio origen (por ejemplo <code>?src=qr-costanera</code>).
+      Los días y horarios son de Posadas.
+    </p>
+  </main>
+</div>
+
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+/* ===================================================================
+   CONFIGURACION — los mismos datos de Supabase que usa index.html
+   =================================================================== */
+const CONFIG = {
+  supabase: {
+    url:     'https://vqkjldyqgitzrhksiofd.supabase.co',
+    anonKey: 'sb_publishable_ZEaBonm4MGXbL1O4gjckUQ_A1MBjWX0'
+  },
+  tz: 'America/Argentina/Buenos_Aires',
+  // Primer mes con datos: no se puede ir más atrás
+  desde: '2026-10'
+};
+
+// Nombres de respaldo, por si no se puede leer la tabla de lugares
+const NOMBRES = {
+  catamaran:'Atardecer en Catamarán', costanera:'Mates en la Costanera', holy:'Noche en Holy Cervecería',
+  casco:'Paseo: Casco Histórico', jardin:'Paseo: Jardín Botánico', murales:'Murales en Bici + Luna Llena',
+  cementerio:'Cementerio Nocturno', bajada:'Paseo: Bajada Vieja', parque:'Paseo: Parque Paraguayo',
+  catedral:'Catedral San José', brete:'Playa El Brete', mirador:'Vista al Puente San Roque',
+  feria:'Feria Franca y La Placita', conocimiento:'Noche en el Parque del Conocimiento'
+};
+
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const DIAS = ['dom','lun','mar','mié','jue','vie','sáb'];
+const num = n => Number(n || 0).toLocaleString('es-AR');
+const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
+const almacen = {
+  leer(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } },
+  escribir(k, v){ try { sessionStorage.setItem(k, v); } catch(e){} }
+};
+
+/* ---------- fecha de Posadas y mes elegido ---------- */
+function hoyPosadas(){
+  const p = {};
+  new Intl.DateTimeFormat('en-CA', { timeZone: CONFIG.tz, year:'numeric', month:'2-digit', day:'2-digit' })
+    .formatToParts(new Date()).forEach(x => p[x.type] = x.value);
+  return p.year + '-' + p.month + '-' + p.day;
+}
+const HOY = hoyPosadas();
+const MES_ACTUAL = HOY.slice(0, 7);
+
+const qs = new URLSearchParams(location.search);
+let MES = /^\d{4}-\d{2}$/.test(qs.get('mes') || '') ? qs.get('mes') : MES_ACTUAL;
+if(MES > MES_ACTUAL) MES = MES_ACTUAL;
+let DEMO = qs.get('demo') === '1';
+
+// La clave puede venir en el enlace (?clave=...). Se guarda para la
+// sesión y se saca de la barra de direcciones.
+if(qs.get('clave')){ almacen.escribir('pv-reporte-clave', qs.get('clave')); qs.delete('clave'); }
+function actualizarURL(){
+  qs.set('mes', MES);
+  if(DEMO) qs.set('demo', '1'); else qs.delete('demo');
+  history.replaceState({}, '', location.pathname + '?' + qs.toString());
+}
+
+function sumarMes(m, n){
+  const [y, mm] = m.split('-').map(Number);
+  const d = new Date(Date.UTC(y, mm - 1 + n, 1));
+  return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0');
+}
+function rangoMes(m){
+  const [y, mm] = m.split('-').map(Number);
+  const fin = new Date(Date.UTC(y, mm, 0)).getUTCDate();
+  return { desde: m + '-01', hasta: m + '-' + String(fin).padStart(2, '0') };
+}
+const nombreMes = m => { const [y, mm] = m.split('-').map(Number); return MESES[mm - 1].replace(/^./, c => c.toUpperCase()) + ' ' + y; };
+const diaDe = iso => new Date(iso + 'T12:00:00Z');
+
+/* ---------- datos ---------- */
+async function rpc(fn, body){
+  const r = await fetch(CONFIG.supabase.url + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'apikey': CONFIG.supabase.anonKey, 'Authorization':'Bearer ' + CONFIG.supabase.anonKey },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok){ const e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
+  return r.json();
+}
+
+let nombresCargados = false;
+async function cargarNombres(){
+  if(nombresCargados || DEMO) return;
+  try {
+    const r = await fetch(CONFIG.supabase.url + '/rest/v1/lugares?select=id,nombre', {
+      headers: { 'apikey': CONFIG.supabase.anonKey, 'Authorization':'Bearer ' + CONFIG.supabase.anonKey } });
+    if(r.ok) (await r.json()).forEach(l => { if(l && l.id) NOMBRES[l.id] = l.nombre; });
+    nombresCargados = true;
+  } catch(e){}
+}
+const nombreLugar = id => NOMBRES[id] || id;
+function nombreOrigen(o){
+  if(!o) return 'Directo o enlace compartido';
+  if(o.startsWith('qr-')) return 'Cartel QR · ' + o.slice(3).replace(/[-_]/g, ' ').replace(/^./, c => c.toUpperCase());
+  return o.replace(/[-_]/g, ' ').replace(/^./, c => c.toUpperCase());
+}
+
+/* ---------- datos de ejemplo ----------
+   Siempre los mismos para un mismo mes (generador con semilla), con la
+   forma exacta que devuelve estadisticas_resumen. */
+function azar(semilla){
+  let a = semilla >>> 0;
+  return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+const TEMPORADA = [2.2, 1.7, 1.0, 0.9, 0.8, 0.7, 1.5, 0.8, 0.9, 1.0, 1.2, 1.6];  // ene..dic
+
+function totalDemo(m){
+  const r = azar(Number(m.replace('-', '')) * 7);
+  const { desde, hasta } = rangoMes(m);
+  const mesIdx = Number(m.slice(5)) - 1;
+  let total = 0; const dias = [];
+  for(let d = diaDe(desde); d <= diaDe(hasta); d = new Date(d.getTime() + 86400000)){
+    const iso = d.toISOString().slice(0, 10);
+    const finde = [0, 6].includes(d.getUTCDay());
+    const v = Math.round((38 + r() * 26) * TEMPORADA[mesIdx] * (finde ? 1.75 : 1));
+    dias.push({ dia: iso, visitas: v }); total += v;
+  }
+  return { dias, total, r };
+}
+
+function generarDemo(m){
+  const { dias, total, r } = totalDemo(m);
+  const ant = totalDemo(sumarMes(m, -1));
+  const reparto = (n, pesos) => { const s = pesos.reduce((a, b) => a + b, 0); return pesos.map(p => Math.round(n * p / s)); };
+
+  const lugaresIds = ['catamaran','costanera','casco','brete','catedral','bajada','holy','jardin','mirador','feria','parque','conocimiento'];
+  const pesosL = [22, 18, 15, 13, 10, 9, 8, 7, 6, 5, 4, 3].map(p => p * (0.85 + r() * 0.3));
+  const vistas = Math.round(total * 2.6);
+  const vL = reparto(vistas, pesosL);
+  const lugares = lugaresIds.map((id, i) => ({ lugar: id, vistas: vL[i], como_llegar: Math.round(vL[i] * (0.18 + r() * 0.14)) }))
+    .sort((a, b) => b.vistas - a.vistas);
+
+  const actIds = ['casco','jardin','bajada','parque'];
+  const actividades = actIds.map(id => {
+    const ins = Math.round(total * (0.012 + r() * 0.02));
+    return { lugar: id, inscripciones: ins, personas: Math.round(ins * (1.9 + r() * 0.8)), lista_espera: Math.round(ins * r() * 0.25) };
+  }).sort((a, b) => b.personas - a.personas);
+
+  const pesosH = [1,0.5,0.3,0.2,0.2,0.4,1,2,3.5,5,6.5,7,6,5,4.5,5,6,7.5,8.5,8,6.5,4.5,3,1.8];
+  const por_hora = reparto(total, pesosH).map((v, h) => ({ hora: h, visitas: v }));
+
+  const oIds = [null, 'qr-costanera', 'instagram', 'qr-terminal', 'qr-catedral', 'qr-aeropuerto', 'qr-hoteles'];
+  const oV = reparto(total, [52, 14, 9, 8, 7, 5, 5].map(p => p * (0.85 + r() * 0.3)));
+  const origenes = oIds.map((o, i) => ({ origen: o, visitas: oV[i] })).sort((a, b) => b.visitas - a.visitas);
+
+  const personas = actividades.reduce((a, x) => a + x.personas, 0);
+  return {
+    ok: true, desde: rangoMes(m).desde, hasta: rangoMes(m).hasta,
+    totales: {
+      visitas: total, visitas_pt: Math.round(total * (0.1 + r() * 0.08)), visitas_app: Math.round(total * 0.09),
+      vistas, inscripciones: actividades.reduce((a, x) => a + x.inscripciones, 0), personas,
+      lista_espera: actividades.reduce((a, x) => a + x.lista_espera, 0), cancelaciones: Math.round(personas * 0.04),
+      whatsapp: Math.round(total * 0.07), como_llegar: lugares.reduce((a, x) => a + x.como_llegar, 0),
+      compartidos: Math.round(total * 0.05), guardados: Math.round(total * 0.11),
+      calendario: Math.round(personas * 0.3), instaladas: Math.round(total * 0.03)
+    },
+    anterior: { visitas: ant.total, personas: Math.round(personas * ant.total / total * (0.9 + r() * 0.2)) },
+    por_dia: dias, por_hora, lugares, actividades, origenes
+  };
+}
+
+/* ---------- tooltip compartido ---------- */
+const tip = document.getElementById('tip');
+function mostrarTip(ev, titulo, valor){
+  tip.textContent = '';
+  const b = document.createElement('b'); b.textContent = valor;
+  tip.appendChild(b); tip.appendChild(document.createTextNode(titulo));
+  tip.classList.add('on');
+  const r = ev.target.getBoundingClientRect();
+  const x = ev.clientX || (r.left + r.width / 2), y = ev.clientY || r.top;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, x - w / 2)) + 'px';
+  tip.style.top = Math.max(8, y - h - 12) + 'px';
+}
+const ocultarTip = () => tip.classList.remove('on');
+
+/* ---------- SVG ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, padre){
+  const e = document.createElementNS(NS, tag);
+  for(const k in attrs) e.setAttribute(k, attrs[k]);
+  if(padre) padre.appendChild(e);
+  return e;
+}
+function texto(padre, x, y, s, attrs){
+  const t = el('text', Object.assign({ x, y }, attrs || {}), padre);
+  t.textContent = s;
+  return t;
+}
+function topeLindo(max){
+  if(max <= 4) return 4;   // con pocos datos, marcas enteras (0, 1, 2, 3, 4)
+  const p = Math.pow(10, Math.floor(Math.log10(max)));
+  for(const m of [1, 2, 2.5, 5, 10]) if(m * p >= max) return m * p;
+  return 10 * p;
+}
+const compacto = n => n >= 1000 ? (n / 1000).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' mil' : String(n);
+
+// Barra con extremo de datos redondeado (4px) y base recta
+function rutaColumna(x, y, w, h){
+  const r = Math.min(4, w / 2, h);
+  return `M${x},${y + h} V${y + r} Q${x},${y} ${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h} Z`;
+}
+function rutaBarra(x, y, w, h){
+  const r = Math.min(4, h / 2, w);
+  return `M${x},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} H${x} Z`;
+}
+
+// Columnas verticales (días, horas)
+function columnas(cont, datos, o){
+  cont.textContent = '';
+  if(!datos.length || datos.every(d => !d.valor)){ const v = document.createElement('div'); v.className = 'vacio'; v.textContent = 'Todavía no hay datos para este período.'; cont.appendChild(v); return; }
+  const W = cont.clientWidth || 600, H = o.alto || 220, izq = 34, der = 6, arr = 18, abj = 24;
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': o.aria }, cont);
+  const max = topeLindo(Math.max(...datos.map(d => d.valor)));
+  const ancho = (W - izq - der) / datos.length;
+  const barra = Math.min(24, Math.max(3, ancho - 2));
+  const y = v => arr + (H - arr - abj) * (1 - v / max);
+  for(let i = 0; i <= 4; i++){
+    const v = max * i / 4, yy = y(v);
+    if(i > 0) el('line', { x1: izq, x2: W - der, y1: yy, y2: yy, class: 'grid' }, svg);
+    texto(svg, izq - 6, yy + 4, compacto(v), { 'text-anchor': 'end' });
+  }
+  el('line', { x1: izq, x2: W - der, y1: H - abj, y2: H - abj, class: 'base' }, svg);
+  let iMax = 0; datos.forEach((d, i) => { if(d.valor > datos[iMax].valor) iMax = i; });
+  datos.forEach((d, i) => {
+    const cx = izq + ancho * i + ancho / 2;
+    const g = el('g', {}, svg);
+    const hit = el('rect', { x: izq + ancho * i, y: arr, width: ancho, height: H - arr - abj, class: 'hit', tabindex: '0', role: 'img', 'aria-label': d.titulo + ': ' + d.valorTxt }, g);
+    if(d.valor > 0) el('path', { d: rutaColumna(cx - barra / 2, y(d.valor), barra, H - abj - y(d.valor)), class: 'marca-dato' }, g);
+    const mostrar = ev => { g.classList.add('on'); mostrarTip(ev, d.titulo, d.valorTxt); };
+    hit.addEventListener('pointermove', mostrar); hit.addEventListener('focus', mostrar);
+    hit.addEventListener('pointerleave', () => { g.classList.remove('on'); ocultarTip(); });
+    hit.addEventListener('blur', () => { g.classList.remove('on'); ocultarTip(); });
+    if(o.etiquetaX(d, i)) texto(svg, cx, H - 7, o.etiquetaX(d, i), { 'text-anchor': 'middle' });
+  });
+  // Etiqueta directa solo en el máximo
+  const d = datos[iMax], cx = izq + ancho * iMax + ancho / 2;
+  const t = texto(svg, cx, y(d.valor) - 6, d.valorCorto || d.valorTxt, { class: 'valor', 'text-anchor': cx > W - 60 ? 'end' : cx < izq + 40 ? 'start' : 'middle' });
+}
+
+// Barras horizontales (rankings)
+function barras(cont, datos, o){
+  cont.textContent = '';
+  if(!datos.length){ const v = document.createElement('div'); v.className = 'vacio'; v.textContent = o.vacio || 'Todavía no hay datos para este período.'; cont.appendChild(v); return; }
+  const W = cont.clientWidth || 500, fila = 30, barra = 14, H = datos.length * fila + 4;
+  const anchoEt = Math.min(190, Math.round(W * 0.42)), der = 46;
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': o.aria }, cont);
+  const max = Math.max(...datos.map(d => d.valor)) || 1;
+  const x0 = anchoEt + 8, largo = W - x0 - der;
+  el('line', { x1: x0, x2: x0, y1: 0, y2: H, class: 'base' }, svg);
+  datos.forEach((d, i) => {
+    const yc = i * fila + fila / 2;
+    const g = el('g', {}, svg);
+    // etiqueta recortada a mano, nunca encima de la barra
+    let et = d.etiqueta; const maxCar = Math.floor(anchoEt / 6.6);
+    if(et.length > maxCar) et = et.slice(0, maxCar - 1) + '…';
+    const te = texto(svg, anchoEt, yc + 4, et, { class: 'et-barra', 'text-anchor': 'end' });
+    if(et !== d.etiqueta){ const tt = el('title', {}, te); tt.textContent = d.etiqueta; }
+    const w = Math.max(d.valor > 0 ? 2 : 0, largo * d.valor / max);
+    const hit = el('rect', { x: 0, y: i * fila, width: W, height: fila, class: 'hit', tabindex: '0', role: 'img', 'aria-label': d.etiqueta + ': ' + d.valorTxt }, g);
+    if(w > 0) el('path', { d: rutaBarra(x0, yc - barra / 2, w, barra), class: 'marca-dato' }, g);
+    texto(svg, x0 + w + 6, yc + 4, num(d.valor), { class: 'valor' });
+    const mostrar = ev => { g.classList.add('on'); mostrarTip(ev, d.etiqueta, d.valorTxt); };
+    hit.addEventListener('pointermove', mostrar); hit.addEventListener('focus', mostrar);
+    hit.addEventListener('pointerleave', () => { g.classList.remove('on'); ocultarTip(); });
+    hit.addEventListener('blur', () => { g.classList.remove('on'); ocultarTip(); });
+  });
+}
+
+function tabla(cont, cols, filas){
+  cont.textContent = '';
+  const t = document.createElement('table');
+  const tr = t.createTHead().insertRow();
+  cols.forEach(c => { const th = document.createElement('th'); th.textContent = c.t; if(c.n) th.className = 'n'; tr.appendChild(th); });
+  const tb = t.createTBody();
+  filas.forEach(f => { const r = tb.insertRow(); f.forEach((v, i) => { const td = r.insertCell(); td.textContent = v; if(cols[i].n) td.className = 'n'; }); });
+  cont.appendChild(t);
+}
+
+/* ---------- pintar ---------- */
+let DATOS = null;
+
+function pintar(){
+  const d = DATOS;
+  if(!d) return;
+  const T = d.totales, A = d.anterior || {};
+  const enCurso = MES === MES_ACTUAL;
+  const dias = enCurso ? d.por_dia.filter(x => x.dia <= HOY) : d.por_dia;
+
+  const curso = document.getElementById('aviso-curso');
+  curso.hidden = !enCurso;
+  if(enCurso) curso.textContent = 'Mes en curso: datos hasta hoy, ' + Number(HOY.slice(8)) + ' de ' + MESES[Number(HOY.slice(5, 7)) - 1] + '. La comparación con el mes anterior se completa a fin de mes.';
+
+  document.getElementById('hero-num').textContent = num(T.visitas);
+  const comp = document.getElementById('hero-comp');
+  comp.textContent = '';
+  if(A.visitas && !enCurso){
+    const dif = Math.round((T.visitas - A.visitas) / A.visitas * 100);
+    const s = document.createElement('span');
+    s.className = 'delta ' + (dif >= 0 ? 'sube' : 'baja');
+    s.textContent = (dif >= 0 ? '▲ +' : '▼ ') + dif + '%';
+    comp.appendChild(s);
+    comp.appendChild(document.createTextNode(' frente a ' + MESES[Number(sumarMes(MES, -1).slice(5)) - 1] + ' (' + num(A.visitas) + ')'));
+  } else if(T.visitas){
+    comp.textContent = 'Promedio: ' + num(Math.round(T.visitas / Math.max(1, dias.length))) + ' por día';
+  }
+
+  const tiles = [
+    ['Personas inscriptas', num(T.personas), num(T.inscripciones) + ' inscripciones'],
+    ['Fichas de lugares vistas', num(T.vistas), T.visitas ? (T.vistas / T.visitas).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' por visita' : ''],
+    ['Pedidos de "Cómo llegar"', num(T.como_llegar), ''],
+    ['Consultas por WhatsApp', num(T.whatsapp), ''],
+    ['Visitas en portugués', pct(T.visitas_pt, T.visitas), num(T.visitas_pt) + ' visitas'],
+    ['En lista de espera', num(T.lista_espera), 'cuando un paseo se llenó']
+  ];
+  const cont = document.getElementById('tiles');
+  cont.textContent = '';
+  tiles.forEach(([et, v, sub]) => {
+    const t = document.createElement('div'); t.className = 'tarjeta tile';
+    [['et', et], ['num', v], ['sub', sub]].forEach(([c, s]) => { const e = document.createElement('div'); e.className = c; e.textContent = s; t.appendChild(e); });
+    cont.appendChild(t);
+  });
+
+  // Visitas por día
+  const datosDias = dias.map(x => { const f = diaDe(x.dia); return {
+    valor: x.visitas, valorTxt: num(x.visitas) + ' visitas', valorCorto: num(x.visitas),
+    titulo: DIAS[f.getUTCDay()] + ' ' + f.getUTCDate() + ' de ' + MESES[f.getUTCMonth()], dia: f.getUTCDate() }; });
+  columnas(document.getElementById('g-dias'), datosDias, {
+    aria: 'Visitas por día del mes', alto: 230,
+    etiquetaX: (d, i) => (d.dia === 1 || d.dia % 5 === 0) ? String(d.dia) : ''
+  });
+  tabla(document.getElementById('t-dias'), [{ t: 'Día' }, { t: 'Visitas', n: true }], datosDias.map(d => [d.titulo, num(d.valor)]));
+
+  // Lo más visto
+  barras(document.getElementById('g-lugares'), d.lugares.slice(0, 10).map(x => ({
+    etiqueta: nombreLugar(x.lugar), valor: x.vistas, valorTxt: num(x.vistas) + ' vistas · ' + num(x.como_llegar) + ' pidieron cómo llegar' })),
+    { aria: 'Lugares más vistos' });
+  tabla(document.getElementById('t-lugares'), [{ t: 'Lugar' }, { t: 'Vistas', n: true }, { t: 'Cómo llegar', n: true }],
+    d.lugares.map(x => [nombreLugar(x.lugar), num(x.vistas), num(x.como_llegar)]));
+
+  // Inscripciones
+  barras(document.getElementById('g-actividades'), d.actividades.filter(x => x.personas > 0).map(x => ({
+    etiqueta: nombreLugar(x.lugar), valor: x.personas,
+    valorTxt: num(x.personas) + ' personas en ' + num(x.inscripciones) + ' inscripciones' + (x.lista_espera ? ' · ' + num(x.lista_espera) + ' en lista de espera' : '') })),
+    { aria: 'Personas inscriptas por actividad', vacio: 'Todavía no hubo inscripciones en este período.' });
+  tabla(document.getElementById('t-actividades'), [{ t: 'Actividad' }, { t: 'Personas', n: true }, { t: 'Inscripciones', n: true }, { t: 'Lista de espera', n: true }],
+    d.actividades.map(x => [nombreLugar(x.lugar), num(x.personas), num(x.inscripciones), num(x.lista_espera)]));
+
+  // Horas
+  columnas(document.getElementById('g-horas'), d.por_hora.map(x => ({
+    valor: x.visitas, valorTxt: num(x.visitas) + ' visitas', valorCorto: num(x.visitas),
+    titulo: 'de ' + x.hora + ' a ' + (x.hora + 1) + ' hs', hora: x.hora })),
+    { aria: 'Visitas por hora del día', alto: 190, etiquetaX: d => d.hora % 6 === 0 ? d.hora + ' hs' : '' });
+  tabla(document.getElementById('t-horas'), [{ t: 'Hora' }, { t: 'Visitas', n: true }], d.por_hora.map(x => [x.hora + ' a ' + (x.hora + 1) + ' hs', num(x.visitas)]));
+
+  // Orígenes
+  barras(document.getElementById('g-origenes'), d.origenes.map(x => ({
+    etiqueta: nombreOrigen(x.origen), valor: x.visitas, valorTxt: num(x.visitas) + ' visitas (' + pct(x.visitas, T.visitas) + ')' })),
+    { aria: 'Visitas según cómo llegaron a la app' });
+  tabla(document.getElementById('t-origenes'), [{ t: 'Origen' }, { t: 'Visitas', n: true }, { t: '%', n: true }],
+    d.origenes.map(x => [nombreOrigen(x.origen), num(x.visitas), pct(x.visitas, T.visitas)]));
+}
+
+/* ---------- carga ---------- */
+const $ = id => document.getElementById(id);
+function mostrarAcceso(msg){
+  $('reporte').hidden = true; $('acceso').hidden = false;
+  $('clave-error').textContent = msg || '';
+  $('clave').focus();
+}
+
+async function cargar(){
+  $('mes-txt').textContent = nombreMes(MES);
+  $('mes-sig').disabled = MES >= MES_ACTUAL;
+  $('mes-ant').disabled = !DEMO && MES <= CONFIG.desde;
+  $('aviso-demo').hidden = !DEMO;
+  document.title = 'Reporte PosadasVive · ' + nombreMes(MES) + (DEMO ? ' (ejemplo)' : '');
+  actualizarURL();
+
+  if(DEMO){
+    DATOS = generarDemo(MES);
+    $('acceso').hidden = true; $('reporte').hidden = false;
+    pintar();
+    return;
+  }
+
+  const clave = almacen.leer('pv-reporte-clave');
+  if(!clave) return mostrarAcceso();
+
+  $('reporte').classList.add('cargando');   // mantiene lo anterior mientras llega lo nuevo
+  try {
+    await cargarNombres();
+    const { desde, hasta } = rangoMes(MES);
+    const r = await rpc('estadisticas_resumen', { p_clave: clave, p_desde: desde, p_hasta: hasta });
+    if(!r || !r.ok){
+      if(r && r.motivo === 'clave'){ almacen.escribir('pv-reporte-clave', ''); return mostrarAcceso('La clave no es correcta.'); }
+      throw new Error(r && r.motivo || 'sin datos');
+    }
+    DATOS = r;
+    $('acceso').hidden = true; $('reporte').hidden = false;
+    pintar();
+  } catch(e){
+    if(e.status === 404) return mostrarAcceso('Las estadísticas todavía no están instaladas en la base. Mientras tanto podés ver el reporte con datos de ejemplo.');
+    mostrarAcceso('No pudimos conectarnos. Revisá la conexión e intentá de nuevo.');
+  } finally {
+    $('reporte').classList.remove('cargando');
+  }
+}
+
+$('form-clave').addEventListener('submit', e => {
+  e.preventDefault();
+  almacen.escribir('pv-reporte-clave', $('clave').value);
+  $('clave').value = '';
+  cargar();
+});
+$('ver-demo').addEventListener('click', () => { DEMO = true; cargar(); });
+$('mes-ant').addEventListener('click', () => { MES = sumarMes(MES, -1); cargar(); });
+$('mes-sig').addEventListener('click', () => { if(MES < MES_ACTUAL){ MES = sumarMes(MES, 1); cargar(); } });
+
+// Los gráficos se redibujan al cambiar el ancho (girar el teléfono, ventana)
+let anchoPrevio = 0, timerAncho = null;
+new ResizeObserver(entries => {
+  const w = Math.round(entries[0].contentRect.width);
+  if(w === anchoPrevio) return;
+  anchoPrevio = w;
+  clearTimeout(timerAncho);
+  timerAncho = setTimeout(pintar, 120);
+}).observe(document.querySelector('.envoltura'));
+window.addEventListener('beforeprint', pintar);
+
+cargar();
+</script>
+</body>
+</html>
