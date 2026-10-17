@@ -1,9 +1,9 @@
-# PosadasVive · temporada de verano
+# 48 HS (antes PosadasVive) · temporada de verano
 
 ## Cómo queda el repositorio
 
 ```
-posadasvive/
+48hs/
 ├── index.html               ← la app                      (se publica)
 ├── sw.js                    ← modo sin conexión            (se publica)
 ├── catalogo.json            ← lugares de la Muni           (se publica)
@@ -19,11 +19,11 @@ posadasvive/
 │   ├── cron.sql
 │   └── functions/avisos/index.ts
 └── datos/
-    └── PosadasVive - Carga de datos.xlsx
+    └── 48 HS - Carga de datos.xlsx
 ```
 
 Con la planilla en `datos/`, el importador se corre así:
-`python herramientas/importar_catalogo.py "datos/PosadasVive - Carga de datos.xlsx" -o catalogo.json`
+`python herramientas/importar_catalogo.py "datos/48 HS - Carga de datos.xlsx" -o catalogo.json`
 
 `.vercelignore` evita que se publiquen `herramientas/`, `supabase/`, `datos/` y la planilla. Es importante por `cron.sql`: cuando le pegues el secreto, ese archivo no puede quedar visible en la web.
 
@@ -32,7 +32,7 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-10-17-8`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-10-17-9`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `catalogo.json` | Los lugares de la planilla de la Muni (lo genera el importador) |
 | `manifest.webmanifest` | Sin cambios |
@@ -54,6 +54,10 @@ Lo que depende de la base se activa solo cuando aplicamos el SQL. Hasta entonces
 - **Estadísticas:** la app deja de intentar enviarlas, sin errores.
 - **Reporte con datos reales:** avisa que las estadísticas todavía no están instaladas.
 
+## Nombre
+
+La web se llama **48 HS** (antes PosadasVive). Por dentro quedan algunos nombres técnicos con el prefijo `pv-` (lo que guarda cada teléfono y el caché del modo sin conexión): se dejaron así a propósito para que nadie pierda sus planes guardados ni sus inscripciones al actualizar.
+
 ## Al entrar a la web
 
 - **"¿Qué estás buscando hoy?"**: después de la pantalla de inicio, cada vez. Elegir una categoría filtra el mapa; las que no tienen lugares en el mapa (excursiones) abren la lista en la Agenda. Los enlaces directos a un lugar no la muestran.
@@ -63,7 +67,7 @@ Lo que depende de la base se activa solo cuando aplicamos el SQL. Hasta entonces
 
 ## Cargar los datos de la Muni
 
-1. La Muni completa `PosadasVive - Carga de datos.xlsx`:
+1. La Muni completa `48 HS - Carga de datos.xlsx`:
    - una fila por lugar, con X en todas sus categorías;
    - las fechas de paseos y eventos, en la hoja Agenda;
    - **Video (link):** opcional, sale al tocar el lugar en el mapa. Sirve YouTube (también Shorts), reel de Instagram, TikTok, Vimeo, Google Drive público o un .mp4;
@@ -71,7 +75,7 @@ Lo que depende de la base se activa solo cuando aplicamos el SQL. Hasta entonces
 2. Cuando la devuelven, corrés:
    ```
    pip install openpyxl
-   python herramientas/importar_catalogo.py "PosadasVive - Carga de datos.xlsx" -o catalogo.json
+   python herramientas/importar_catalogo.py "48 HS - Carga de datos.xlsx" -o catalogo.json
    ```
    - Si mandan CSV en lugar del .xlsx: `--lugares Lugares.csv --agenda Agenda.csv`.
    - Avisos: el importador lista lo que hay que corregir (coordenadas fuera de Misiones, teléfonos raros, IDs de la Agenda que no existen, enlaces de video que no reconoce).
@@ -116,7 +120,7 @@ La app junta el catálogo con la lista que trae adentro:
      |---|---|
      | `AVISOS_SECRET` | Una cadena larga al azar, la misma que va en `cron.sql` |
      | `RESEND_API_KEY` | La clave de Resend |
-     | `REMITENTE` | `PosadasVive <avisos@tu-dominio>` |
+     | `REMITENTE` | `48 HS <avisos@tu-dominio>` |
      | `APP_URL` | `https://TU-DOMINIO/` |
      | `REPORTE_DESTINATARIOS` | Emails de Turismo, separados por coma |
      | `REPORTE_CLAVE` | La misma clave del paso 2 |
