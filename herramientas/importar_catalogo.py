@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-PosadasVive · importador de la planilla de la Municipalidad
+48 HS · importador de la planilla de la Municipalidad
 
-Lee la planilla "PosadasVive - Carga de datos" (o sus hojas exportadas a
+Lee la planilla "48 HS - Carga de datos" (o sus hojas exportadas a
 CSV), revisa los datos y genera catalogo.json, que la app carga sola.
 
 Uso:
@@ -527,7 +527,7 @@ def armar(lugares_raw, agenda_raw, hoy: dt.date, inf: Informe):
 
 
 def main():
-    ap = argparse.ArgumentParser(description='Importa la planilla de PosadasVive y genera catalogo.json')
+    ap = argparse.ArgumentParser(description='Importa la planilla de 48 HS y genera catalogo.json')
     ap.add_argument('planilla', nargs='?', help='planilla .xlsx')
     ap.add_argument('--lugares', help='hoja Lugares exportada a CSV')
     ap.add_argument('--agenda', help='hoja Agenda exportada a CSV')
@@ -546,7 +546,7 @@ def main():
     inf = Informe()
     lugares, pasadas = armar(lug, age, hoy, inf)
 
-    print(f'\nPosadasVive · importación ({hoy:%d/%m/%Y})')
+    print(f'\n48 HS · importación ({hoy:%d/%m/%Y})')
     print('-' * 52)
     if inf.errores:
         print('\nERRORES (no se generó el catálogo):')
