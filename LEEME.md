@@ -32,10 +32,11 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-10-17-5`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-10-17-7`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `catalogo.json` | Los lugares de la planilla de la Muni (lo genera el importador) |
 | `manifest.webmanifest` | Sin cambios |
+| `portada.jpg` | La foto que sale al compartir el link (1200×630). Cuando esté el dominio, poner su dirección completa en `og:image` y `twitter:image` de `index.html` |
 
 Las carpetas `supabase/` y `herramientas/` y la planilla **no se suben a Vercel**.
 
@@ -52,6 +53,14 @@ Lo que depende de la base se activa solo cuando aplicamos el SQL. Hasta entonces
 - **Lista de espera:** el pedido se manda por WhatsApp.
 - **Estadísticas:** la app deja de intentar enviarlas, sin errores.
 - **Reporte con datos reales:** avisa que las estadísticas todavía no están instaladas.
+
+## Novedades para el equipo de Turismo
+
+- **Activar:** cada persona del equipo abre una vez `https://TU-DOMINIO/?equipo=turismo` en su celular. Desde ahí, con cada versión nueva le aparece un aviso con lo que cambió, después de la pantalla de inicio. El público nunca lo ve.
+- **Volver a verlo:** enlace "Novedades" al pie de la Agenda (solo en esos celulares).
+- **Desactivar:** `?equipo=no`.
+- **Estadísticas:** las visitas de esos celulares no cuentan en el reporte, así las pruebas no inflan los números.
+- **En cada actualización:** en `index.html`, en `NOVEDADES`, se reemplaza la lista por los cambios nuevos (no se acumulan) y se cambia `version`.
 
 ## Cargar los datos de la Muni
 

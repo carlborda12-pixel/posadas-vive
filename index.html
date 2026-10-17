@@ -18,11 +18,20 @@
     <meta property="og:title" content="Posadas Vive · Guía viva de la ciudad">
     <meta property="og:description" content="Qué hay hoy en Posadas: paseos guiados, atardeceres en el Paraná y la agenda de la ciudad, actualizada.">
     <meta property="og:locale" content="es_AR">
-    <!-- REVISAR: subir una portada propia de 1200x630 px al host y apuntar acá -->
-    <meta property="og:image" content="https://public.youware.com/users-website-assets/prod/d9801d5e-b9a5-4695-925c-d937bff38a4f/7ce22f5cf01549289eb4a7d776a8e035">
+    <!-- Portada propia (portada.jpg, 1200x630, en la misma carpeta que index.html).
+         PENDIENTE con el dominio definitivo: cambiar "/portada.jpg" por la dirección completa
+         (https://DOMINIO/portada.jpg) en og:image y twitter:image. Algunas apps solo aceptan
+         la dirección completa; mientras tanto queda de respaldo la imagen anterior. -->
+    <meta property="og:image" content="/portada.jpg">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Posadas Vive, guía viva de la ciudad: agenda, mapa y paseos guiados">
+    <meta property="og:image" content="https://public.youware.com/users-website-assets/prod/d9801d5e-b9a5-4695-925c-d937bff38a4f/7ce22f5cf01549289eb4a7d776a8e035">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Posadas Vive · Guía viva de la ciudad">
+    <meta name="twitter:description" content="Qué hay hoy en Posadas: paseos guiados, atardeceres en el Paraná y la agenda de la ciudad, actualizada.">
+    <meta name="twitter:image" content="/portada.jpg">
 
     <!-- Favicon: pin dorado sobre fondo oscuro, sin archivos externos -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0b08'/%3E%3Cpath d='M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z' fill='%23e8c37e'/%3E%3C/svg%3E">
@@ -794,6 +803,25 @@
     }
     .dest-lista.hay-mas { -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
 
+    /* ---- Novedades de la versión (solo para el equipo de Turismo) ---- */
+    .nov-ov { position: fixed; inset: 0; z-index: 2600; background: rgba(0,0,0,0.72); display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; visibility: hidden; transition: opacity 0.25s var(--ease), visibility 0.25s; }
+    .nov-ov.on { opacity: 1; visibility: visible; }
+    .nov { width: 100%; max-width: 420px; max-height: min(82vh, 640px); display: flex; flex-direction: column; background: #17110c; border: 1px solid rgba(232,195,126,0.3); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; transform: translateY(14px) scale(0.98); transition: transform 0.3s var(--ease); }
+    .nov-ov.on .nov { transform: none; }
+    .nov-head { padding: 18px 20px 12px; border-bottom: 1px solid var(--line); }
+    .nov-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--gold); background: rgba(232,195,126,0.12); padding: 5px 10px; border-radius: 999px; }
+    .nov-head h2 { font-family: 'Fraunces', serif; font-size: 1.35rem; margin: 10px 0 2px; }
+    .nov-head p { color: var(--muted); font-size: 0.8rem; margin: 0; }
+    .nov-lista { list-style: none; margin: 0; padding: 6px 20px; overflow-y: auto; overscroll-behavior: contain; }
+    .nov-lista li { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+    .nov-lista li:last-child { border-bottom: 0; }
+    .nov-lista .ico { flex-shrink: 0; width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(232,195,126,0.12); color: var(--gold); font-size: 1.05rem; }
+    .nov-lista b { display: block; font-size: 0.86rem; margin-bottom: 2px; }
+    .nov-lista span { color: var(--muted); font-size: 0.78rem; line-height: 1.45; }
+    .nov-pie { padding: 12px 20px 18px; border-top: 1px solid var(--line); }
+    .nov-pie button { width: 100%; min-height: 46px; border-radius: 14px; background: var(--gold); color: #2a1405; font-weight: 800; font-size: 0.9rem; }
+    @media (max-height: 600px) { .nov-head { padding: 14px 16px 10px; } .nov-head h2 { font-size: 1.15rem; margin-top: 8px; } .nov-lista { padding: 2px 16px; } .nov-lista li { padding: 8px 0; } .nov-pie { padding: 10px 16px 14px; } }
+
     /* ---- Popup del lugar al tocar un punto del mapa ---- */
     .mpop { position: absolute; left: 12px; right: 12px; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 520; max-width: 440px; margin: 0 auto; max-height: calc(100% - var(--head-h, 60px) - 250px - env(safe-area-inset-bottom)); /* deja a la vista el panel de destacados */ overflow-y: auto; overscroll-behavior: contain; background: rgba(22,17,13,0.98); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); animation: mpopIn 0.32s var(--ease) both; }
     .mpop[hidden] { display: none; }
@@ -909,6 +937,19 @@
     <div class="aviso-app msg" id="aviso-msg" role="status" aria-live="polite">
         <i class="ph-fill ph-info"></i>
         <span id="aviso-msg-txt"></span>
+    </div>
+
+    <!-- ============ NOVEDADES (solo equipo de Turismo) ============ -->
+    <div class="nov-ov" id="nov-ov" onclick="cerrarNovedades()">
+      <div class="nov" role="dialog" aria-modal="true" aria-labelledby="nov-t" onclick="event.stopPropagation()">
+        <div class="nov-head">
+          <span class="nov-tag"><i class="ph-fill ph-sparkle"></i> <span id="nov-version"></span></span>
+          <h2 id="nov-t">Novedades de esta versión</h2>
+          <p>Lo que cambió desde la versión anterior.</p>
+        </div>
+        <ul class="nov-lista" id="nov-lista"></ul>
+        <div class="nov-pie"><button onclick="cerrarNovedades()" id="nov-ok">Entendido</button></div>
+      </div>
     </div>
 
     <!-- ============ CANCELAR INSCRIPCIÓN ============
@@ -2556,6 +2597,7 @@ const STATS = { cola: [], activas: false, timer: null, sesion: null, origen: nul
 function iniciarEstadisticas(){
   if(!CONFIG.estadisticas || !SB_ON()) return;
   if(navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true) return;
+  if(EQUIPO) return;                      // las pruebas del equipo de Turismo no inflan el reporte
   STATS.activas = true;
 
   try { STATS.sesion = sessionStorage.getItem('pv-sesion'); } catch(e){}
@@ -2832,6 +2874,7 @@ function enterApp(){
   sp.classList.add('hidden');
   setTimeout(()=>{ const f = sp.querySelector('.splash-photo'); if(f) f.style.animation = 'none'; }, 800);
   switchView('explore');
+  setTimeout(() => mostrarNovedades(), 600);
 }
 
 /* ===================================================================
@@ -3108,7 +3151,61 @@ function switchView(v, opts){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-10-17-5';
+const APP_VERSION = 'pv-2026-10-17-7';
+
+/* ===================================================================
+   NOVEDADES PARA EL EQUIPO DE TURISMO
+   Aviso que aparece una vez por versión, después de la pantalla de
+   inicio, solo en los teléfonos del equipo. Para activarlo, abrir una
+   vez la web con ?equipo=turismo (con ?equipo=no se desactiva).
+   En cada actualización se REEMPLAZA esta lista por lo nuevo (no se
+   acumula) y se cambia "version". Mientras "version" no cambie, el
+   aviso no vuelve a salir.
+   =================================================================== */
+const NOVEDADES = {
+  version: 'pv-2026-10-17-7',
+  fecha: '17 de octubre',
+  items: [
+    ['ph-map-pin-area', 'Mapa más claro', 'Cada lugar es un punto con el color de su categoría (los filtros usan los mismos colores). Al acercarse aparecen los pines con ícono, y ningún lugar queda tapado por otro.'],
+    ['ph-cursor-click', 'Ventana al tocar un lugar', 'Muestra foto, una explicación corta y el video si lo tiene, con los botones "Llegar" y "Ver más".'],
+    ['ph-calendar-star', 'Panel "Próximos" en el mapa', 'A la izquierda, abierto apenas se entra. Muestra las actividades marcadas como Destacado en la planilla; si no hay ninguna, las próximas.'],
+    ['ph-video', 'Videos en ventanita', 'El video se ve en una ventana chica en la esquina, con el mapa de fondo. Se puede agrandar o cerrar.'],
+    ['ph-table', 'Planilla: dos columnas nuevas', '"Video (link)": YouTube, Instagram, TikTok, Vimeo, Drive o .mp4. "Destacado": "Sí" en las actividades más importantes (conviene 3 a 6).'],
+    ['ph-device-mobile', 'Más rápida y mejor en celulares', 'Abre al instante desde la segunda visita y se acomoda a celulares chicos y al teléfono acostado. Al compartir el link sale una portada con foto y descripción.']
+  ]
+};
+
+function esEquipo(){
+  try {
+    const q = new URLSearchParams(location.search), v = q.get('equipo');
+    if(v !== null){
+      if(v === 'turismo') localStorage.setItem('pv-equipo', '1'); else localStorage.removeItem('pv-equipo');
+      q.delete('equipo'); const r = q.toString();
+      history.replaceState({}, '', location.pathname + (r ? '?' + r : ''));
+    }
+    return localStorage.getItem('pv-equipo') === '1';
+  } catch(e){ return false; }
+}
+const EQUIPO = esEquipo();
+
+function mostrarNovedades(forzar){
+  if(!EQUIPO || !NOVEDADES.items.length) return;
+  let visto = '';
+  try { visto = localStorage.getItem('pv-novedades') || ''; } catch(e){}
+  if(!forzar && visto === NOVEDADES.version) return;
+  // si ya hay otra ventana abierta (cancelar inscripción, una ficha), no se apila
+  if(!forzar && document.querySelector('.ticket-overlay.on, #sheet.on')) return;
+  document.getElementById('nov-version').textContent = 'Versión ' + NOVEDADES.version.replace(/^pv-/, '') + ' · ' + NOVEDADES.fecha;
+  document.getElementById('nov-lista').innerHTML = NOVEDADES.items.map(([ico, titulo, texto]) =>
+    `<li><span class="ico"><i class="ph-fill ${ico}"></i></span><div><b>${esc(titulo)}</b><span>${esc(texto)}</span></div></li>`).join('');
+  document.getElementById('nov-ov').classList.add('on');
+  setTimeout(() => document.getElementById('nov-ok').focus(), 50);
+}
+
+function cerrarNovedades(){
+  document.getElementById('nov-ov').classList.remove('on');
+  try { localStorage.setItem('pv-novedades', NOVEDADES.version); } catch(e){}
+}
 
 function renderPie(){
   const el = document.getElementById('feed-foot');
@@ -3117,7 +3214,8 @@ function renderPie(){
   if(CONFIG.firma) partes.push(t('feed.firma', {f: esc(CONFIG.firma)}));
   if(CONFIG.wapp) partes.push(t('feed.wapp', {n: '<a href="https://wa.me/' + esc(CONFIG.wapp)
     + '" target="_blank" rel="noopener" style="text-decoration:underline">' + esc(CONFIG.wappTexto || CONFIG.wapp) + '</a>'}));
-  partes.push(`<span style="opacity:.55;font-size:.85em">${esc(t('version', {v: APP_VERSION.replace(/^pv-/, '')}))}</span>`);
+  partes.push(`<span style="opacity:.55;font-size:.85em">${esc(t('version', {v: APP_VERSION.replace(/^pv-/, '')}))}</span>`
+    + (EQUIPO ? ` · <button onclick="mostrarNovedades(true)" style="text-decoration:underline;font-size:.85em;color:var(--gold)">Novedades</button>` : ''));
   el.innerHTML = partes.join('<br>');
 }
 
@@ -4943,7 +5041,8 @@ function showTicketSuccess(p, datos, estado){
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
     const on = id => document.getElementById(id).classList.contains('on');
-    if(on('filtros-overlay'))     cerrarFiltros();
+    if(on('nov-ov'))              cerrarNovedades();
+    else if(on('filtros-overlay')) cerrarFiltros();
     else if(on('cancel-overlay')) cerrarCancelacion();
     else if(on('ticket-overlay')) closeTicketModal();
     else if(on('sos-modal'))      closeSOS();
