@@ -254,7 +254,8 @@
 
     /* place pin marker (lugares mode) */
     .place-pin { position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; }
-    .place-pin .pin-dot { width: 38px; height: 38px; border-radius: 50% 50% 50% 8px; transform: rotate(45deg); background: linear-gradient(140deg, var(--gold), var(--sunset)); border: 2px solid rgba(15,11,8,0.55); box-shadow: 0 6px 16px rgba(0,0,0,0.5); transition: transform 0.25s var(--bounce); }
+    /* sombra corta y sin transición: con muchos pines, la sombra grande pesaba al mover el mapa */
+    .place-pin .pin-dot { width: 38px; height: 38px; border-radius: 50% 50% 50% 8px; transform: rotate(45deg); background: linear-gradient(140deg, var(--gold), var(--sunset)); border: 2px solid rgba(15,11,8,0.55); box-shadow: 0 2px 6px rgba(0,0,0,0.45); }
     .place-pin .pin-ico { position: absolute; color: #2a1405; font-size: 1.15rem; }
     .place-pin.rio .pin-dot { background: linear-gradient(140deg, #5fd3c3, var(--river)); }
     .place-pin.noche .pin-dot { background: linear-gradient(140deg, #c48bff, var(--purple)); }
@@ -680,7 +681,7 @@
     .buscar input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--ink); font: inherit; font-size: 0.92rem; padding: 13px 0; }
     .buscar input::placeholder { color: var(--muted); }
     .buscar:focus-within { border-color: var(--gold); }
-    .chips { display: flex; gap: 8px; overflow-x: auto; margin: 0 -18px; padding: 2px 18px 6px; scroll-snap-type: x proximity; }
+    .chips { display: flex; gap: 8px; overflow-x: auto; margin: 0 -18px; padding: 2px 18px 6px; scroll-snap-type: x proximity; scroll-padding-inline: 18px; }
     .chip { flex-shrink: 0; scroll-snap-align: start; display: inline-flex; align-items: center; gap: 6px; padding: 9px 13px; border-radius: 30px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); font-weight: 700; font-size: 0.8rem; color: var(--ink); white-space: nowrap; min-height: 40px; transition: background 0.2s, color 0.2s; }
     .chip i { font-size: 0.95rem; color: var(--gold); }
     .chip.on { background: linear-gradient(120deg, var(--gold), var(--sunset)); color: #2a1405; border-color: transparent; }
@@ -740,6 +741,124 @@
     .place-pin.gastro .pin-dot { background: linear-gradient(140deg, #f0a07e, var(--clay)); }
     .place-pin.ninos .pin-dot { background: linear-gradient(140deg, #f7dd8c, #e0a92a); }
     .place-pin.gastro .pin-ico, .place-pin.ninos .pin-ico { color: #2a1405; }
+
+    /* Pines con el color de su categoría (el mismo de los puntos y de los filtros) */
+    .place-pin.cat .pin-dot { background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.38), transparent 55%), var(--c); }
+    .place-pin.cat .pin-ico { color: #1a120c; }
+    .chip i { color: var(--c, var(--gold)); }
+    .map-carousel.sin-anim .mcard { animation: none; }
+
+    /* ---- Destacados: panel al costado, abierto al entrar, eventos en cascada ---- */
+    /* la barra de arriba es invisible: que no se trague los toques sobre el mapa, solo sus botones */
+    .map-topbar { pointer-events: none; }
+    .map-topbar > * { pointer-events: auto; }
+    .map-topbar .topbar-fila { align-self: flex-start; }
+    .dest { align-self: flex-start; display: flex; flex-direction: column; width: 184px; background: rgba(15,11,8,0.88); border: 1px solid rgba(232,195,126,0.3); border-radius: 16px; box-shadow: var(--shadow-sm); overflow: hidden; animation: destPanel 0.25s var(--ease) both; }
+    .dest[hidden] { display: none; }
+    @keyframes destPanel { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+    .dest-tab { display: flex; align-items: center; gap: 6px; width: 100%; min-height: 38px; padding: 0 12px; color: var(--gold); font-weight: 800; font-size: 0.74rem; text-align: left; }
+    .dest-tab .cuantos { display: none; min-width: 18px; height: 18px; border-radius: 9px; background: rgba(232,195,126,0.18); font-size: 0.64rem; align-items: center; justify-content: center; padding: 0 5px; }
+    .dest-tab .flecha { margin-left: auto; font-size: 0.8rem; transition: transform 0.25s var(--ease); }
+    .dest.plegado { width: auto; }
+    .dest.plegado .cuantos { display: inline-flex; }
+    .dest.plegado .flecha { transform: rotate(-90deg); margin-left: 2px; }
+    .dest-lista { display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid var(--line); scrollbar-width: none; }
+    .dest-lista::-webkit-scrollbar { display: none; }
+    .dest.plegado .dest-lista { display: none; }
+    .dest-item { flex-shrink: 0; display: flex; align-items: center; gap: 9px; padding: 7px 10px 7px 8px; color: var(--ink); text-align: left; border-bottom: 1px solid var(--line); animation: destIn 0.3s var(--ease) both; animation-delay: calc(var(--i, 0) * 45ms + 60ms); }
+    .dest-item:last-child { border-bottom: 0; }
+    .dest-item.on { background: rgba(232,195,126,0.13); box-shadow: inset 3px 0 0 var(--gold); }
+    @keyframes destIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+    .dest.sin-anim, .dest.sin-anim .dest-item { animation: none; }
+    html.perf-lite .dest, html.perf-lite .dest-item { animation: none; }
+    .dest-fecha { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: rgba(232,195,126,0.14); color: var(--gold); line-height: 1; }
+    .dest-fecha small { font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; }
+    .dest-fecha b { font-size: 0.88rem; margin-top: 2px; }
+    .dest-txt { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .dest-nom { font-size: 0.74rem; font-weight: 700; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .dest-hora { font-size: 0.64rem; font-weight: 700; color: var(--muted); }
+    .dest-vacio { margin: 0; padding: 10px 12px 12px; font-size: 0.72rem; line-height: 1.4; color: var(--muted); }
+    @media (min-width: 769px) { .dest { width: 236px; } .dest-nom { font-size: 0.8rem; } }
+    /* Celulares y pantallas bajas: panel compacto (una línea por evento, muestra 2 o 3 y el resto se desliza) */
+    @media (max-width: 480px), (max-height: 700px) {
+        .dest { width: 150px; border-radius: 14px; }
+        .dest-tab { min-height: 32px; padding: 0 10px; gap: 5px; font-size: 0.7rem; }
+        .dest-tab .cuantos { display: inline-flex; }
+        .dest-item { gap: 7px; padding: 5px 8px 5px 6px; }
+        .dest-fecha { width: 28px; height: 28px; border-radius: 8px; }
+        .dest-fecha small { font-size: 0.44rem; letter-spacing: 0; }
+        .dest-fecha b { font-size: 0.76rem; margin-top: 1px; }
+        .dest-nom { display: block; font-size: 0.7rem; white-space: nowrap; text-overflow: ellipsis; }
+        .dest-hora { font-size: 0.6rem; }
+        .dest-vacio { font-size: 0.66rem; padding: 8px 10px 10px; }
+    }
+    .dest-lista.hay-mas { -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
+
+    /* ---- Popup del lugar al tocar un punto del mapa ---- */
+    .mpop { position: absolute; left: 12px; right: 12px; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 520; max-width: 440px; margin: 0 auto; max-height: calc(100% - var(--head-h, 60px) - 250px - env(safe-area-inset-bottom)); /* deja a la vista el panel de destacados */ overflow-y: auto; overscroll-behavior: contain; background: rgba(22,17,13,0.98); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); animation: mpopIn 0.32s var(--ease) both; }
+    .mpop[hidden] { display: none; }
+    @keyframes mpopIn { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+    #map-view.con-popup .map-carousel { visibility: hidden; }
+    .mpop-x { position: absolute; top: 8px; right: 8px; z-index: 3; width: 36px; height: 36px; border-radius: 50%; background: rgba(15,11,8,0.82); border: 1px solid var(--line); color: var(--ink); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .mpop-media { position: relative; aspect-ratio: 16 / 9; max-height: 28vh; width: 100%; background: #0f0b08; overflow: hidden; border-radius: 19px 19px 0 0; }
+    .mpop-media > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mpop-media.reproduciendo { max-height: none; }
+    .mpop-media.vertical.reproduciendo { aspect-ratio: auto; height: clamp(200px, calc(100vh - 470px), 440px); height: clamp(200px, calc(100dvh - 470px), 440px); }
+    .mpop.viendo .mpop-txt { display: none; }   /* con el video andando, el texto largo queda en "Ver más" */
+    .mpop-media iframe, .mpop-media video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
+    .mpop-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.6rem; color: var(--c); background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c) 22%, transparent), transparent 70%); }
+    .mpop-play { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; color: #fff; font-weight: 800; font-size: 0.8rem; background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.12)); text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+    .mpop-play .circ { width: 58px; height: 58px; border-radius: 50%; background: rgba(15,11,8,0.72); border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: transform 0.2s var(--ease); }
+    .mpop-play:active .circ { transform: scale(0.92); }
+    .mpop-body { padding: 12px 15px 15px; }
+    .mpop-cat { display: flex; align-items: center; gap: 6px; font-size: 0.64rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding-right: 40px; }
+    .mpop-cat i { color: var(--c); font-size: 0.9rem; }
+    .mpop.sin-media .mpop-t { padding-right: 40px; }
+    .mpop-t { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.14rem; line-height: 1.2; margin-top: 4px; }
+    .mpop-when { display: flex; align-items: center; gap: 6px; font-size: 0.76rem; font-weight: 700; color: var(--gold); margin-top: 5px; }
+    .mpop-txt { color: var(--muted); font-size: 0.82rem; line-height: 1.45; margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .mpop-acts { display: flex; gap: 8px; margin-top: 12px; }
+    .mpop-acts button { min-height: 42px; font-size: 0.8rem; border-radius: 12px; gap: 6px; }
+    .mpop-acts button i { font-size: 0.95rem; }
+    /* ---- Video minimizado: ventanita flotante en la esquina, con el mapa a la vista ---- */
+    .mpop-barra { display: none; }
+    .mpop-min { display: none; position: absolute; top: 8px; right: 52px; z-index: 3; width: 36px; height: 36px; border-radius: 50%; background: rgba(15,11,8,0.82); border: 1px solid var(--line); color: var(--ink); align-items: center; justify-content: center; font-size: 1rem; }
+    .mpop.viendo:not(.mini) .mpop-min { display: flex; }
+    .mpop.mini { left: auto; right: 12px; margin: 0; width: var(--mini-w, 280px); max-width: calc(100% - 24px); max-height: none; overflow: hidden; border-radius: 16px; border-color: rgba(232,195,126,0.35); animation: none; }
+    .mpop.mini > .mpop-x, .mpop.mini .mpop-body { display: none; }
+    .mpop.mini .mpop-media, .mpop.mini .mpop-media.reproduciendo, .mpop.mini .mpop-media.vertical.reproduciendo { aspect-ratio: auto; width: 100%; height: var(--mini-h, 158px); max-height: none; border-radius: 0; }
+    .mpop.mini .mpop-barra { display: flex; align-items: center; gap: 6px; padding: 5px 5px 5px 12px; }
+    .mpop-barra span { flex: 1; min-width: 0; font-weight: 700; font-size: 0.76rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mpop-barra button { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--ink); background: rgba(255,255,255,0.07); font-size: 0.95rem; }
+    @media (min-width: 769px) { .mpop.mini { bottom: 96px; } }
+
+    /* Pantallas bajas: el popup pasa a ser una fila (foto a la izquierda, texto a la derecha) y entra entero */
+    @media (max-height: 700px) {
+        .mpop:not(.viendo):not(.sin-media) { display: grid; grid-template-columns: 108px minmax(0, 1fr); }
+        .mpop:not(.viendo) .mpop-media { aspect-ratio: auto; max-height: none; height: 100%; min-height: 128px; border-radius: 19px 0 0 19px; }
+        .mpop:not(.viendo) .mpop-play { font-size: 0.66rem; gap: 5px; }
+        .mpop:not(.viendo) .mpop-play .circ { width: 42px; height: 42px; font-size: 1.1rem; }
+        .mpop-body { padding: 10px 12px 12px; }
+        .mpop-t { font-size: 1rem; padding-right: 30px; }
+        .mpop-cat { padding-right: 34px; }
+        .mpop-txt { -webkit-line-clamp: 2; font-size: 0.78rem; margin-top: 5px; }
+        .mpop-acts { margin-top: 9px; }
+        .mpop-acts button { min-height: 38px; font-size: 0.74rem; }
+        .mpop-x { width: 32px; height: 32px; top: 6px; right: 6px; }
+    }
+    /* Teléfono acostado: tarjetas y popup a la derecha del panel, sin pisarlo */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .map-carousel { left: 174px; scroll-padding-left: 0; padding-left: 0; }
+        .mpop:not(.mini) { left: auto; right: 62px; width: min(400px, calc(100% - 370px)); max-width: none; margin: 0; bottom: calc(80px + env(safe-area-inset-bottom)); max-height: calc(100% - var(--head-h, 60px) - 96px); }
+        .mpop-txt { -webkit-line-clamp: 1; }
+        .mpop.viendo:not(.mini) .mpop-media.reproduciendo, .mpop.viendo:not(.mini) .mpop-media.vertical.reproduciendo { aspect-ratio: auto; height: max(130px, calc(100vh - 250px)); }
+        .mpop.mini { right: 62px; bottom: calc(80px + env(safe-area-inset-bottom)); }
+    }
+
+    /* pantallas anchas: el popup va a la derecha (los destacados están a la izquierda) y el lugar queda en el medio */
+    @media (min-width: 769px) {
+        .mpop { left: auto; right: 12px; width: 400px; margin: 0; bottom: 96px; }
+    }
 
     /* Mapa: botón de filtros junto a Lugares / Rutas */
     .topbar-fila { display: flex; gap: 8px; align-items: stretch; }
@@ -842,6 +961,7 @@
                 <div class="topbar-fila">
                     <button class="filtro-btn" id="filtro-btn" onclick="abrirFiltros()" data-i18n-aria="filtros.boton" aria-label="Filtros"><i class="ph-fill ph-sliders-horizontal"></i> <span class="filtro-txt" data-i18n="filtros.boton">Filtros</span><span class="filtro-n" id="filtro-n" hidden></span></button>
                 </div>
+                <div class="dest" id="dest" hidden></div>
             </div>
 
             <button class="layer-toggle" onclick="toggleLayer()" data-i18n-aria="mapa.satelite" aria-label="Cambiar a vista satelital"><i class="ph-fill ph-globe-hemisphere-west" id="layer-ico"></i></button>
@@ -849,6 +969,7 @@
 
 
             <div class="map-carousel" id="map-carousel"></div>
+            <div class="mpop" id="mpop" role="dialog" aria-labelledby="mpop-t" hidden></div>
 
             <div class="dir-panel" id="dir-panel">
                 <div class="dir-panel-head">
@@ -1481,6 +1602,9 @@ const TEXTOS = {
     'mapa.ubicacion':'Mostrar mi ubicación',
     'mapa.sinMapa':'No pudimos cargar el mapa.<br>Revisá tu conexión y volvé a abrir la app.',
     'mapa.llegar':'Llegar', 'mapa.historia':'Historia',
+    'pop.verVideo':'Ver video', 'pop.verMas':'Ver más', 'pop.video':'Video de {n}', 'pop.agrandar':'Agrandar el video', 'pop.minimizar':'Minimizar el video',
+    'dest.titulo':'Destacados', 'dest.proximos':'Próximos', 'dest.aria':'Mostrar u ocultar los eventos destacados',
+    'dest.vacio':'Pronto vas a ver acá los próximos eventos. Mientras, tocá los puntos del mapa para descubrir lugares.', 'version':'Versión {v}',
 
     'ruta.guiados.tab':'Guiados', 'ruta.rio.tab':'Del río', 'ruta.noche.tab':'Nocturna', 'ruta.verde.tab':'Verde',
     'ruta.guiados.n':'Ruta de Paseos Guiados', 'ruta.guiados.d':'Los recorridos a pie por el casco histórico, sus barrios fundacionales y la feria.', 'ruta.guiados.t':'A pie',
@@ -1662,6 +1786,9 @@ const TEXTOS = {
     'mapa.ubicacion':'Mostrar minha localização',
     'mapa.sinMapa':'Não foi possível carregar o mapa.<br>Verifique sua conexão e abra o app de novo.',
     'mapa.llegar':'Ir', 'mapa.historia':'História',
+    'pop.verVideo':'Ver vídeo', 'pop.verMas':'Ver mais', 'pop.video':'Vídeo de {n}', 'pop.agrandar':'Ampliar o vídeo', 'pop.minimizar':'Minimizar o vídeo',
+    'dest.titulo':'Destaques', 'dest.proximos':'Próximos', 'dest.aria':'Mostrar ou ocultar os eventos em destaque',
+    'dest.vacio':'Em breve você verá aqui os próximos eventos. Enquanto isso, toque nos pontos do mapa para descobrir lugares.', 'version':'Versão {v}',
 
     'ruta.guiados.tab':'Guiados', 'ruta.rio.tab':'Do rio', 'ruta.noche.tab':'Noturno', 'ruta.verde.tab':'Verde',
     'ruta.guiados.n':'Roteiro de Passeios Guiados', 'ruta.guiados.d':'Os passeios a pé pelo centro histórico, seus bairros de fundação e a feira.', 'ruta.guiados.t':'A pé',
@@ -1807,17 +1934,18 @@ const TEXTOS = {
    puede tener varias, y se combinan en los filtros. Los ids tienen que
    coincidir con CATEGORIAS en herramientas/importar_catalogo.py. */
 const CATEGORIAS = [
-  { id:'cultura',     ico:'ph-bank',               pin:'',       subs:['museos','salas'] },
-  { id:'naturaleza',  ico:'ph-tree',               pin:'verde',  subs:[] },
-  { id:'paseos',      ico:'ph-person-simple-walk', pin:'',       subs:[] },
-  { id:'nautico',     ico:'ph-boat',               pin:'rio',    subs:[] },
-  { id:'gastronomia', ico:'ph-fork-knife',         pin:'gastro', subs:['pescados','parrillas','vinos','internacional'] },
-  { id:'nocturna',    ico:'ph-martini',            pin:'noche',  subs:['bares','bowling'] },
-  { id:'ninos',       ico:'ph-balloon',            pin:'ninos',  subs:[] },
-  { id:'excursiones', ico:'ph-bus',                pin:'',       subs:[] }
+  // color: el de los puntos y pines del mapa y el ícono del filtro (elegidos para distinguirse sobre el mapa oscuro)
+  { id:'cultura',     ico:'ph-bank',               pin:'',       color:'#e8c37e', subs:['museos','salas'] },
+  { id:'naturaleza',  ico:'ph-tree',               pin:'verde',  color:'#5bbf6c', subs:[] },
+  { id:'paseos',      ico:'ph-person-simple-walk', pin:'',       color:'#f5943d', subs:[] },
+  { id:'nautico',     ico:'ph-boat',               pin:'rio',    color:'#4aa8f0', subs:[] },
+  { id:'gastronomia', ico:'ph-fork-knife',         pin:'gastro', color:'#e2574c', subs:['pescados','parrillas','vinos','internacional'] },
+  { id:'nocturna',    ico:'ph-martini',            pin:'noche',  color:'#b47af6', subs:['bares','bowling'] },
+  { id:'ninos',       ico:'ph-balloon',            pin:'ninos',  color:'#f06fb0', subs:[] },
+  { id:'excursiones', ico:'ph-bus',                pin:'',       color:'#9fb3c8', subs:[] }
 ];
 const catDe = id => CATEGORIAS.find(c => c.id === id);
-const catPrincipal = p => catDe(((p && p.cats) || [])[0]) || { id:'', ico:'ph-map-pin', pin:'' };
+const catPrincipal = p => catDe(((p && p.cats) || [])[0]) || { id:'', ico:'ph-map-pin', pin:'', color:'#e8c37e' };
 
 // Categorías de la lista incluida (se usa si no carga catalogo.json)
 const CATS_BASE = {
@@ -1916,7 +2044,7 @@ function cambiarIdioma(l){
   almacen.escribir('pv-idioma', l);
   stat('idioma', null, { a: l });
   aplicarIdioma();
-  paso('agenda', () => { hydrateAgenda(); renderPie(); renderHero(); renderFiltros(); renderTimeline(); });
+  paso('agenda', () => { hydrateAgenda(); renderPie(); renderHero(); renderDestacados(); renderFiltros(); renderTimeline(); if(popupId) pintarPopup(byId(popupId)); });
   paso('mapa', () => { if(map){ redibujarMapa(); actualizarBotonCapa(); } });
   paso('ficha', () => { if(current && document.getElementById('sheet').classList.contains('on')) openSheet(current.id, true); });
   paso('reserva', () => { if(ticketPlace && !document.getElementById('ticket-form').hidden) pintarTicket(); });
@@ -2234,7 +2362,25 @@ function mapearLugar(f){
    El catálogo manda: lo que no está ahí no se muestra. De la lista
    incluida solo se heredan fotos, textos, traducciones, rutas y
    horarios cuando el catálogo no los trae. */
-const HEREDABLES = ['img','story','fact','tags','routes','audio','audioUrl','wapp','coords'];
+const HEREDABLES = ['img','video','story','fact','tags','routes','audio','audioUrl','wapp','coords'];
+
+/* Videos cortos: YouTube (también Shorts), Instagram (reels), TikTok, Vimeo,
+   Google Drive o un archivo .mp4/.webm. Se reconoce el enlace y se arma el
+   reproductor con el código del video, nunca con el enlace tal cual. */
+function videoDe(u){
+  if(typeof u !== 'string') return null;
+  u = u.trim(); let m;
+  if((m = u.match(/^https:\/\/(?:www\.|m\.)?youtube\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/)))
+    return { k:'youtube', id: m[1], vertical: /\/shorts\//.test(u) };
+  if((m = u.match(/^https:\/\/youtu\.be\/([A-Za-z0-9_-]{11})/))) return { k:'youtube', id: m[1], vertical: false };
+  if((m = u.match(/^https:\/\/(?:www\.)?instagram\.com\/(?:[A-Za-z0-9._]{1,30}\/)?(?:reels?|p|tv)\/([A-Za-z0-9_-]{5,40})/)))
+    return { k:'instagram', id: m[1], vertical: true };
+  if((m = u.match(/^https:\/\/(?:www\.)?tiktok\.com\/@[A-Za-z0-9._-]{1,40}\/video\/(\d{8,25})/))) return { k:'tiktok', id: m[1], vertical: true };
+  if((m = u.match(/^https:\/\/(?:www\.|player\.)?vimeo\.com\/(?:video\/)?(\d{6,12})/))) return { k:'vimeo', id: m[1], vertical: false };
+  if((m = u.match(/^https:\/\/drive\.google\.com\/(?:file\/d\/|open\?id=)([A-Za-z0-9_-]{10,80})/))) return { k:'drive', id: m[1], vertical: false };
+  if(/^https:\/\/[^\s"'<>()\\]+\.(?:mp4|webm)(?:\?[^\s"'<>()\\]*)?$/i.test(u)) return { k:'archivo', url: u, vertical: false };
+  return null;
+}
 
 function limpiarLugar(n){
   if(!n || typeof n !== 'object' || !idValido(n.id) || typeof n.name !== 'string' || !n.name.trim()) return null;
@@ -2253,6 +2399,8 @@ function limpiarLugar(n){
     ticketType: ['free_reg','paid'].includes(n.ticketType) ? n.ticketType : '',
     ticketPrice: Number.isFinite(n.ticketPrice) && n.ticketPrice > 0 ? n.ticketPrice : null,
     cupoTotal: Number.isInteger(n.cupoTotal) && n.cupoTotal > 0 ? n.cupoTotal : null,
+    video: videoDe(s(n.video)) ? s(n.video) : '',
+    destacado: n.destacado === true ? true : null,
     pt: {}
   };
   if(n.pt && typeof n.pt === 'object'){ ['name','story','addr','fact'].forEach(k => { if(s(n.pt[k])) L.pt[k] = s(n.pt[k]); }); }
@@ -2293,24 +2441,50 @@ function fusionar(n){
 
 function despuesDeCargar(n, fuente){
   hydrateAgenda();
-  renderHero(); renderFiltros(); renderTimeline(); renderPlanes(); actualizarBadge();
+  renderHero(); renderDestacados(); renderFiltros(); renderTimeline(); renderPlanes(); actualizarBadge();
   try { redibujarMapa(); }
   catch(e){ console.warn('[PosadasVive] El catálogo cargó pero el mapa no se pudo redibujar:', e.message); }
   cargarCupos();
   console.info('[PosadasVive] Catálogo cargado (' + fuente + '):', n, 'lugares.');
 }
 
+/* Copia del último catálogo en el teléfono: desde la segunda visita la app
+   arranca al instante con los datos completos (panel de próximos, mapa,
+   agenda) y en paralelo baja el catálogo nuevo. Si no cambió, no se vuelve
+   a dibujar nada. */
+const CLAVE_CATALOGO = 'pv-catalogo';
+let catalogoTexto = '';
+
+function aplicarCatalogo(texto){
+  const d = JSON.parse(texto);
+  const vistos = new Set();
+  const lista = (d && Array.isArray(d.lugares) ? d.lugares : []).map(limpiarLugar)
+    .filter(L => L && !vistos.has(L.id) && vistos.add(L.id));
+  if(!lista.length) throw new Error('catálogo vacío');
+  PLACES.splice(0, PLACES.length, ...lista.map(fusionar));
+  catalogoTexto = texto;
+  return lista.length;
+}
+
+// Al arrancar, antes de dibujar: la copia guardada (si hay)
+function usarCatalogoGuardado(){
+  if(CONFIG.fuenteCatalogo !== 'json') return;
+  let t = '';
+  try { t = localStorage.getItem(CLAVE_CATALOGO) || ''; } catch(e){}
+  if(!t) return;
+  try { aplicarCatalogo(t); }
+  catch(e){ try { localStorage.removeItem(CLAVE_CATALOGO); } catch(_){} }
+}
+
 async function cargarCatalogoJSON(){
   try {
     const r = await fetch(CONFIG.catalogo, { cache: 'no-cache' });
     if(!r.ok) throw new Error('HTTP ' + r.status);
-    const d = await r.json();
-    const vistos = new Set();
-    const lista = (d && Array.isArray(d.lugares) ? d.lugares : []).map(limpiarLugar)
-      .filter(L => L && !vistos.has(L.id) && vistos.add(L.id));
-    if(!lista.length) throw new Error('catálogo vacío');
-    PLACES.splice(0, PLACES.length, ...lista.map(fusionar));
-    despuesDeCargar(PLACES.length, CONFIG.catalogo);
+    const texto = await r.text();
+    if(texto === catalogoTexto) return;                 // igual a la copia guardada: ya está todo dibujado
+    const n = aplicarCatalogo(texto);
+    try { if(texto.length < 2000000) localStorage.setItem(CLAVE_CATALOGO, texto); } catch(e){}
+    despuesDeCargar(n, CONFIG.catalogo);
   } catch(e){
     console.warn('[PosadasVive] No se pudo leer ' + CONFIG.catalogo + '. Se usa la lista incluida en la app:', e.message);
   }
@@ -2410,7 +2584,7 @@ function iniciarEstadisticas(){
 }
 
 const TIPOS_STAT = ['visita','vista_lugar','como_llegar','inscripcion_inicio','inscripcion_ok','lista_espera',
-  'whatsapp','compartir','guardar','ruta','filtro','idioma','instalada','cancelacion','calendario','contacto'];
+  'whatsapp','compartir','guardar','ruta','filtro','idioma','instalada','cancelacion','calendario','contacto','video'];
 
 function stat(tipo, lugar, extra){
   if(!STATS.activas || !TIPOS_STAT.includes(tipo)) return;
@@ -2914,6 +3088,7 @@ let vistaActual = 'explore';
 function switchView(v, opts){
   const cambio = v !== vistaActual;
   vistaActual = v;
+  if(v !== 'explore') cerrarPopup();
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.querySelectorAll('.tab').forEach(tb=>{
@@ -2926,11 +3101,15 @@ function switchView(v, opts){
     setTimeout(()=>{
       map.invalidateSize();
       if(cambio && !(opts && opts.mantenerMapa)) setMapMode(mapMode);
+      if(v === 'explore') ajustarDestacados();
     },200);
   }
 }
 
 // ============ PIE DE LA AGENDA ============
+// Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
+const APP_VERSION = 'pv-2026-10-17-5';
+
 function renderPie(){
   const el = document.getElementById('feed-foot');
   if(!el) return;
@@ -2938,6 +3117,7 @@ function renderPie(){
   if(CONFIG.firma) partes.push(t('feed.firma', {f: esc(CONFIG.firma)}));
   if(CONFIG.wapp) partes.push(t('feed.wapp', {n: '<a href="https://wa.me/' + esc(CONFIG.wapp)
     + '" target="_blank" rel="noopener" style="text-decoration:underline">' + esc(CONFIG.wappTexto || CONFIG.wapp) + '</a>'}));
+  partes.push(`<span style="opacity:.55;font-size:.85em">${esc(t('version', {v: APP_VERSION.replace(/^pv-/, '')}))}</span>`);
   el.innerHTML = partes.join('<br>');
 }
 
@@ -3073,9 +3253,9 @@ function aplicarFiltros(){
 function encuadrar(){
   if(!map || mapMode !== 'lugares') return;
   const pts = enMapa().map(p => p.coords);
-  if(!hayFiltros() || !pts.length) return map.flyTo([-27.372,-55.888], 13, {duration:0.6});
-  if(pts.length === 1) map.flyTo(pts[0], 15, {duration:0.6});
-  else map.flyToBounds(L.latLngBounds(pts).pad(0.25), {duration:0.6, maxZoom:15});
+  if(!hayFiltros() || !pts.length) return vistaGeneral();
+  if(pts.length === 1) map.flyToBounds(L.latLngBounds([pts[0], pts[0]]), Object.assign({duration:0.6, maxZoom:15}, margenesLibres()));
+  else map.flyToBounds(L.latLngBounds(pts).pad(0.1), Object.assign({duration:0.6, maxZoom:15}, margenesLibres()));
 }
 
 // Los chips se pintan en la agenda y en el panel del mapa ([data-chips])
@@ -3085,7 +3265,7 @@ function renderFiltros(){
     <button class="chip ${FILTRO.cerca ? 'on' : ''}" aria-pressed="${FILTRO.cerca}" onclick="toggleCerca()"><i class="ph-fill ph-navigation-arrow"></i> ${esc(t('m.cerca'))}</button>`;
   CATEGORIAS.forEach(c => {
     const on = FILTRO.cats.includes(c.id);
-    html += `<button class="chip ${on ? 'on' : ''}" aria-pressed="${on}" onclick="toggleCat('${c.id}')"><i class="ph-fill ${c.ico}"></i> ${esc(t('cat.' + c.id))}</button>`;
+    html += `<button class="chip ${on ? 'on' : ''}" style="--c:${c.color}" aria-pressed="${on}" onclick="toggleCat('${c.id}')"><i class="ph-fill ${c.ico}"></i> ${esc(t('cat.' + c.id))}</button>`;
   });
   html += '</div>';
 
@@ -3703,7 +3883,7 @@ function alCambiarUbicacion(){
   renderTimeline();
   if(!map) return;
   if(mapMode === 'rutas') renderCarousel(paradasDeRuta(activeRoute), 'rutas');
-  else renderCarousel(enMapa(), 'lugares');
+  else actualizarCarrusel();
 }
 
 function locateUser(){
@@ -3740,6 +3920,124 @@ const catPinClass = p => catPrincipal(p).pin;
 
 let mapMode='lugares', placeMarkers={}, routeLayers=[], activeRoute='guiados';
 
+/* Cómo se ven los lugares en el mapa
+   - Vista general (zoom menor a 15): cada lugar es un punto del color de su
+     categoría, todos en una sola capa SVG. Medido en celular simulado contra
+     pines de ícono, grupos con número y canvas: es lo que menos traba al
+     arrastrar. Cada punto tiene un área de toque invisible más grande que
+     el dibujo, para que no haga falta puntería.
+   - De cerca (zoom 15 o más): pines con ícono, solo los que están en pantalla.
+   - El lugar elegido se muestra siempre como pin.
+   - El carrusel muestra solo lo que está en pantalla, hasta 15 tarjetas. */
+const MAX_TARJETAS = 15;
+const ZOOM_PINES = 15;
+const lienzo = map ? L.svg({ padding: 0.2 }) : null;
+const capaPuntos = map ? L.layerGroup().addTo(map) : null;
+const capaPines = map ? L.layerGroup().addTo(map) : null;
+let pinesVisibles = {};                                                  // id -> pin con ícono
+let posCache = {};                                                       // zoom -> { id: posición en pantalla sin pisarse }
+
+/* Lugares muy cerca (o en la misma dirección, como el Jardín Botánico y el
+   museo que está adentro) quedaban uno encima del otro y parecía que
+   faltaban. Se separan lo justo para que se vea cada uno: los que se pisan
+   se empujan entre sí unas cuantas veces, sin moverse lejos de su lugar.
+   Se calcula una vez por nivel de zoom (62 lugares: menos de 1 ms). */
+function posiciones(){
+  const z = map.getZoom();
+  if(posCache[z]) return posCache[z];
+  const D = z < ZOOM_PINES ? 17 : 34;                                    // diámetro del punto / del pin, en píxeles
+  const pts = enMapa().map(p => ({ id: p.id, v: map.project(p.coords, z) }));
+  // los que están exactamente en el mismo lugar arrancan repartidos en ronda
+  const mismos = {};
+  pts.forEach(o => { const k = Math.round(o.v.x) + ',' + Math.round(o.v.y); (mismos[k] = mismos[k] || []).push(o); });
+  Object.values(mismos).forEach(g => { if(g.length > 1) g.forEach((o, i) => {
+    const a = 2 * Math.PI * i / g.length; o.v = o.v.add(L.point(Math.cos(a), Math.sin(a)).multiplyBy(D / 2));
+  }); });
+  for(let it = 0; it < 30; it++){
+    let movio = false;
+    for(let i = 0; i < pts.length; i++) for(let j = i + 1; j < pts.length; j++){
+      const a = pts[i].v, b = pts[j].v, dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy);
+      if(d >= D) continue;
+      const ux = d > 0.01 ? dx / d : Math.cos(i), uy = d > 0.01 ? dy / d : Math.sin(i), m = (D - d) / 2;
+      pts[i].v = L.point(a.x - ux * m, a.y - uy * m); pts[j].v = L.point(b.x + ux * m, b.y + uy * m); movio = true;
+    }
+    if(!movio) break;
+  }
+  const r = {}; pts.forEach(o => { r[o.id] = map.unproject(o.v, z); });
+  return (posCache[z] = r);
+}
+
+function crearPin(p){
+  const c = catPrincipal(p);
+  const html = `<div class="place-pin cat" style="--c:${c.color}" data-pin="${p.id}"><div class="pin-dot"></div><i class="ph-fill ${c.ico} pin-ico"></i></div>`;
+  const m = L.marker(posiciones()[p.id] || p.coords, { icon: L.divIcon({ className:'pinwrap', html, iconSize:[40,40], iconAnchor:[20,20] }),
+                                 title: tx(p,'name'), alt: tx(p,'name'), riseOnHover: true })
+    .on('click', () => tocarLugar(p.id))
+    .on('add', () => { const el = m.getElement(); if(el && enfocado === p.id) el.querySelector('.place-pin')?.classList.add('active'); });
+  if(enfocado === p.id) m.setZIndexOffset(1000);
+  return m;
+}
+
+function quitarPin(id){ capaPines.removeLayer(pinesVisibles[id]); delete pinesVisibles[id]; }
+
+// Decide qué va como punto y qué como pin según el zoom y lo que está en pantalla
+function actualizarMarcadores(){
+  if(!map || mapMode !== 'lugares') return;
+  const lista = enMapa();
+  const ids = new Set(lista.map(p => p.id));
+  let quiero;
+  const pos = posiciones();
+  if(map.getZoom() < ZOOM_PINES){
+    quiero = new Set();
+    if(!map.hasLayer(capaPuntos)) capaPuntos.addTo(map);
+    if(capaPuntos._zoom !== map.getZoom()){
+      capaPuntos._zoom = map.getZoom();
+      capaPuntos.eachLayer(c => { const q = pos[c.options.lugar]; if(q && !c.getLatLng().equals(q)) c.setLatLng(q); });
+    }
+  } else {
+    if(map.hasLayer(capaPuntos)) map.removeLayer(capaPuntos);
+    if(map.hasLayer(lienzo)) map.removeLayer(lienzo);   // vacía igual se recalculaba en cada movimiento (medido)
+    const b = map.getBounds().pad(0.3);
+    quiero = new Set(lista.filter(p => b.contains(p.coords)).map(p => p.id));
+  }
+  if(enfocado && ids.has(enfocado)) quiero.add(enfocado);
+  Object.keys(pinesVisibles).forEach(id => { if(!quiero.has(id)) quitarPin(id); });
+  quiero.forEach(id => {
+    if(!pinesVisibles[id]){ const m = crearPin(byId(id)); capaPines.addLayer(m); pinesVisibles[id] = m; }
+    else if(pos[id] && !pinesVisibles[id].getLatLng().equals(pos[id])) pinesVisibles[id].setLatLng(pos[id]);
+  });
+}
+
+let enfocado = null, moviendoPorTarjeta = false, timerCarrusel = null;
+
+function carruselVisible(){
+  const todos = enMapa();
+  if(!map || !todos.length) return todos;
+  const c = map.getCenter(), b = map.getBounds().pad(0.05);
+  const dist = p => c.distanceTo(L.latLng(p.coords[0], p.coords[1]));
+  let lista = todos.filter(p => b.contains(p.coords));
+  if(!lista.length) lista = todos;          // nada a la vista: los más cercanos al centro
+  lista = lista.sort((a, z) => dist(a) - dist(z)).slice(0, MAX_TARJETAS);
+  const f = enfocado && byId(enfocado);
+  if(f && coordsOk(f) && pasaFiltro(f) && !lista.includes(f)) lista = [f, ...lista.slice(0, MAX_TARJETAS - 1)];
+  return lista;
+}
+
+function actualizarCarrusel(){
+  if(!map || mapMode !== 'lugares') return;
+  renderCarousel(carruselVisible(), 'lugares');
+  if(enfocado) document.querySelectorAll('.mcard').forEach(el => el.classList.toggle('active', el.dataset.card === enfocado));
+}
+
+if(map) map.on('click', () => { if(!document.getElementById('mpop').classList.contains('mini')) cerrarPopup(); });
+if(map) map.on('moveend', () => {
+  actualizarMarcadores();
+  // el movimiento lo causó tocar una tarjeta o un pin: el carrusel queda como está
+  if(moviendoPorTarjeta){ moviendoPorTarjeta = false; return; }
+  clearTimeout(timerCarrusel);
+  timerCarrusel = setTimeout(actualizarCarrusel, 120);
+});
+
 // Sin botón de Rutas: el mapa muestra siempre los lugares. El código de
 // rutas sigue abajo por si se quiere volver a activar.
 function setMapMode(mode){
@@ -3756,10 +4054,9 @@ function setMapMode(mode){
     if(info) info.classList.remove('on');
     clearMarkers();
     renderPlaceMarkers();
-    const lista = enMapa();
-    renderCarousel(lista, 'lugares');
-    if(hayFiltros()) encuadrar(); else map.flyTo([-27.372,-55.888],13,{duration:0.8});
-    if(lista[0]) setTimeout(()=>focusPlace(lista[0].id,false),100);
+    enfocado = null;
+    renderCarousel(carruselVisible(), 'lugares');
+    if(hayFiltros()) encuadrar(); else vistaGeneral();
   } else {
     tabs.classList.add('on');
     selectRoute(activeRoute);
@@ -3769,29 +4066,40 @@ function setMapMode(mode){
 function redibujarMapa(){
   if(!map) return;
   if(mapMode === 'rutas') selectRoute(activeRoute, false);
-  else { clearMarkers(); renderPlaceMarkers(); renderCarousel(enMapa(), 'lugares'); }
+  else { clearMarkers(); renderPlaceMarkers(); actualizarCarrusel(); }
 }
 
 function clearMarkers(){
   if(!map) return;
   routeLayers.forEach(l=>map.removeLayer(l)); routeLayers=[];
-  Object.values(placeMarkers).forEach(m=>map.removeLayer(m)); placeMarkers={};
+  capaPuntos.clearLayers(); capaPines.clearLayers();
+  pinesVisibles = {}; placeMarkers = {}; posCache = {}; capaPuntos._zoom = null;
 }
 
 function renderPlaceMarkers(){
   if(!map) return;
-  enMapa().forEach(p=>{
-    const cls=catPinClass(p);
-    const ico=catPrincipal(p).ico;
-    const html=`<div class="place-pin ${cls}" data-pin="${p.id}"><div class="pin-dot"></div><i class="ph-fill ${ico} pin-ico"></i></div>`;
-    const m=L.marker(p.coords,{icon:L.divIcon({className:'pinwrap',html,iconSize:[40,40],iconAnchor:[20,20]}), title:tx(p,'name'), alt:tx(p,'name')})
-      .addTo(map).on('click',()=>focusPlace(p.id,true));
-    placeMarkers[p.id]=m;
+  enMapa().forEach(p => {
+    const punto = L.circleMarker(p.coords, { renderer: lienzo, radius: 7, weight: 2, color: '#fdf9f2', opacity: 0.9,
+                                             fillColor: catPrincipal(p).color, fillOpacity: 1, interactive: false, lugar: p.id });
+    // área de toque: invisible y del tamaño de un dedo
+    const toque = L.circleMarker(p.coords, { renderer: lienzo, radius: 16, stroke: false, fillOpacity: 0, className: 'toque-punto', lugar: p.id,
+                                             bubblingMouseEvents: false })   // si no, el toque también llega al mapa y cierra el popup
+      .on('click', () => tocarLugar(p.id));
+    placeMarkers[p.id] = punto;
+    capaPuntos.addLayer(punto).addLayer(toque);
   });
+  actualizarMarcadores();
 }
 
 function renderCarousel(list, mode){
   const wrap=document.getElementById('map-carousel');
+  // misma lista que ya está: no se vuelve a dibujar (evita parpadeos al mover el mapa)
+  const clave = [mode, LANG, userPos ? 1 : 0, hayFiltros() ? 1 : 0, ...list.map(p => p.id)].join('|');
+  if(wrap.dataset.clave === clave) return;
+  const primera = !wrap.dataset.clave;
+  wrap.dataset.clave = clave;
+  wrap.classList.toggle('sin-anim', !primera);
+  wrap.scrollLeft = 0;
   if(!list.length && mode === 'lugares' && hayFiltros()){
     wrap.innerHTML = `<div class="mcard vacio">${esc(t('filtros.nadaMapa'))}</div>`;
     return;
@@ -3821,11 +4129,315 @@ function renderCarousel(list, mode){
 function focusPlace(id, doFly){
   const p=byId(id); if(!p || !coordsOk(p)) return;
   if(navigator.vibrate && doFly) navigator.vibrate(12);
+  enfocado = id;
+  actualizarMarcadores();
+  Object.entries(pinesVisibles).forEach(([k, m]) => m.setZIndexOffset(k === id ? 1000 : 0));
+  if(mapMode === 'lugares' && !document.querySelector(`.mcard[data-card="${id}"]`)) actualizarCarrusel();
   document.querySelectorAll('.place-pin').forEach(el=>el.classList.toggle('active', el.dataset.pin===id));
   document.querySelectorAll('.mcard').forEach(el=>el.classList.toggle('active', el.dataset.card===id));
   const card=document.querySelector(`.mcard[data-card="${id}"]`);
   if(card) card.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
-  if(doFly!==false && map) map.flyTo([p.coords[0]-0.006, p.coords[1]], 15, {duration:0.9});
+  if(doFly!==false && map){
+    moviendoPorTarjeta = true;
+    setTimeout(() => { moviendoPorTarjeta = false; }, 1500);   // por si el mapa no llega a moverse
+    // zoom 16 (nivel de calle) o más, con el lugar en el centro del espacio que queda libre
+    centrarEn(p, Math.max(16, map.getZoom()));
+  }
+}
+
+// Centro (en el mapa) del espacio que queda libre: a la derecha del panel de
+// destacados, debajo de los filtros y arriba del popup o las tarjetas. En
+// pantallas anchas el popup va a la derecha y el espacio libre queda en el medio.
+function zonaLibre(){
+  const caja = map.getContainer().getBoundingClientRect();
+  const rel = r => ({ top: r.top - caja.top, bottom: r.bottom - caja.top, left: r.left - caja.left, right: r.right - caja.left, w: r.width, h: r.height });
+  let arriba = rel(document.querySelector('.map-topbar .topbar-fila').getBoundingClientRect()).bottom + 6;
+  let izq = 0, der = caja.width, abajo = caja.height;
+  const destEl = document.getElementById('dest');
+  if(destEl && !destEl.hidden){
+    const d = rel(destEl.getBoundingClientRect());
+    if(destEl.classList.contains('plegado')) arriba = d.bottom + 6; else izq = d.right + 6;
+  }
+  const pop = popupId ? rel(document.getElementById('mpop').getBoundingClientRect()) : null;
+  if(pop && pop.w){
+    const sobraDer = (pop.left - 6 - izq) * (abajo - arriba), sobraAbajo = (der - izq) * (pop.top - 6 - arriba);
+    if(pop.left > izq + 110 && sobraDer > sobraAbajo) der = pop.left - 6; else abajo = pop.top - 6;
+  } else {
+    const c = rel(document.getElementById('map-carousel').getBoundingClientRect());
+    if(c.h) abajo = c.top;
+  }
+  if(der - izq < 110){ izq = 0; der = caja.width; }
+  if(abajo - arriba < 40){ arriba = 0; abajo = caja.height; }
+  return { izq, der, arriba, abajo, ancho: caja.width, alto: caja.height };
+}
+function centroLibre(){ const z = zonaLibre(); return { x: (z.izq + z.der) / 2, y: (z.arriba + z.abajo) / 2 }; }
+
+// Vista general de la ciudad, con el centro en el espacio libre (no debajo del panel de destacados)
+const CENTRO_POSADAS = [-27.372, -55.888];
+function vistaGeneral(animar){
+  if(!map) return;
+  const c = centroLibre(), m = map.getSize(), z = 13;
+  const destino = map.unproject(map.project(CENTRO_POSADAS, z).add([m.x / 2 - c.x, m.y / 2 - c.y]), z);
+  if(animar === false) map.setView(destino, z, { animate: false });
+  else map.flyTo(destino, z, { duration: 0.8 });
+}
+// Márgenes para encuadrar algo dentro del espacio libre
+function margenesLibres(){
+  const z = zonaLibre();
+  return { paddingTopLeft: [z.izq + 16, z.arriba + 16], paddingBottomRight: [z.ancho - z.der + 16, z.alto - z.abajo + 16] };
+}
+
+// Mueve el mapa para que el lugar quede en el centro del espacio libre
+function centrarEn(p, z, animar){
+  const c = centroLibre(), m = map.getSize();
+  const destino = map.unproject(map.project(p.coords, z).add([m.x / 2 - c.x, m.y / 2 - c.y]), z);
+  if(animar === false) map.panTo(destino, { duration: 0.4 });
+  else map.flyTo(destino, z, { duration: 0.9 });
+}
+
+/* ===================================================================
+   POPUP DEL LUGAR
+   Al tocar un punto o un pin: video corto (si el lugar tiene) o foto y una
+   explicación breve, con "Llegar" y "Ver más". El video no se descarga
+   hasta que la persona toca "Ver video": se muestra la miniatura, así el
+   mapa no se pone lento ni gasta datos.
+   =================================================================== */
+let popupId = null;
+
+function tocarLugar(id, origen){
+  abrirPopup(id, origen);
+  focusPlace(id, true);
+}
+
+function abrirPopup(id, origen){
+  const p = byId(id);
+  if(!p) return;
+  if(popupId !== id) stat('vista_lugar', id, { v: origen || 'mapa' });
+  popupId = id;
+  pintarPopup(p);
+  document.getElementById('map-view').classList.add('con-popup');
+  marcarDestacado();
+  ajustarDestacados();
+}
+
+function cerrarPopup(){
+  if(!popupId) return;
+  popupId = null;
+  const el = document.getElementById('mpop');
+  el.hidden = true; el.innerHTML = '';                // vaciarlo corta el video
+  document.getElementById('map-view').classList.remove('con-popup');
+  marcarDestacado();
+  ajustarDestacados();
+}
+
+function miniaturaVideo(v){
+  return v && v.k === 'youtube' ? 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg' : '';
+}
+
+function pintarPopup(p){
+  if(!p) return;
+  const el = document.getElementById('mpop');
+  const v = videoDe(p.video), c = catPrincipal(p);
+  const foto = urlSegura(p.img) || miniaturaVideo(v);
+  const nombre = tx(p,'name');
+  let media = '';
+  if(v || foto){
+    media = `<div class="mpop-media${v && v.vertical ? ' vertical' : ''}" id="mpop-media">
+      ${foto ? `<img src="${esc(foto)}" alt="" decoding="async" onerror="fotoRotaPopup(this)">` : placeholderPopup(c)}
+      ${v ? `<button class="mpop-play" onclick="verVideo()" aria-label="${esc(t('pop.video', {n: nombre}))}"><span class="circ"><i class="ph-fill ph-play"></i></span>${esc(t('pop.verVideo'))}</button>` : ''}
+    </div>`;
+  }
+  const cats = (p.cats || []).map(catDe).filter(Boolean);
+  const sc = p.schedule || {};
+  const conCuando = p._fecha || sc.label || sc.kind === 'diario';
+  const texto = tx(p,'story') || tx(p,'fact') || tx(p,'addr');
+  el.classList.toggle('sin-media', !media);
+  el.classList.remove('viendo', 'mini');
+  el.style.removeProperty('--mini-w'); el.style.removeProperty('--mini-h');
+  el.innerHTML = `<button class="mpop-x" onclick="cerrarPopup()" aria-label="${esc(t('cerrar'))}"><i class="ph ph-x"></i></button>
+    ${v ? `<button class="mpop-min" onclick="tamanoVideo()" aria-label="${esc(t('pop.minimizar'))}"><i class="ph ph-arrows-in-simple"></i></button>
+    <div class="mpop-barra"><span>${esc(nombre)}</span>
+      <button onclick="tamanoVideo()" aria-label="${esc(t('pop.agrandar'))}"><i class="ph ph-arrows-out-simple"></i></button>
+      <button onclick="cerrarPopup()" aria-label="${esc(t('cerrar'))}"><i class="ph ph-x"></i></button></div>` : ''}
+    ${media}
+    <div class="mpop-body">
+      ${cats.length ? `<div class="mpop-cat" style="--c:${c.color}"><i class="ph-fill ${c.ico}"></i> ${esc(cats.map(x => t('cat.' + x.id)).join(' · '))}</div>` : ''}
+      <div class="mpop-t" id="mpop-t">${esc(nombre)}</div>
+      ${conCuando ? `<div class="mpop-when"><i class="ph-fill ${p._fecha ? 'ph-calendar-dots' : 'ph-clock'}"></i> ${esc(p.when.label)}</div>` : ''}
+      ${texto ? `<p class="mpop-txt">${esc(texto)}</p>` : ''}
+      <div class="mpop-acts">
+        ${coordsOk(p) ? `<button class="mcard-dir" onclick="cerrarPopup();quickDir('${p.id}')"><i class="ph-fill ph-navigation-arrow"></i> ${esc(t('mapa.llegar'))}</button>` : ''}
+        <button class="mcard-cta" onclick="verMasPopup('${p.id}')"><i class="ph-fill ph-book-open-text"></i> ${esc(t('pop.verMas'))}</button>
+      </div>
+    </div>`;
+  el.hidden = false;
+}
+
+const placeholderPopup = c => `<div class="mpop-ph" style="--c:${c.color}"><i class="ph-fill ${c.ico}"></i></div>`;
+// si la foto no carga (enlace caído, sin conexión) queda el ícono de la categoría
+function fotoRotaPopup(img){
+  const p = byId(popupId);
+  if(p) img.outerHTML = placeholderPopup(catPrincipal(p));
+}
+
+// Tamaño del video minimizado. Instagram y TikTok no se achican tanto: su
+// reproductor necesita unos 320 px de ancho para verse.
+function tamanoMini(v){
+  const ancho = window.innerWidth, grande = ancho >= 769;
+  if(v.k === 'instagram' || v.k === 'tiktok'){ const w = Math.min(330, ancho - 24); return [w, Math.round(Math.max(220, Math.min(420, window.innerHeight - 390)))]; }
+  if(v.vertical){ const h = grande ? 360 : Math.round(Math.max(220, Math.min(320, window.innerHeight - 380))); return [Math.round(h * 9 / 16), h]; }
+  const w = grande ? 380 : Math.round(Math.min(300, ancho * 0.76));
+  return [w, Math.round(w * 9 / 16)];
+}
+
+// Minimizado <-> grande
+function tamanoVideo(){
+  const el = document.getElementById('mpop');
+  if(!el.classList.contains('viendo')) return;
+  el.classList.toggle('mini');
+  reacomodar(byId(popupId));
+}
+
+// El popup cambió de tamaño: el lugar y el panel se reacomodan para seguir a la vista
+function reacomodar(p){
+  ajustarDestacados();
+  if(!map || !p || enfocado !== p.id || !coordsOk(p)) return;
+  moviendoPorTarjeta = true; setTimeout(() => { moviendoPorTarjeta = false; }, 800);
+  requestAnimationFrame(() => centrarEn(p, map.getZoom(), false));
+}
+
+function verMasPopup(id){
+  cerrarPopup();
+  openSheet(id);
+}
+
+function verVideo(){
+  const p = byId(popupId), caja = document.getElementById('mpop-media');
+  const v = p && videoDe(p.video);
+  if(!v || !caja) return;
+  const titulo = esc(t('pop.video', {n: tx(p,'name')}));
+  const marco = src => `<iframe src="${src}" title="${titulo}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+  let html;
+  if(v.k === 'youtube')        html = marco('https://www.youtube-nocookie.com/embed/' + v.id + '?autoplay=1&playsinline=1&rel=0&modestbranding=1');
+  else if(v.k === 'instagram') html = marco('https://www.instagram.com/p/' + v.id + '/embed/');
+  else if(v.k === 'tiktok')    html = marco('https://www.tiktok.com/embed/v2/' + v.id);
+  else if(v.k === 'vimeo')     html = marco('https://player.vimeo.com/video/' + v.id + '?autoplay=1&dnt=1');
+  else if(v.k === 'drive')     html = marco('https://drive.google.com/file/d/' + v.id + '/preview');
+  else                         html = `<video src="${esc(v.url)}" controls autoplay playsinline preload="metadata" title="${titulo}"></video>`;
+  caja.classList.add('reproduciendo');
+  const el = document.getElementById('mpop');
+  // arranca minimizado: una ventanita en la esquina y el mapa a la vista
+  const [w, h] = tamanoMini(v);
+  el.style.setProperty('--mini-w', w + 'px'); el.style.setProperty('--mini-h', h + 'px');
+  el.classList.add('viendo', 'mini');
+  caja.innerHTML = html;
+  stat('video', p.id, { k: v.k });
+  reacomodar(p);
+}
+
+/* ===================================================================
+   DESTACADOS
+   Franja chica arriba del mapa con los eventos que Turismo marca como
+   destacados (columna "Destacado" de la planilla). Si no hay ninguno
+   marcado, muestra los próximos. Queda a la vista aunque haya un lugar
+   abierto, y se puede plegar.
+   =================================================================== */
+// Próxima vez que pasa una actividad: la fecha de la agenda, o para las
+// diarias (el catamarán), hoy si todavía no empezó o mañana.
+function proximaVez(p){
+  if(p._fecha) return p._fecha;
+  const sc = p.schedule || {};
+  if(sc.kind !== 'diario' || !/^\d{2}:\d{2}$/.test(sc.hora || '')) return null;
+  const d = conHora(hoyCero(), sc.hora);
+  if(d < ahora()) d.setDate(d.getDate() + 1);
+  return d;
+}
+
+function destacados(){
+  const ev = vigentes().filter(p => p.type === 'evento').map(p => ({ p, d: proximaVez(p) })).filter(x => x.d);
+  const marcados = ev.filter(x => x.p.destacado || x.p.id === CONFIG.destacado);
+  return { lista: (marcados.length ? marcados : ev).sort((a, b) => a.d - b.d).slice(0, 6), marcados: marcados.length > 0 };
+}
+
+// Abierto cada vez que se entra (a propósito no se recuerda entre visitas)
+let destPlegado = false, destAnimado = false;
+
+function renderDestacados(){
+  const el = document.getElementById('dest');
+  if(!el) return;
+  const { lista, marcados } = destacados();
+  el.hidden = false;                                   // siempre a la vista, aunque no haya eventos cargados
+  el.classList.toggle('plegado', destPlegado);
+  el.classList.toggle('sin-anim', destAnimado);        // la cascada, solo la primera vez
+  const primera = !destAnimado;
+  destAnimado = true;
+  el.innerHTML = `<button class="dest-tab" onclick="toggleDestacados()" aria-expanded="${!destPlegado}" aria-controls="dest-lista" aria-label="${esc(t('dest.aria'))}">
+      <i class="ph-fill ${marcados ? 'ph-star' : 'ph-calendar-star'}"></i> ${esc(t(marcados ? 'dest.titulo' : 'dest.proximos'))}
+      <span class="cuantos">${lista.length}</span><i class="ph-bold ph-caret-down flecha"></i></button>
+    <div class="dest-lista" id="dest-lista">${lista.length ? '' : `<p class="dest-vacio">${esc(t('dest.vacio'))}</p>`}${lista.map(({ p, d }, i) => {
+      const dif = difDias(d);
+      // en el recuadro va "hoy" o el día corto ("dom"): "mañana" no entra en el celular y va abajo
+      const arriba = dif === 0 ? t('f.hoy') : DIAS_CORTOS[LANG][d.getDay()];
+      const hora = horaDe(p, d) || (p.schedule && p.schedule.hora);
+      const linea = [dif === 1 ? t('f.manana') : '', hora ? t('f.hs', {h: horaCorta(hora)}) : ''].filter(Boolean).join(' · ');
+      return `<button class="dest-item" style="--i:${i}" data-dest="${p.id}" onclick="tocarDestacado('${p.id}')" aria-label="${esc(tx(p,'name') + ' · ' + p.when.label)}">
+        <span class="dest-fecha"><small>${esc(arriba)}</small><b>${d.getDate()}</b></span>
+        <span class="dest-txt"><span class="dest-nom">${esc(String(tx(p,'name')).replace(/^.*: /, ''))}</span>
+          ${linea ? `<span class="dest-hora">${esc(linea)}</span>` : ''}</span></button>`;
+    }).join('')}</div>`;
+  marcarDestacado();
+  ajustarDestacados();
+  // el panel apareció después de armar el mapa: la ciudad se corre al espacio libre
+  if(primera && map && !enfocado && !hayFiltros() && vistaActual === 'explore') vistaGeneral(false);
+}
+
+function toggleDestacados(){
+  const el = document.getElementById('dest');
+  destPlegado = !el.classList.contains('plegado');
+  el.classList.toggle('plegado', destPlegado);
+  el.querySelector('.dest-tab').setAttribute('aria-expanded', !destPlegado);
+  ajustarDestacados();
+}
+
+// El panel nunca se mete debajo del popup ni de las tarjetas: si no entra, se desplaza adentro
+function ajustarDestacados(){
+  const lista = document.getElementById('dest-lista');
+  if(!lista || destPlegado || vistaActual !== 'explore') return;
+  // lo que quede debajo del panel (popup, tarjetas o menú) marca hasta dónde puede llegar
+  const lr = lista.getBoundingClientRect();
+  const base = document.getElementById('map-view').getBoundingClientRect().top;
+  let limite = window.innerHeight - 12;
+  [document.getElementById('mpop'), document.getElementById('map-carousel'), document.querySelector('.tabbar')].forEach(el => {
+    if(!el || !el.offsetHeight || getComputedStyle(el).visibility === 'hidden') return;
+    if(el.id === 'mpop' && !popupId) return;
+    const r = el.getBoundingClientRect();
+    if(r.left >= lr.right || r.right <= lr.left) return;              // no está debajo del panel
+    // offsetTop: la posición final, sin la animación de entrada del popup
+    const top = el.offsetParent && el.offsetParent.id === 'map-view' ? base + el.offsetTop : r.top;
+    limite = Math.min(limite, top - 10);
+  });
+  let alto = Math.max(52, limite - lista.getBoundingClientRect().top);
+  // en celulares se ven 2 o 3 eventos y el resto se desliza: el panel no tapa el mapa
+  if(matchMedia('(max-width: 480px), (max-height: 700px)').matches){
+    const it = lista.querySelector('.dest-item');
+    if(it) alto = Math.min(alto, it.offsetHeight * (window.innerHeight < 600 ? 2 : 3) + 2);
+  }
+  lista.style.maxHeight = alto + 'px';
+  lista.classList.toggle('hay-mas', lista.scrollHeight > alto + 2);
+}
+window.addEventListener('resize', () => { clearTimeout(window._tAjDest); window._tAjDest = setTimeout(ajustarDestacados, 150); });
+if(window.ResizeObserver) new ResizeObserver(() => ajustarDestacados()).observe(document.getElementById('mpop'));
+
+function tocarDestacado(id){
+  const p = byId(id);
+  if(!p) return;
+  if(vistaActual !== 'explore') return openSheet(id);
+  if(coordsOk(p) && enMapa().some(x => x.id === id)) tocarLugar(id, 'destacado');
+  else abrirPopup(id, 'destacado');
+}
+
+function marcarDestacado(){
+  document.querySelectorAll('.dest-item').forEach(b => b.classList.toggle('on', b.dataset.dest === popupId));
 }
 
 function selectRoute(key, volar){
@@ -4336,6 +4948,7 @@ document.addEventListener('keydown', e => {
     else if(on('ticket-overlay')) closeTicketModal();
     else if(on('sos-modal'))      closeSOS();
     else if(on('sheet'))          closeSheet();
+    else if(popupId)              cerrarPopup();
     else if(on('dir-panel'))      closeDirPanel();
     return;
   }
@@ -4358,6 +4971,7 @@ paso('encabezado',  medirEncabezado);
 paso('offline',     registrarSW);
 paso('conexión',    vigilarConexion);
 paso('estadísticas', iniciarEstadisticas);
+paso('catálogo guardado', usarCatalogoGuardado);
 paso('agenda',      hydrateAgenda);
 paso('emergencias', ()=>{
   const el = document.getElementById('sos-wapp');
@@ -4365,6 +4979,7 @@ paso('emergencias', ()=>{
 });
 paso('pie',      renderPie);
 paso('portada',  renderHero);
+paso('destacados', renderDestacados);   // el panel de próximos, ni bien abre la app
 paso('filtros',  () => {
   renderFiltros();
   document.querySelectorAll('[data-buscar]').forEach(i => i.addEventListener('input', alBuscar));
@@ -4389,7 +5004,7 @@ setTimeout(()=>paso('mapa', ()=>{
 
 document.addEventListener('visibilitychange', ()=>{
   if(document.hidden) return;
-  paso('agenda', ()=>{ hydrateAgenda(); renderHero(); renderTimeline(); renderPlanes(); });
+  paso('agenda', ()=>{ hydrateAgenda(); renderHero(); renderDestacados(); renderTimeline(); renderPlanes(); });
   cargarCupos(); cargarClima();
 });
 </script>
