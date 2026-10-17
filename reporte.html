@@ -412,7 +412,7 @@ function generarDemo(m){
       lista_espera: actividades.reduce((a, x) => a + x.lista_espera, 0), cancelaciones: Math.round(personas * 0.04),
       whatsapp: Math.round(total * 0.07), como_llegar: lugares.reduce((a, x) => a + x.como_llegar, 0),
       compartidos: Math.round(total * 0.05), guardados: Math.round(total * 0.11),
-      calendario: Math.round(personas * 0.3), instaladas: Math.round(total * 0.03)
+      calendario: Math.round(personas * 0.3), instaladas: Math.round(total * 0.03), videos: Math.round(vistas * 0.12)
     },
     anterior: { visitas: ant.total, personas: Math.round(personas * ant.total / total * (0.9 + r() * 0.2)) },
     por_dia: dias, por_hora, lugares, actividades, origenes
@@ -567,7 +567,8 @@ function pintar(){
 
   const tiles = [
     ['Personas inscriptas', num(T.personas), num(T.inscripciones) + ' inscripciones'],
-    ['Fichas de lugares vistas', num(T.vistas), T.visitas ? (T.vistas / T.visitas).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' por visita' : ''],
+    ['Fichas de lugares vistas', num(T.vistas), [T.visitas ? (T.vistas / T.visitas).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' por visita' : '',
+                                               T.videos ? num(T.videos) + (T.videos === 1 ? ' video visto' : ' videos vistos') : ''].filter(Boolean).join(' · ')],
     ['Pedidos de "Cómo llegar"', num(T.como_llegar), ''],
     ['Consultas por WhatsApp', num(T.whatsapp), ''],
     ['Visitas en portugués', pct(T.visitas_pt, T.visitas), num(T.visitas_pt) + ' visitas'],

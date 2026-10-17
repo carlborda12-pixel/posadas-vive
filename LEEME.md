@@ -32,7 +32,7 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-10-15-2`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-10-17-5`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `catalogo.json` | Los lugares de la planilla de la Muni (lo genera el importador) |
 | `manifest.webmanifest` | Sin cambios |
@@ -57,14 +57,16 @@ Lo que depende de la base se activa solo cuando aplicamos el SQL. Hasta entonces
 
 1. La Muni completa `PosadasVive - Carga de datos.xlsx`:
    - una fila por lugar, con X en todas sus categorías;
-   - las fechas de paseos y eventos, en la hoja Agenda.
+   - las fechas de paseos y eventos, en la hoja Agenda;
+   - **Video (link):** opcional, sale al tocar el lugar en el mapa. Sirve YouTube (también Shorts), reel de Instagram, TikTok, Vimeo, Google Drive público o un .mp4;
+   - **Destacado:** "Sí" en las actividades más importantes. Salen en el panel de la izquierda del mapa, abierto al entrar; si no hay ninguna marcada, el panel muestra las próximas.
 2. Cuando la devuelven, corrés:
    ```
    pip install openpyxl
    python herramientas/importar_catalogo.py "PosadasVive - Carga de datos.xlsx" -o catalogo.json
    ```
    - Si mandan CSV en lugar del .xlsx: `--lugares Lugares.csv --agenda Agenda.csv`.
-   - Avisos: el importador lista lo que hay que corregir (coordenadas fuera de Misiones, teléfonos raros, IDs de la Agenda que no existen).
+   - Avisos: el importador lista lo que hay que corregir (coordenadas fuera de Misiones, teléfonos raros, IDs de la Agenda que no existen, enlaces de video que no reconoce).
    - Errores: si hay un ID repetido, no genera nada.
    - Fechas viejas: las que ya pasaron se ignoran solas.
 3. Subís `catalogo.json` a Vercel. No hace falta tocar `index.html`.
