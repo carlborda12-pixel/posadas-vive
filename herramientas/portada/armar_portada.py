@@ -1,4 +1,4 @@
-"""Arma portada.html (1200x630) para la vista previa al compartir el link.
+"""Arma portada.html (1200x630) para la vista previa al compartir el link de 48 HS.
 Necesita las tipografías: npm install @fontsource/fraunces @fontsource/plus-jakarta-sans
 y el catalogo.json (para los colores de los puntos). Después se captura con un navegador
 (Playwright o captura de pantalla a 1200x630) y se guarda como portada.jpg."""
@@ -46,7 +46,7 @@ svg {{ position: absolute; inset: 0; }}
 .texto {{ position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 18px; }}
 .marca {{ display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 19px; letter-spacing: 3px; text-transform: uppercase; color: #e8c37e; }}
 .pin {{ width: 52px; height: 52px; border-radius: 14px; background: #1a130d; border: 2px solid rgba(232,195,126,.45); display: flex; align-items: center; justify-content: center; }}
-h1 {{ font-family: Fraunces, serif; font-weight: 700; font-size: 112px; line-height: .95; margin-top: 22px; letter-spacing: -1.5px; }}
+h1 {{ font-family: Fraunces, serif; font-weight: 700; font-size: 168px; line-height: .9; margin-top: 18px; letter-spacing: -3px; }}
 h1 em {{ font-style: italic; font-weight: 600; color: #f5943d; }}
 p {{ margin-top: 22px; font-size: 27px; line-height: 1.3; color: #e9dccb; font-weight: 700; max-width: 540px; }}
 .chips {{ display: flex; gap: 10px; margin-top: 26px; justify-content: center; }}
@@ -58,9 +58,9 @@ p {{ margin-top: 22px; font-size: 27px; line-height: 1.3; color: #e9dccb; font-w
 <svg width="{W}" height="{H}" viewBox="0 0 {W} {H}">{rio}{dots}</svg>
 <div class="velo"></div>
 <div class="texto">
-  <div class="marca"><span class="pin"><svg width="30" height="30" viewBox="0 0 64 64" style="position:static"><path d="M32 6c-10 0-18 8-18 18 0 13.5 18 34 18 34s18-20.5 18-34c0-10-8-18-18-18zm0 24.6a6.6 6.6 0 110-13.2 6.6 6.6 0 010 13.2z" fill="#e8c37e"/></svg></span>Guía viva de la ciudad</div>
-  <h1>Posadas<br><em>Vive</em></h1>
-  <p>Qué hacer hoy, paseos guiados y el mapa de la ciudad en tu celular.</p>
+  <div class="marca"><span class="pin"><svg width="30" height="30" viewBox="0 0 64 64" style="position:static"><path d="M32 6c-10 0-18 8-18 18 0 13.5 18 34 18 34s18-20.5 18-34c0-10-8-18-18-18zm0 24.6a6.6 6.6 0 110-13.2 6.6 6.6 0 010 13.2z" fill="#e8c37e"/></svg></span>Guía viva de Posadas</div>
+  <h1>48 <em>HS</em></h1>
+  <p>Qué hacer en Posadas: agenda, paseos guiados y el mapa en tu celular.</p>
   <div class="chips"><span class="chip"><i style="background:#f5943d"></i>Agenda</span><span class="chip"><i style="background:#4aa8f0"></i>Mapa</span><span class="chip"><i style="background:#5bbf6c"></i>Paseos</span></div>
 </div>
 </body></html>'''
