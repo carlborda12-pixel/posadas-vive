@@ -148,6 +148,25 @@ def url(v):
     return t if re.match(r'^https?://\S+$', t) else ''
 
 
+# Los mismos formatos que reconoce la web (función videoDe de index.html)
+VIDEO_FORMATOS = [
+    r'^https://(?:www\.|m\.)?youtube\.com/(?:watch\?(?:[^#]*&)?v=|embed/|shorts/|live/)[A-Za-z0-9_-]{11}',
+    r'^https://youtu\.be/[A-Za-z0-9_-]{11}',
+    r'^https://(?:www\.)?instagram\.com/(?:[A-Za-z0-9._]{1,30}/)?(?:reels?|p|tv)/[A-Za-z0-9_-]{5,40}',
+    r'^https://(?:www\.)?tiktok\.com/@[A-Za-z0-9._-]{1,40}/video/\d{8,25}',
+    r'^https://(?:www\.|player\.)?vimeo\.com/(?:video/)?\d{6,12}',
+    r'^https://drive\.google\.com/(?:file/d/|open\?id=)[A-Za-z0-9_-]{10,80}',
+    r'^https://[^\s"\'<>()\\]+\.(?:mp4|webm)(?:\?[^\s"\'<>()\\]*)?$',
+]
+
+
+def video(v):
+    t = texto(v)
+    if t.startswith('http://'):
+        t = 'https://' + t[7:]
+    return t if any(re.match(f, t, re.I) for f in VIDEO_FORMATOS) else ''
+
+
 def coordenadas(v, link=''):
     """'-27.36, -55.89' · '27°21'54.1"S 55°53'55.7"W' · o el link largo de Google Maps"""
     t = texto(v)
@@ -244,6 +263,8 @@ COLUMNAS_LUGARES = {
     'descripcion': ['descripcion'],
     'recomendacion': ['recomendacion'],
     'foto': ['foto link', 'foto'],
+    'video': ['video link', 'video'],
+    'destacado': ['destacado', 'evento destacado'],
     'nombre_pt': ['nombre portugues', 'nombre pt'],
     'descripcion_pt': ['descripcion portugues', 'descripcion pt'],
 }
@@ -404,6 +425,15 @@ def armar(lugares_raw, agenda_raw, hoy: dt.date, inf: Informe):
         if foto_raw and not foto:
             inf.aviso(f'{fila}: la foto tiene que ser un enlace que empiece con http')
 
+        video_raw = tomar(f, COLUMNAS_LUGARES['video'])
+        vid = video(video_raw)
+        if video_raw and not vid:
+            inf.aviso(f'{fila}: video "{texto(video_raw)}" no reconocido (usar un enlace de YouTube, Instagram, TikTok, Vimeo, Google Drive o un .mp4)')
+        destacado = es_si(tomar(f, COLUMNAS_LUGARES['destacado']))
+        if destacado and tipo != 'evento':
+            inf.aviso(f'{fila}: "Destacado" solo se usa en actividades (los lugares no tienen fecha); se ignora')
+            destacado = False
+
         L = {
             'id': lid, 'type': tipo, 'name': nombre,
             'addr': texto(tomar(f, COLUMNAS_LUGARES['direccion'])),
@@ -417,6 +447,8 @@ def armar(lugares_raw, agenda_raw, hoy: dt.date, inf: Informe):
             'story': texto(tomar(f, COLUMNAS_LUGARES['descripcion'])) or None,
             'fact': texto(tomar(f, COLUMNAS_LUGARES['recomendacion'])) or None,
             'img': foto or None,
+            'video': vid or None,
+            'destacado': True if destacado else None,
         }
         pt = {'name': texto(tomar(f, COLUMNAS_LUGARES['nombre_pt'])), 'story': texto(tomar(f, COLUMNAS_LUGARES['descripcion_pt']))}
         pt = {k: v for k, v in pt.items() if v}
