@@ -1,5 +1,5 @@
 // =====================================================================
-// PosadasVive · función "avisos" (Supabase Edge Function)
+// 48 HS · función "avisos" (Supabase Edge Function)
 //
 // La llama cron.sql una vez por hora. Según la hora de Posadas:
 //   · lista de espera  → en cada corrida: si se liberó lugar, le escribe
@@ -22,7 +22,7 @@ const SB_KEY      = env('SUPABASE_SERVICE_ROLE_KEY') || env('SERVICE_KEY');
 const SECRETO     = env('AVISOS_SECRET');
 const RESEND_KEY  = env('RESEND_API_KEY');
 const RESEND_URL  = env('RESEND_URL', 'https://api.resend.com/emails');
-const REMITENTE   = env('REMITENTE', 'PosadasVive <avisos@example.com>');
+const REMITENTE   = env('REMITENTE', '48 HS <avisos@example.com>');
 const APP_URL     = env('APP_URL').replace(/\/?$/, '/');
 const REPORTE_PARA  = env('REPORTE_DESTINATARIOS').split(',').map((s) => s.trim()).filter(Boolean);
 const REPORTE_CLAVE = env('REPORTE_CLAVE');
@@ -105,7 +105,7 @@ async function enviar(c: Correo, prueba: boolean, enviados: Correo[]) {
 function plantilla(titulo: string, cuerpo: string, pie: string) {
   return `<!doctype html><html><body style="margin:0;background:#f4efe8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#2a1f17">
   <table role="presentation" width="100%" style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden">
-    <tr><td style="background:#1e1712;padding:18px 24px;color:#e8c37e;font-weight:bold;font-size:15px;letter-spacing:.5px">PosadasVive</td></tr>
+    <tr><td style="background:#1e1712;padding:18px 24px;color:#e8c37e;font-weight:bold;font-size:15px;letter-spacing:.5px">48 HS</td></tr>
     <tr><td style="padding:24px">
       <h1 style="font-size:20px;margin:0 0 14px;color:#1e1712">${titulo}</h1>
       ${cuerpo}
@@ -162,12 +162,12 @@ async function tareaListaEspera(prueba: boolean, enviados: Correo[]) {
           parrafo(`Olá, ${esc(f.nombre)}! Alguém cancelou e há vaga em <b>${esc(nombreAct)}</b>, ${esc(cuando)}.`) +
           parrafo('O aviso <b>não reserva</b> a vaga: quem completar a inscrição primeiro fica com ela.') +
           boton(reservar, 'Reservar minha vaga'),
-          `Você recebeu este e-mail porque entrou na lista de espera do PosadasVive. <a href="${esc(baja)}" style="color:#8a7c6d">Sair da lista</a>.`)
+          `Você recebeu este e-mail porque entrou na lista de espera do 48 HS. <a href="${esc(baja)}" style="color:#8a7c6d">Sair da lista</a>.`)
       : plantilla('Se liberó un lugar',
           parrafo(`¡Hola, ${esc(f.nombre)}! Alguien canceló y hay lugar en <b>${esc(nombreAct)}</b>, ${esc(cuando)}.`) +
           parrafo('El aviso <b>no reserva</b> el lugar: se lo queda quien complete la inscripción primero.') +
           boton(reservar, 'Reservar mi lugar'),
-          `Te llegó este email porque te anotaste en la lista de espera de PosadasVive. <a href="${esc(baja)}" style="color:#8a7c6d">Salir de la lista</a>.`);
+          `Te llegó este email porque te anotaste en la lista de espera de 48 HS. <a href="${esc(baja)}" style="color:#8a7c6d">Salir de la lista</a>.`);
     await enviar({ para: [String(f.email)], asunto: pt ? `Vaga liberada: ${nombreAct}` : `Se liberó un lugar: ${nombreAct}`, html }, prueba, enviados);
     if (!prueba) {
       await rest(`lista_espera?id=eq.${f.id}`, {
@@ -202,7 +202,7 @@ async function tareaRecordatorios(prueba: boolean, enviados: Correo[]) {
       parrafo(`📅 ${esc(cuando)}<br>📌 ${esc(f.direccion)}<br>🎟️ ${esc(f.cantidad)} ${Number(f.cantidad) === 1 ? 'persona' : 'personas'} · Código <b>${codigo}</b>`) +
       parrafo('Si al final no podés ir, liberá tu lugar así lo aprovecha alguien de la lista de espera:') +
       boton(cancelar, 'Liberar mi lugar'),
-      'Te llegó este recordatorio porque te inscribiste en una actividad de PosadasVive.');
+      'Te llegó este recordatorio porque te inscribiste en una actividad de 48 HS.');
     await enviar({ para: [String(f.email)], asunto: `Mañana: ${f.actividad}`, html }, prueba, enviados);
     if (!prueba) {
       await rest(`${TABLA_INSCRIPCIONES}?id=eq.${f.id}`, {
@@ -252,7 +252,7 @@ async function tareaReporte(prueba: boolean, enviados: Correo[]) {
     (top ? parrafo(`<br><b>Lo más visto</b><br>${top}`) : '') +
     boton(`${APP_URL}reporte.html?mes=${iso(ini).slice(0, 7)}`, 'Ver el reporte completo'),
     'Datos anónimos de uso de la app: no incluyen nombres, emails ni ubicación de las personas.');
-  await enviar({ para: REPORTE_PARA, asunto: `PosadasVive · Reporte de ${mes}`, html }, prueba, enviados);
+  await enviar({ para: REPORTE_PARA, asunto: `48 HS · Reporte de ${mes}`, html }, prueba, enviados);
   return { mes };
 }
 
