@@ -1,5 +1,5 @@
 -- =====================================================================
--- PosadasVive · temporada de verano
+-- 48 HS · temporada de verano
 --
 -- Se aplica en Supabase > SQL Editor, en la etapa Supabase.
 -- Es ADITIVO: crea tablas y funciones nuevas, no modifica las que ya
