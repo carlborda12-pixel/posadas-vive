@@ -57,7 +57,7 @@ declare
   v_hoy    int;
   v_tipos  text[] := array['visita','vista_lugar','como_llegar','inscripcion_inicio','inscripcion_ok',
                            'lista_espera','whatsapp','compartir','guardar','ruta','filtro','idioma',
-                           'instalada','cancelacion','calendario','contacto'];
+                           'instalada','cancelacion','calendario','contacto','video'];
 begin
   if p_eventos is null or jsonb_typeof(p_eventos) <> 'array' then return; end if;
   -- la app manda lotes de hasta 25; más que eso no viene de la app
@@ -177,6 +177,7 @@ begin
         'compartidos',   count(*) filter (where tipo = 'compartir'),
         'guardados',     count(*) filter (where tipo = 'guardar'),
         'calendario',    count(*) filter (where tipo = 'calendario'),
+        'videos',        count(*) filter (where tipo = 'video'),
         'instaladas',    count(*) filter (where tipo = 'instalada'))
       from ev),
 
