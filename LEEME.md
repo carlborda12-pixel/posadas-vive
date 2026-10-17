@@ -32,7 +32,7 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-10-17-7`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-10-17-8`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `catalogo.json` | Los lugares de la planilla de la Muni (lo genera el importador) |
 | `manifest.webmanifest` | Sin cambios |
@@ -54,13 +54,12 @@ Lo que depende de la base se activa solo cuando aplicamos el SQL. Hasta entonces
 - **Estadísticas:** la app deja de intentar enviarlas, sin errores.
 - **Reporte con datos reales:** avisa que las estadísticas todavía no están instaladas.
 
-## Novedades para el equipo de Turismo
+## Al entrar a la web
 
-- **Activar:** cada persona del equipo abre una vez `https://TU-DOMINIO/?equipo=turismo` en su celular. Desde ahí, con cada versión nueva le aparece un aviso con lo que cambió, después de la pantalla de inicio. El público nunca lo ve.
-- **Volver a verlo:** enlace "Novedades" al pie de la Agenda (solo en esos celulares).
-- **Desactivar:** `?equipo=no`.
-- **Estadísticas:** las visitas de esos celulares no cuentan en el reporte, así las pruebas no inflan los números.
-- **En cada actualización:** en `index.html`, en `NOVEDADES`, se reemplaza la lista por los cambios nuevos (no se acumulan) y se cambia `version`.
+- **"¿Qué estás buscando hoy?"**: después de la pantalla de inicio, cada vez. Elegir una categoría filtra el mapa; las que no tienen lugares en el mapa (excursiones) abren la lista en la Agenda. Los enlaces directos a un lugar no la muestran.
+- **Novedades de la versión**: una vez por versión, a quien ya había usado la web en ese teléfono (a quien entra por primera vez no le sale). Se vuelven a ver con el enlace "Novedades" al pie de la Agenda.
+- **En cada actualización**: en `index.html`, en `NOVEDADES`, se reemplaza la lista por lo nuevo (no se acumula) y se cambia `version`. Los ítems marcados `'equipo'` solo los ve el equipo de Turismo.
+- **Equipo de Turismo**: abrir una vez `?equipo=turismo` en cada teléfono. Ven también las novedades internas (planilla) y sus visitas no cuentan en el reporte. Se desactiva con `?equipo=no`.
 
 ## Cargar los datos de la Muni
 

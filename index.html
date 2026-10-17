@@ -803,7 +803,30 @@
     }
     .dest-lista.hay-mas { -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
 
-    /* ---- Novedades de la versión (solo para el equipo de Turismo) ---- */
+    /* ---- "¿Qué estás buscando hoy?" ---- */
+    .busca-ov { position: fixed; inset: 0; z-index: 2550; background: rgba(0,0,0,0.62); display: flex; align-items: flex-end; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.25s var(--ease), visibility 0.25s; }
+    .busca-ov.on { opacity: 1; visibility: visible; }
+    .busca { position: relative; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; overscroll-behavior: contain; background: #17110c; border: 1px solid rgba(232,195,126,0.25); border-bottom: 0; border-radius: 24px 24px 0 0; padding: 20px 16px calc(16px + env(safe-area-inset-bottom)); box-shadow: var(--shadow); transform: translateY(30px); transition: transform 0.3s var(--ease); }
+    .busca-ov.on .busca { transform: none; }
+    .busca h2 { font-family: 'Fraunces', serif; font-size: 1.35rem; margin: 0 40px 4px 2px; }
+    .busca > p { color: var(--muted); font-size: 0.8rem; margin: 0 0 14px 2px; }
+    .busca-x { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.06); color: var(--ink); font-size: 1rem; }
+    .busca-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .busca-op { display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 8px 10px; border-radius: 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); color: var(--ink); text-align: left; transition: border-color 0.2s, background 0.2s; }
+    .busca-op:active, .busca-op:hover { border-color: var(--c); background: rgba(255,255,255,0.07); }
+    .busca-op .ico { flex-shrink: 0; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: var(--c); background: color-mix(in srgb, var(--c) 18%, transparent); }
+    .busca-op .txt { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .busca-op b { font-size: 0.84rem; line-height: 1.15; }
+    .busca-op small { font-size: 0.66rem; color: var(--muted); font-weight: 700; }
+    .busca-pie { display: flex; gap: 8px; margin-top: 12px; }
+    .busca-pie button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; border-radius: 13px; font-weight: 800; font-size: 0.8rem; }
+    .busca-todo { background: var(--gold); color: #2a1405; }
+    .busca-agenda { background: rgba(255,255,255,0.06); color: var(--ink); border: 1px solid var(--line); }
+    @media (min-width: 620px) { .busca-ov { align-items: center; padding: 16px; } .busca { border-radius: 24px; border-bottom: 1px solid rgba(232,195,126,0.25); padding-bottom: 18px; } }
+    @media (max-height: 600px) { .busca { padding-top: 14px; } .busca h2 { font-size: 1.15rem; } .busca > p { margin-bottom: 10px; } .busca-op { min-height: 50px; padding: 6px 9px; } .busca-op .ico { width: 32px; height: 32px; font-size: 1rem; } }
+    @media (max-height: 500px) and (orientation: landscape) { .busca-ov { align-items: center; padding: 10px; } .busca { max-width: 700px; border-radius: 20px; border-bottom: 1px solid rgba(232,195,126,0.25); max-height: calc(100vh - 20px); } .busca-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+    /* ---- Novedades de la versión ---- */
     .nov-ov { position: fixed; inset: 0; z-index: 2600; background: rgba(0,0,0,0.72); display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; visibility: hidden; transition: opacity 0.25s var(--ease), visibility 0.25s; }
     .nov-ov.on { opacity: 1; visibility: visible; }
     .nov { width: 100%; max-width: 420px; max-height: min(82vh, 640px); display: flex; flex-direction: column; background: #17110c; border: 1px solid rgba(232,195,126,0.3); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; transform: translateY(14px) scale(0.98); transition: transform 0.3s var(--ease); }
@@ -949,6 +972,20 @@
         </div>
         <ul class="nov-lista" id="nov-lista"></ul>
         <div class="nov-pie"><button onclick="cerrarNovedades()" id="nov-ok">Entendido</button></div>
+      </div>
+    </div>
+
+    <!-- ============ ¿QUÉ ESTÁS BUSCANDO HOY? ============ -->
+    <div class="busca-ov" id="busca-ov" onclick="cerrarBusqueda()">
+      <div class="busca" role="dialog" aria-modal="true" aria-labelledby="busca-t" onclick="event.stopPropagation()">
+        <button class="busca-x" onclick="cerrarBusqueda()" data-i18n-aria="cerrar" aria-label="Cerrar"><i class="ph ph-x"></i></button>
+        <h2 id="busca-t" data-i18n="busca.titulo">¿Qué estás buscando hoy?</h2>
+        <p data-i18n="busca.sub">Elegí una opción y te mostramos solo eso en el mapa.</p>
+        <div class="busca-grid" id="busca-grid"></div>
+        <div class="busca-pie">
+          <button class="busca-todo" onclick="cerrarBusqueda()"><i class="ph-fill ph-map-trifold"></i> <span data-i18n="busca.todo">Ver todo el mapa</span></button>
+          <button class="busca-agenda" onclick="busquedaAgenda()"><i class="ph-fill ph-calendar-dots"></i> <span data-i18n="busca.agenda">Ver la agenda</span></button>
+        </div>
       </div>
     </div>
 
@@ -1646,6 +1683,8 @@ const TEXTOS = {
     'pop.verVideo':'Ver video', 'pop.verMas':'Ver más', 'pop.video':'Video de {n}', 'pop.agrandar':'Agrandar el video', 'pop.minimizar':'Minimizar el video',
     'dest.titulo':'Destacados', 'dest.proximos':'Próximos', 'dest.aria':'Mostrar u ocultar los eventos destacados',
     'dest.vacio':'Pronto vas a ver acá los próximos eventos. Mientras, tocá los puntos del mapa para descubrir lugares.', 'version':'Versión {v}',
+    'busca.titulo':'¿Qué estás buscando hoy?', 'busca.sub':'Elegí una opción y te mostramos solo eso en el mapa.', 'busca.todo':'Ver todo el mapa', 'busca.agenda':'Ver la agenda',
+    'busca.enMapa':'{n} en el mapa', 'busca.enLista':'{n} para ver en la lista',
 
     'ruta.guiados.tab':'Guiados', 'ruta.rio.tab':'Del río', 'ruta.noche.tab':'Nocturna', 'ruta.verde.tab':'Verde',
     'ruta.guiados.n':'Ruta de Paseos Guiados', 'ruta.guiados.d':'Los recorridos a pie por el casco histórico, sus barrios fundacionales y la feria.', 'ruta.guiados.t':'A pie',
@@ -1830,6 +1869,8 @@ const TEXTOS = {
     'pop.verVideo':'Ver vídeo', 'pop.verMas':'Ver mais', 'pop.video':'Vídeo de {n}', 'pop.agrandar':'Ampliar o vídeo', 'pop.minimizar':'Minimizar o vídeo',
     'dest.titulo':'Destaques', 'dest.proximos':'Próximos', 'dest.aria':'Mostrar ou ocultar os eventos em destaque',
     'dest.vacio':'Em breve você verá aqui os próximos eventos. Enquanto isso, toque nos pontos do mapa para descobrir lugares.', 'version':'Versão {v}',
+    'busca.titulo':'O que você procura hoje?', 'busca.sub':'Escolha uma opção e mostramos só isso no mapa.', 'busca.todo':'Ver todo o mapa', 'busca.agenda':'Ver a agenda',
+    'busca.enMapa':'{n} no mapa', 'busca.enLista':'{n} para ver na lista',
 
     'ruta.guiados.tab':'Guiados', 'ruta.rio.tab':'Do rio', 'ruta.noche.tab':'Noturno', 'ruta.verde.tab':'Verde',
     'ruta.guiados.n':'Roteiro de Passeios Guiados', 'ruta.guiados.d':'Os passeios a pé pelo centro histórico, seus bairros de fundação e a feira.', 'ruta.guiados.t':'A pé',
@@ -2868,13 +2909,15 @@ const byId = id => PLACES.find(p=>p.id===id);
 let current=null;
 
 // ============ SPLASH / NAV ============
-function enterApp(){
+function enterApp(directo){
   const sp = document.getElementById('splash');
   if(sp.classList.contains('hidden')) return;
   sp.classList.add('hidden');
   setTimeout(()=>{ const f = sp.querySelector('.splash-photo'); if(f) f.style.animation = 'none'; }, 800);
   switchView('explore');
-  setTimeout(() => mostrarNovedades(), 600);
+  // los enlaces directos (a un lugar, cancelar una inscripción) van derecho a lo suyo
+  if(directo === true) return;
+  setTimeout(async () => { if(!(await mostrarNovedades())) mostrarBusqueda(); }, 550);
 }
 
 /* ===================================================================
@@ -3063,7 +3106,7 @@ async function confirmarCancelacion(){
 function revisarEnlaceCancelacion(){
   const cod = new URLSearchParams(location.search).get('cancelar');
   if(!cod) return;
-  enterApp();
+  enterApp(true);
   abrirCancelacion(cod.trim().toUpperCase());
 }
 
@@ -3075,7 +3118,7 @@ function revisarEnlaceLugar(){
   const qs = new URLSearchParams(location.search);
   const id = qs.get('lugar');
   if(!id || !idValido(id) || !byId(id)) return;
-  enterApp();
+  enterApp(true);
   const f = qs.get('fecha');
   const fecha = f && /^\d{4}-\d{2}-\d{2}$/.test(f) ? f : null;
   setTimeout(() => {
@@ -3094,7 +3137,7 @@ async function revisarBajaEspera(){
   const q = qs.toString();
   history.replaceState({}, '', location.pathname + (q ? '?' + q : ''));
   if(!/^[0-9a-f-]{36}$/i.test(id) || !SB_ON()) return;
-  enterApp();
+  enterApp(true);
   try {
     const r = await sbRpc('lista_espera_baja', { p_id: id });
     toast(t(r && r.ok ? 'baja.ok' : 'baja.ya'), 6000);
@@ -3151,27 +3194,29 @@ function switchView(v, opts){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-10-17-7';
+const APP_VERSION = 'pv-2026-10-17-8';
 
 /* ===================================================================
-   NOVEDADES PARA EL EQUIPO DE TURISMO
+   NOVEDADES DE LA VERSIÓN
    Aviso que aparece una vez por versión, después de la pantalla de
-   inicio, solo en los teléfonos del equipo. Para activarlo, abrir una
-   vez la web con ?equipo=turismo (con ?equipo=no se desactiva).
-   En cada actualización se REEMPLAZA esta lista por lo nuevo (no se
-   acumula) y se cambia "version". Mientras "version" no cambie, el
-   aviso no vuelve a salir.
+   inicio, a quien ya había usado la web antes (el equipo de Turismo, y
+   también visitantes que vuelven). A quien entra por primera vez no le
+   sale: para esa persona todo es nuevo.
+   En cada actualización se REEMPLAZA la lista por lo nuevo (no se
+   acumula) y se cambia "version". Los ítems con 'equipo' al final solo
+   se ven en los teléfonos del equipo (los que entraron una vez con
+   ?equipo=turismo); el resto lo ve cualquiera que vuelve.
    =================================================================== */
 const NOVEDADES = {
-  version: 'pv-2026-10-17-7',
+  version: 'pv-2026-10-17-8',
   fecha: '17 de octubre',
   items: [
-    ['ph-map-pin-area', 'Mapa más claro', 'Cada lugar es un punto con el color de su categoría (los filtros usan los mismos colores). Al acercarse aparecen los pines con ícono, y ningún lugar queda tapado por otro.'],
-    ['ph-cursor-click', 'Ventana al tocar un lugar', 'Muestra foto, una explicación corta y el video si lo tiene, con los botones "Llegar" y "Ver más".'],
-    ['ph-calendar-star', 'Panel "Próximos" en el mapa', 'A la izquierda, abierto apenas se entra. Muestra las actividades marcadas como Destacado en la planilla; si no hay ninguna, las próximas.'],
-    ['ph-video', 'Videos en ventanita', 'El video se ve en una ventana chica en la esquina, con el mapa de fondo. Se puede agrandar o cerrar.'],
-    ['ph-table', 'Planilla: dos columnas nuevas', '"Video (link)": YouTube, Instagram, TikTok, Vimeo, Drive o .mp4. "Destacado": "Sí" en las actividades más importantes (conviene 3 a 6).'],
-    ['ph-device-mobile', 'Más rápida y mejor en celulares', 'Abre al instante desde la segunda visita y se acomoda a celulares chicos y al teléfono acostado. Al compartir el link sale una portada con foto y descripción.']
+    ['ph-magnifying-glass', '"¿Qué estás buscando hoy?"', 'Al entrar aparece una ventanita con todas las categorías. Tocás una y el mapa muestra solo eso. Para ver todo, "Ver todo el mapa".'],
+    ['ph-map-pin-area', 'Mapa más claro y más liviano', 'Cada lugar es un punto con el color de su categoría; los pines con ícono aparecen al acercarse a nivel de calle. Ningún lugar queda tapado por otro.'],
+    ['ph-cursor-click', 'Ventana al tocar un lugar', 'Foto, explicación corta y video si lo tiene, con "Llegar" y "Ver más". El video se ve en una ventanita con el mapa de fondo.'],
+    ['ph-calendar-star', 'Panel "Próximos"', 'A la izquierda del mapa, abierto siempre: las actividades marcadas como Destacado o, si no hay, las próximas.'],
+    ['ph-table', 'Planilla: dos columnas nuevas', '"Video (link)": YouTube, Instagram, TikTok, Vimeo, Drive o .mp4. "Destacado": "Sí" en las actividades más importantes (conviene 3 a 6).', 'equipo'],
+    ['ph-device-mobile', 'Mejor en celulares', 'Abre más rápido y se acomoda a pantallas chicas y al teléfono acostado.']
   ]
 };
 
@@ -3186,26 +3231,88 @@ function esEquipo(){
     return localStorage.getItem('pv-equipo') === '1';
   } catch(e){ return false; }
 }
-const EQUIPO = esEquipo();
 
-function mostrarNovedades(forzar){
-  if(!EQUIPO || !NOVEDADES.items.length) return;
+// ¿Ya había usado la web en este teléfono? Se mira antes de que esta visita guarde nada.
+const VISITA_PREVIA = (async () => {
+  try { if(Object.keys(localStorage).some(k => k.startsWith('pv-'))) return true; } catch(e){}
+  try { if(window.caches) return (await caches.keys()).some(k => k.startsWith('pv-')); } catch(e){}
+  return false;
+})();
+const EQUIPO = esEquipo();
+// Navegadores automáticos (pruebas, capturas): sin ventanas al entrar
+const AUTOMATIZADO = navigator.webdriver === true;
+
+async function mostrarNovedades(forzar){
+  const items = NOVEDADES.items.filter(x => x[3] !== 'equipo' || EQUIPO);
+  if(!items.length) return false;
   let visto = '';
   try { visto = localStorage.getItem('pv-novedades') || ''; } catch(e){}
-  if(!forzar && visto === NOVEDADES.version) return;
-  // si ya hay otra ventana abierta (cancelar inscripción, una ficha), no se apila
-  if(!forzar && document.querySelector('.ticket-overlay.on, #sheet.on')) return;
+  if(!forzar){
+    if(AUTOMATIZADO || visto === NOVEDADES.version || LANG !== 'es') return false;
+    const previa = await VISITA_PREVIA;
+    if(!previa){ try { localStorage.setItem('pv-novedades', NOVEDADES.version); } catch(e){} return false; }
+    // si ya hay otra ventana abierta (cancelar inscripción, una ficha), no se apila
+    if(document.querySelector('.ticket-overlay.on, #sheet.on')) return false;
+  }
   document.getElementById('nov-version').textContent = 'Versión ' + NOVEDADES.version.replace(/^pv-/, '') + ' · ' + NOVEDADES.fecha;
-  document.getElementById('nov-lista').innerHTML = NOVEDADES.items.map(([ico, titulo, texto]) =>
+  document.getElementById('nov-lista').innerHTML = items.map(([ico, titulo, texto]) =>
     `<li><span class="ico"><i class="ph-fill ${ico}"></i></span><div><b>${esc(titulo)}</b><span>${esc(texto)}</span></div></li>`).join('');
   document.getElementById('nov-ov').classList.add('on');
   setTimeout(() => document.getElementById('nov-ok').focus(), 50);
+  return true;
 }
 
 function cerrarNovedades(){
-  document.getElementById('nov-ov').classList.remove('on');
+  const ov = document.getElementById('nov-ov');
+  if(!ov.classList.contains('on')) return;
+  ov.classList.remove('on');
   try { localStorage.setItem('pv-novedades', NOVEDADES.version); } catch(e){}
+  if(!busquedaMostrada) setTimeout(mostrarBusqueda, 250);
 }
+
+/* ===================================================================
+   "¿QUÉ ESTÁS BUSCANDO HOY?"
+   Ventanita al entrar con todas las categorías. Elegir una filtra el
+   mapa (menos puntos, más claro y más liviano). Si la categoría no tiene
+   lugares en el mapa (las excursiones), muestra la lista en la Agenda.
+   =================================================================== */
+let busquedaMostrada = false;
+
+function mostrarBusqueda(){
+  if(busquedaMostrada || AUTOMATIZADO) return;
+  if(hayFiltros() || popupId || vistaActual !== 'explore' || document.querySelector('.ticket-overlay.on, #sheet.on, #nov-ov.on')) return;
+  busquedaMostrada = true;
+  pintarBusqueda();
+  document.getElementById('busca-ov').classList.add('on');
+  setTimeout(() => { const b = document.querySelector('#busca-grid button'); if(b) b.focus({ preventScroll: true }); }, 60);
+}
+
+function pintarBusqueda(){
+  const vig = vigentes();
+  document.getElementById('busca-grid').innerHTML = CATEGORIAS.map(c => {
+    const de = vig.filter(p => (p.cats || []).includes(c.id));
+    if(!de.length) return '';
+    const enMapa = de.filter(coordsOk).length;
+    const sub = enMapa ? t('busca.enMapa', {n: enMapa}) : t('busca.enLista', {n: de.length});
+    return `<button class="busca-op" style="--c:${c.color}" onclick="elegirBusqueda('${c.id}')">
+      <span class="ico"><i class="ph-fill ${c.ico}"></i></span>
+      <span class="txt"><b>${esc(t('cat.' + c.id))}</b><small>${esc(sub)}</small></span></button>`;
+  }).join('');
+}
+
+function elegirBusqueda(id){
+  if(!catDe(id)) return;
+  FILTRO.cats = [id]; FILTRO.subs = []; FILTRO.modo = 'alguna';
+  stat('filtro', null, { m: id, o: 'inicio' });
+  cerrarBusqueda();
+  const enMapa = vigentes().some(p => (p.cats || []).includes(id) && coordsOk(p));
+  if(enMapa) aplicarFiltros();
+  else { switchView('agenda'); aplicarFiltros(); }
+}
+
+function cerrarBusqueda(){ document.getElementById('busca-ov').classList.remove('on'); }
+
+function busquedaAgenda(){ cerrarBusqueda(); switchView('agenda'); }
 
 function renderPie(){
   const el = document.getElementById('feed-foot');
@@ -3215,7 +3322,7 @@ function renderPie(){
   if(CONFIG.wapp) partes.push(t('feed.wapp', {n: '<a href="https://wa.me/' + esc(CONFIG.wapp)
     + '" target="_blank" rel="noopener" style="text-decoration:underline">' + esc(CONFIG.wappTexto || CONFIG.wapp) + '</a>'}));
   partes.push(`<span style="opacity:.55;font-size:.85em">${esc(t('version', {v: APP_VERSION.replace(/^pv-/, '')}))}</span>`
-    + (EQUIPO ? ` · <button onclick="mostrarNovedades(true)" style="text-decoration:underline;font-size:.85em;color:var(--gold)">Novedades</button>` : ''));
+    + (LANG === 'es' ? ` · <button onclick="mostrarNovedades(true)" style="text-decoration:underline;font-size:.85em;color:var(--gold)">Novedades</button>` : ''));
   el.innerHTML = partes.join('<br>');
 }
 
@@ -4019,16 +4126,16 @@ const catPinClass = p => catPrincipal(p).pin;
 let mapMode='lugares', placeMarkers={}, routeLayers=[], activeRoute='guiados';
 
 /* Cómo se ven los lugares en el mapa
-   - Vista general (zoom menor a 15): cada lugar es un punto del color de su
+   - Vista general (zoom menor a 16): cada lugar es un punto del color de su
      categoría, todos en una sola capa SVG. Medido en celular simulado contra
      pines de ícono, grupos con número y canvas: es lo que menos traba al
      arrastrar. Cada punto tiene un área de toque invisible más grande que
      el dibujo, para que no haga falta puntería.
-   - De cerca (zoom 15 o más): pines con ícono, solo los que están en pantalla.
+   - De cerca (zoom 16 o más): pines con ícono, solo los que están en pantalla.
    - El lugar elegido se muestra siempre como pin.
    - El carrusel muestra solo lo que está en pantalla, hasta 15 tarjetas. */
 const MAX_TARJETAS = 15;
-const ZOOM_PINES = 15;
+const ZOOM_PINES = 16;   // con 15 había 40+ pines a la vez en el centro y se trababa en celulares
 const lienzo = map ? L.svg({ padding: 0.2 }) : null;
 const capaPuntos = map ? L.layerGroup().addTo(map) : null;
 const capaPines = map ? L.layerGroup().addTo(map) : null;
@@ -4095,7 +4202,7 @@ function actualizarMarcadores(){
   } else {
     if(map.hasLayer(capaPuntos)) map.removeLayer(capaPuntos);
     if(map.hasLayer(lienzo)) map.removeLayer(lienzo);   // vacía igual se recalculaba en cada movimiento (medido)
-    const b = map.getBounds().pad(0.3);
+    const b = map.getBounds().pad(0.15);
     quiero = new Set(lista.filter(p => b.contains(p.coords)).map(p => p.id));
   }
   if(enfocado && ids.has(enfocado)) quiero.add(enfocado);
@@ -5042,6 +5149,7 @@ document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
     const on = id => document.getElementById(id).classList.contains('on');
     if(on('nov-ov'))              cerrarNovedades();
+    else if(on('busca-ov'))       cerrarBusqueda();
     else if(on('filtros-overlay')) cerrarFiltros();
     else if(on('cancel-overlay')) cerrarCancelacion();
     else if(on('ticket-overlay')) closeTicketModal();
