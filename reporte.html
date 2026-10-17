@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Reporte PosadasVive</title>
+<title>Reporte 48 HS</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0b08'/%3E%3Cpath d='M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z' fill='%23e8c37e'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -166,7 +166,7 @@
   <div class="envoltura">
     <div class="marca">
       <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2a2018"/><path d="M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z" fill="#e8c37e"/></svg>
-      <div><b>PosadasVive</b><h1>Reporte de uso</h1></div>
+      <div><b>48 HS</b><h1>Reporte de uso</h1></div>
     </div>
     <div class="controles">
       <div class="mes" role="group" aria-label="Mes del reporte">
@@ -190,7 +190,7 @@
 
   <section class="acceso" id="acceso" hidden>
     <h2>Acceso al reporte</h2>
-    <p>Ingresá la clave del reporte de PosadasVive.</p>
+    <p>Ingresá la clave del reporte de 48 HS.</p>
     <form id="form-clave">
       <label for="clave" style="position:absolute;left:-9999px">Clave</label>
       <input type="password" id="clave" autocomplete="current-password" placeholder="Clave" required>
@@ -635,7 +635,7 @@ async function cargar(){
   $('mes-sig').disabled = MES >= MES_ACTUAL;
   $('mes-ant').disabled = !DEMO && MES <= CONFIG.desde;
   $('aviso-demo').hidden = !DEMO;
-  document.title = 'Reporte PosadasVive · ' + nombreMes(MES) + (DEMO ? ' (ejemplo)' : '');
+  document.title = 'Reporte 48 HS · ' + nombreMes(MES) + (DEMO ? ' (ejemplo)' : '');
   actualizarURL();
 
   if(DEMO){

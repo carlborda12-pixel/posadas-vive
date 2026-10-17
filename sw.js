@@ -1,5 +1,5 @@
 /* ===================================================================
-   PosadasVive · service worker
+   48 HS · service worker
    Subir a la misma carpeta que index.html.
 
    Al cambiar el contenido de la app hay que subir VERSION, si no los
@@ -10,7 +10,7 @@
    "Actualizar" se activa. Antes se activaba sola (skipWaiting en install)
    y la pagina se recargaba en medio de una inscripcion.
    =================================================================== */
-const VERSION = 'pv-2026-10-17-8';
+const VERSION = 'pv-2026-10-17-9';
 
 const CACHE_APP    = VERSION + '-app';     // la app en si
 const CACHE_MAPA   = VERSION + '-mapa';    // tiles del mapa

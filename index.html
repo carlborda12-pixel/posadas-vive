@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <!-- Sin maximum-scale ni user-scalable=no: bloquear el zoom deja afuera a quien necesita agrandar el texto -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Posadas Vive · Guía viva de la ciudad</title>
+    <title>48 HS · Guía viva de Posadas</title>
     <meta name="description" content="La agenda viva de Posadas, Misiones: qué hacer hoy, paseos guiados gratuitos, atardeceres sobre el Paraná y el mapa de la ciudad en tu bolsillo.">
     <meta name="theme-color" content="#0f0b08">
     <!-- PENDIENTE: cuando esté el dominio definitivo, agregar acá:
@@ -14,8 +14,8 @@
 
     <!-- Vista previa al compartir por WhatsApp / Facebook / X -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Posadas Vive">
-    <meta property="og:title" content="Posadas Vive · Guía viva de la ciudad">
+    <meta property="og:site_name" content="48 HS">
+    <meta property="og:title" content="48 HS · Guía viva de Posadas">
     <meta property="og:description" content="Qué hay hoy en Posadas: paseos guiados, atardeceres en el Paraná y la agenda de la ciudad, actualizada.">
     <meta property="og:locale" content="es_AR">
     <!-- Portada propia (portada.jpg, 1200x630, en la misma carpeta que index.html).
@@ -26,10 +26,10 @@
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Posadas Vive, guía viva de la ciudad: agenda, mapa y paseos guiados">
+    <meta property="og:image:alt" content="48 HS, guía viva de Posadas: agenda, mapa y paseos guiados">
     <meta property="og:image" content="https://public.youware.com/users-website-assets/prod/d9801d5e-b9a5-4695-925c-d937bff38a4f/7ce22f5cf01549289eb4a7d776a8e035">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Posadas Vive · Guía viva de la ciudad">
+    <meta name="twitter:title" content="48 HS · Guía viva de Posadas">
     <meta name="twitter:description" content="Qué hay hoy en Posadas: paseos guiados, atardeceres en el Paraná y la agenda de la ciudad, actualizada.">
     <meta name="twitter:image" content="/portada.jpg">
 
@@ -41,7 +41,7 @@
     <link rel="manifest" href="manifest.webmanifest">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Posadas Vive">
+    <meta name="apple-mobile-web-app-title" content="48 HS">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -939,8 +939,8 @@
         <button data-lang="pt" onclick="cambiarIdioma('pt')">PT</button>
     </div>
     <div class="splash-body">
-        <span class="splash-kicker"><i class="ph-fill ph-map-trifold"></i> <span data-i18n="splash.kicker">Guía viva · Misiones</span></span>
-        <h1 class="splash-title" data-i18n-html="splash.titulo">Posadas<br><em>se vive</em></h1>
+        <span class="splash-kicker"><i class="ph-fill ph-map-trifold"></i> <span data-i18n="splash.kicker">Guía viva de Posadas</span></span>
+        <h1 class="splash-title" data-i18n-html="splash.titulo">48 HS<br><em>en Posadas</em></h1>
         <p class="splash-sub" data-i18n="splash.sub">No es un mapa: es la agenda de tu ciudad. Qué hay hoy, dónde tomar unos mates y qué paseo no te podés perder.</p>
         <button class="splash-enter" id="splash-enter-btn"><span data-i18n="splash.entrar">Explorar la ciudad</span> <i class="ph-fill ph-arrow-right"></i></button>
     </div>
@@ -1644,7 +1644,7 @@ const TEXTOS = {
     'idioma':'Idioma', 'idioma.cambiar':'Ver en portugués',
     'copiado':'Copiado.', 'copiarError':'No pudimos copiarlo. Mantené presionado el texto para copiarlo a mano.',
 
-    'splash.kicker':'Guía viva · Misiones', 'splash.titulo':'Posadas<br><em>se vive</em>',
+    'splash.kicker':'Guía viva de Posadas', 'splash.titulo':'48 HS<br><em>en Posadas</em>',
     'splash.sub':'No es un mapa: es la agenda de tu ciudad. Qué hay hoy, dónde tomar unos mates y qué paseo no te podés perder.',
     'splash.entrar':'Explorar la ciudad',
 
@@ -1830,7 +1830,7 @@ const TEXTOS = {
     'idioma':'Idioma', 'idioma.cambiar':'Ver em espanhol',
     'copiado':'Copiado.', 'copiarError':'Não foi possível copiar. Mantenha o texto pressionado para copiar manualmente.',
 
-    'splash.kicker':'Guia viva · Misiones', 'splash.titulo':'Viva<br><em>Posadas</em>',
+    'splash.kicker':'Guia viva de Posadas', 'splash.titulo':'48 HS<br><em>em Posadas</em>',
     'splash.sub':'Não é só um mapa: é a agenda da cidade. O que tem hoje, onde tomar um mate e qual passeio você não pode perder.',
     'splash.entrar':'Explorar a cidade',
 
@@ -2088,7 +2088,7 @@ function t(clave, vars, lang){
   const l = lang || LANG;
   let s = (TEXTOS[l] && TEXTOS[l][clave]);
   if(s == null) s = TEXTOS.es[clave];
-  if(s == null){ console.warn('[PosadasVive] Falta el texto', clave); return clave; }
+  if(s == null){ console.warn('[48 HS] Falta el texto', clave); return clave; }
   if(vars) s = s.replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
   return s;
 }
@@ -2317,7 +2317,7 @@ function hydrateAgenda(){
   });
 
   if(vencidos.length){
-    console.warn('[PosadasVive] Actividades vencidas, ocultas del listado:\n  · ' + vencidos.join('\n  · '));
+    console.warn('[48 HS] Actividades vencidas, ocultas del listado:\n  · ' + vencidos.join('\n  · '));
   }
 }
 
@@ -2525,9 +2525,9 @@ function despuesDeCargar(n, fuente){
   hydrateAgenda();
   renderHero(); renderDestacados(); renderFiltros(); renderTimeline(); renderPlanes(); actualizarBadge();
   try { redibujarMapa(); }
-  catch(e){ console.warn('[PosadasVive] El catálogo cargó pero el mapa no se pudo redibujar:', e.message); }
+  catch(e){ console.warn('[48 HS] El catálogo cargó pero el mapa no se pudo redibujar:', e.message); }
   cargarCupos();
-  console.info('[PosadasVive] Catálogo cargado (' + fuente + '):', n, 'lugares.');
+  console.info('[48 HS] Catálogo cargado (' + fuente + '):', n, 'lugares.');
 }
 
 /* Copia del último catálogo en el teléfono: desde la segunda visita la app
@@ -2568,7 +2568,7 @@ async function cargarCatalogoJSON(){
     try { if(texto.length < 2000000) localStorage.setItem(CLAVE_CATALOGO, texto); } catch(e){}
     despuesDeCargar(n, CONFIG.catalogo);
   } catch(e){
-    console.warn('[PosadasVive] No se pudo leer ' + CONFIG.catalogo + '. Se usa la lista incluida en la app:', e.message);
+    console.warn('[48 HS] No se pudo leer ' + CONFIG.catalogo + '. Se usa la lista incluida en la app:', e.message);
   }
 }
 
@@ -2589,7 +2589,7 @@ async function cargarCatalogo(){
 
     const lugares = [];
     filas.forEach(f => {
-      if(!idValido(f.id)){ console.warn('[PosadasVive] Lugar descartado, id inválido:', f.id); return; }
+      if(!idValido(f.id)){ console.warn('[48 HS] Lugar descartado, id inválido:', f.id); return; }
       lugares.push(mapearLugar(f));
     });
     if(!lugares.length) throw new Error('ningún lugar válido');
@@ -2597,7 +2597,7 @@ async function cargarCatalogo(){
     PLACES.splice(0, PLACES.length, ...lugares);
     despuesDeCargar(lugares.length, 'Supabase');
   } catch(e){
-    console.warn('[PosadasVive] No se pudo leer el catálogo remoto. Se usa el incluido en la app:', e.message);
+    console.warn('[48 HS] No se pudo leer el catálogo remoto. Se usa el incluido en la app:', e.message);
   }
 }
 
@@ -2613,7 +2613,7 @@ async function cargarCupos(){
   const items = conCupo().map(p => ({ id: p.id, fecha: fechaISO(p._fecha) }));
   if(!items.length) return;
   try { await pedirCupos(items); renderTimeline(); }
-  catch(e){ console.warn('[PosadasVive] No se pudieron leer los cupos:', e.message); }
+  catch(e){ console.warn('[48 HS] No se pudieron leer los cupos:', e.message); }
 }
 
 function cupoTexto(p){
@@ -2689,7 +2689,7 @@ function enviarEstadisticas(){
   const lote = STATS.cola.splice(0, 25);
   // keepalive: el envío sigue aunque la persona cierre la pestaña
   sbRpc('registrar_eventos', { p_eventos: lote }, { keepalive: true }).catch(e => {
-    if(noExiste(e)){ STATS.activas = false; STATS.cola = []; console.info('[PosadasVive] Estadísticas todavía no instaladas en la base.'); }
+    if(noExiste(e)){ STATS.activas = false; STATS.cola = []; console.info('[48 HS] Estadísticas todavía no instaladas en la base.'); }
   });
   if(STATS.cola.length) STATS.timer = setTimeout(enviarEstadisticas, 2000);
 }
@@ -2835,7 +2835,7 @@ function eventoCalendario(p, fecha, hora, codigo){
     .toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
   const url = location.origin + location.pathname + '?lugar=' + p.id;
   const desc = codigo ? t('cal.desc', {c: codigo, u: enlaceCancelacion(codigo)}) : t('cal.descGeneral', {u: url});
-  return { titulo: tx(p, 'name'), lugar: tx(p, 'addr') + ', Posadas, Misiones', desc, ini, fin, uid: (codigo || p.id + '-' + fechaISO(fecha)) + '@posadasvive' };
+  return { titulo: tx(p, 'name'), lugar: tx(p, 'addr') + ', Posadas, Misiones', desc, ini, fin, uid: (codigo || p.id + '-' + fechaISO(fecha)) + '@48hs' };
 }
 
 function urlGoogleCal(ev){
@@ -2849,7 +2849,7 @@ function urlGoogleCal(ev){
 
 function bajarICS(ev, nombre){
   const e = s => String(s).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/[,;]/g, m => '\\' + m);
-  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//PosadasVive//ES','CALSCALE:GREGORIAN','METHOD:PUBLISH',
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//48HS//ES','CALSCALE:GREGORIAN','METHOD:PUBLISH',
     'BEGIN:VEVENT', 'UID:' + ev.uid,
     'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''),
     'DTSTART:' + ev.ini, 'DTEND:' + ev.fin,
@@ -2858,7 +2858,7 @@ function bajarICS(ev, nombre){
     'END:VEVENT','END:VCALENDAR'].join('\r\n');
   const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
   const a = document.createElement('a');
-  a.href = url; a.download = (nombre || 'posadasvive') + '.ics';
+  a.href = url; a.download = (nombre || '48hs') + '.ics';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
@@ -2868,7 +2868,7 @@ function botonesCalendario(ev, id){
   calPendiente = ev;
   return `<div class="cal-acts">
     <a href="${esc(urlGoogleCal(ev))}" target="_blank" rel="noopener" onclick="stat('calendario','${id}',{k:'g'})"><i class="ph-fill ph-google-logo"></i> ${esc(t('cal.google'))}</a>
-    <button onclick="bajarICS(calPendiente,'posadasvive-${id}');stat('calendario','${id}',{k:'ics'})"><i class="ph-fill ph-calendar-plus"></i> ${esc(t('cal.ics'))}</button>
+    <button onclick="bajarICS(calPendiente,'48hs-${id}');stat('calendario','${id}',{k:'ics'})"><i class="ph-fill ph-calendar-plus"></i> ${esc(t('cal.ics'))}</button>
   </div>`;
 }
 
@@ -2879,7 +2879,7 @@ function calendarioInscripcion(codigo){
   const ev = eventoCalendario(p, desdeISO(x.fecha), x.hora, x.codigo);
   // En el teléfono, Google Calendar es lo más común; el .ics queda en la pantalla de confirmación
   if(/android/i.test(navigator.userAgent)) abrirPestana(urlGoogleCal(ev));
-  else bajarICS(ev, 'posadasvive-' + p.id);
+  else bajarICS(ev, '48hs-' + p.id);
   stat('calendario', p.id, { k: 'planes' });
 }
 
@@ -2965,7 +2965,7 @@ async function cargarClima(){
     pintarClima();
   } catch(e){
     chip.classList.add('off');
-    console.warn('[PosadasVive] Clima no disponible:', e.message);
+    console.warn('[48 HS] Clima no disponible:', e.message);
   }
 }
 
@@ -3013,7 +3013,7 @@ function registrarSW(){
         }
       });
     });
-  }).catch(e => console.warn('[PosadasVive] Service worker no registrado:', e.message));
+  }).catch(e => console.warn('[48 HS] Service worker no registrado:', e.message));
 
   let recargando = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
@@ -3194,7 +3194,7 @@ function switchView(v, opts){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-10-17-8';
+const APP_VERSION = 'pv-2026-10-17-9';
 
 /* ===================================================================
    NOVEDADES DE LA VERSIÓN
@@ -3208,15 +3208,11 @@ const APP_VERSION = 'pv-2026-10-17-8';
    ?equipo=turismo); el resto lo ve cualquiera que vuelve.
    =================================================================== */
 const NOVEDADES = {
-  version: 'pv-2026-10-17-8',
+  version: 'pv-2026-10-17-9',
   fecha: '17 de octubre',
   items: [
-    ['ph-magnifying-glass', '"¿Qué estás buscando hoy?"', 'Al entrar aparece una ventanita con todas las categorías. Tocás una y el mapa muestra solo eso. Para ver todo, "Ver todo el mapa".'],
-    ['ph-map-pin-area', 'Mapa más claro y más liviano', 'Cada lugar es un punto con el color de su categoría; los pines con ícono aparecen al acercarse a nivel de calle. Ningún lugar queda tapado por otro.'],
-    ['ph-cursor-click', 'Ventana al tocar un lugar', 'Foto, explicación corta y video si lo tiene, con "Llegar" y "Ver más". El video se ve en una ventanita con el mapa de fondo.'],
-    ['ph-calendar-star', 'Panel "Próximos"', 'A la izquierda del mapa, abierto siempre: las actividades marcadas como Destacado o, si no hay, las próximas.'],
-    ['ph-table', 'Planilla: dos columnas nuevas', '"Video (link)": YouTube, Instagram, TikTok, Vimeo, Drive o .mp4. "Destacado": "Sí" en las actividades más importantes (conviene 3 a 6).', 'equipo'],
-    ['ph-device-mobile', 'Mejor en celulares', 'Abre más rápido y se acomoda a pantallas chicas y al teléfono acostado.']
+    ['ph-sparkle', 'Nuevo nombre: 48 HS', 'La web ahora se llama 48 HS. Cambian la pantalla de inicio, el nombre en la pestaña del navegador y al instalarla en el celular, la foto que sale al compartir el link y los mensajes de WhatsApp de reservas.'],
+    ['ph-table', 'Planilla y reporte con el nombre nuevo', 'La planilla de carga ahora es "48 HS - Carga de datos" y el reporte de uso dice 48 HS. Las columnas son las mismas.', 'equipo']
   ]
 };
 
@@ -3760,7 +3756,7 @@ function shareItem(){
   const url = location.origin + location.pathname + '?lugar=' + encodeURIComponent(current.id);
   const text = t('share.texto', {n: tx(current,'name'), w: current.when.label});
   stat('compartir', current.id);
-  if(navigator.share) navigator.share({title:'PosadasVive', text, url}).catch(()=>{});
+  if(navigator.share) navigator.share({title:'48 HS', text, url}).catch(()=>{});
   else copiarTexto(text + ' ' + url);
 }
 
@@ -3908,7 +3904,7 @@ async function fetchRoute(oLat, oLng, dLat, dLng, destName){
     showDirSteps(route);
   } catch(e){
     if(pedido !== rutaPedido) return;
-    console.warn('[PosadasVive] Ruteo no disponible:', e.message);
+    console.warn('[48 HS] Ruteo no disponible:', e.message);
     document.getElementById('dir-dist').textContent = '—';
     document.getElementById('dir-dur').textContent = '—';
     document.getElementById('dir-steps').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:0.85rem">' + t('dir.error') + '</div>';
@@ -4014,7 +4010,7 @@ function resetAudio(){
    MAPA
    =================================================================== */
 const LEAFLET_OK = (typeof L !== 'undefined' && typeof L.map === 'function');
-if(!LEAFLET_OK) console.error('[PosadasVive] Leaflet no cargó. El mapa queda desactivado; el resto de la app sigue funcionando.');
+if(!LEAFLET_OK) console.error('[48 HS] Leaflet no cargó. El mapa queda desactivado; el resto de la app sigue funcionando.');
 
 const map = LEAFLET_OK
   ? L.map('map',{zoomControl:false, tap:false, attributionControl:true}).setView([-27.372,-55.892],13)
@@ -4759,7 +4755,7 @@ function openTicketModal(p, fechaPedida){
     if(faltan.length){
       pedirCupos(faltan.map(d => ({ id: p.id, fecha: fechaISO(d) })))
         .then(() => { if(ticketPlace === p && !document.getElementById('ticket-form').hidden) pintarTicket(); })
-        .catch(e => console.warn('[PosadasVive] Cupos por fecha no disponibles:', e.message));
+        .catch(e => console.warn('[48 HS] Cupos por fecha no disponibles:', e.message));
     }
   }
 }
@@ -4908,23 +4904,23 @@ function armarMensaje(p, name, email, phone, qty, opciones){
   const cab = lineaIdioma();
 
   if(o.espera){
-    return cab + `Hola! Quiero anotarme en la *lista de espera* de *PosadasVive* ⏳\n\n` + datos
+    return cab + `Hola! Quiero anotarme en la *lista de espera* de *48 HS* ⏳\n\n` + datos
       + `\n🎟️ *Personas:* ${qty}\n\nSi se libera un lugar, ¿me avisan? ¡Gracias! 😊`;
   }
   if(p.ticketType === 'paid'){
     if(p.ticketPrice){
-      return cab + `Hola! Quiero reservar lugar en *PosadasVive* 🎟️\n\n` + datos
+      return cab + `Hola! Quiero reservar lugar en *48 HS* 🎟️\n\n` + datos
         + `\n🎟️ *Personas:* ${qty}\n💰 *Precio publicado:* ${pesos(p.ticketPrice)} por persona\n💵 *Total estimado:* ${pesos(p.ticketPrice*qty)}\n\n`
         + `¿Hay disponibilidad? ¿Cómo hago el pago? ¡Gracias! 😊`;
     }
-    return cab + `Hola! Me interesa una actividad de *PosadasVive* 🎟️\n\n` + datos
+    return cab + `Hola! Me interesa una actividad de *48 HS* 🎟️\n\n` + datos
       + `\n🎟️ *Personas:* ${qty}\n\n¿Cuál es el precio y hay disponibilidad? ¡Gracias! 😊`;
   }
   if(o.codigo){
-    return cab + `Hola! Ya tengo mi lugar reservado en *PosadasVive* ✅\n\n` + datos
+    return cab + `Hola! Ya tengo mi lugar reservado en *48 HS* ✅\n\n` + datos
       + `\n🎟️ *Personas:* ${qty}\n🔖 *Código de reserva:* ${o.codigo}\n\n¡Gracias! 😊`;
   }
-  return cab + `Hola! Me quiero anotar en una actividad de *PosadasVive* 🌿\n\n` + datos
+  return cab + `Hola! Me quiero anotar en una actividad de *48 HS* 🌿\n\n` + datos
     + `\n🎟️ *Personas:* ${qty}\n\n¿Hay lugar? ¡Gracias! 😊`;
 }
 
@@ -5015,7 +5011,7 @@ async function submitTicket(){
     showTicketSuccess(p, datos, { tipo: 'reserva', codigo, wapp: wappURL, wappAbierto: abierto, fecha });
 
   } catch(e){
-    console.warn('[PosadasVive] Error al reservar:', e.message);
+    console.warn('[48 HS] Error al reservar:', e.message);
     if(wapTab && !wapTab.closed) wapTab.close();
     restaurar();
     setAviso('err', '<i class="ph-fill ph-wifi-slash"></i> ' + esc(t('ticket.errRed')));
@@ -5065,7 +5061,7 @@ async function unirseEspera(p, datos){
     showTicketSuccess(p, datos, { tipo: 'espera', posicion: r.posicion, fecha: ticketFecha });
   } catch(e){
     if(noExiste(e)) return porWhatsapp();
-    console.warn('[PosadasVive] Error en lista de espera:', e.message);
+    console.warn('[48 HS] Error en lista de espera:', e.message);
     restaurar();
     setAviso('err', '<i class="ph-fill ph-wifi-slash"></i> ' + esc(t('ticket.errRed')));
   }
@@ -5169,7 +5165,7 @@ document.addEventListener('keydown', e => {
 // ============ INIT ============
 function paso(nombre, fn){
   try { fn(); }
-  catch(e){ console.error('[PosadasVive] Falló "' + nombre + '":', e.message); }
+  catch(e){ console.error('[48 HS] Falló "' + nombre + '":', e.message); }
 }
 
 paso('rendimiento', detectarPerf);
