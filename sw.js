@@ -10,7 +10,7 @@
    "Actualizar" se activa. Antes se activaba sola (skipWaiting en install)
    y la pagina se recargaba en medio de una inscripcion.
    =================================================================== */
-const VERSION = 'pv-2026-10-17-9';
+const VERSION = 'pv-2026-11-08-2';
 
 const CACHE_APP    = VERSION + '-app';     // la app en si
 const CACHE_MAPA   = VERSION + '-mapa';    // tiles del mapa
@@ -31,7 +31,23 @@ const OPCIONALES = [
   './iconos/icono-192.png',
   './iconos/icono-512.png',
   './iconos/icono-maskable-512.png',
-  './iconos/apple-touch-icon.png'
+  './iconos/apple-touch-icon.png',
+  './privacidad.html',
+  './marca/logo-48h.svg',
+  './marca/logo-turismo.svg',
+  './marca/apextech.svg',
+  './marca/inicio-hd.webp',
+  './marca/favicon.svg',
+  './fuentes/fuentes.css',
+  './fuentes/be-vietnam-pro-latin-300-normal.woff2',
+  './fuentes/be-vietnam-pro-latin-400-normal.woff2',
+  './fuentes/be-vietnam-pro-latin-500-normal.woff2',
+  './fuentes/be-vietnam-pro-latin-600-normal.woff2',
+  './fuentes/be-vietnam-pro-latin-700-normal.woff2',
+  './fuentes/be-vietnam-pro-latin-800-normal.woff2',
+  './fuentes/be-vietnam-pro-latin-400-italic.woff2',
+  './fuentes/be-vietnam-pro-latin-500-italic.woff2',
+  './fuentes/be-vietnam-pro-latin-600-italic.woff2'
 ];
 
 // Topes: sin esto el cache del mapa crece sin limite.
@@ -127,20 +143,20 @@ self.addEventListener('fetch', e => {
   }
 
   // Catalogo de lugares: primero la red, y si no hay, el ultimo que vimos.
-  if(url.pathname.includes('/rest/v1/lugares')){
+  if(url.hostname.endsWith('.supabase.co') && url.pathname.startsWith('/rest/v1/lugares')){
     e.respondWith(networkFirst(req, CACHE_DATOS));
     return;
   }
 
   // Resto de Supabase, clima y ruteo: datos frescos, sin cache
   if(url.hostname.endsWith('.supabase.co') ||
-     url.hostname.endsWith('open-meteo.com') ||
-     url.hostname.endsWith('routing.openstreetmap.de')){
+     url.hostname === 'api.open-meteo.com' ||
+     url.hostname === 'routing.openstreetmap.de'){
     return;
   }
 
   // Tiles del mapa (pedidas con CORS desde Leaflet)
-  if(url.hostname.includes('arcgisonline.com')){
+  if(url.hostname === 'server.arcgisonline.com'){
     e.respondWith(cacheFirst(req, CACHE_MAPA, false));
     return;
   }
@@ -153,12 +169,10 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Librerias y tipografias externas. El script de Phosphor trae sus hojas
-  // de estilo desde jsdelivr: sin esa linea los iconos no andaban offline.
-  if(url.hostname.includes('unpkg.com') ||
-     url.hostname.includes('cdn.jsdelivr.net') ||
-     url.hostname.includes('fonts.googleapis.com') ||
-     url.hostname.includes('fonts.gstatic.com')){
+  // Librería externa (Leaflet). Los íconos van dentro de index.html y la
+  // tipografía se sirve desde el mismo sitio (fuentes/).
+  // (nombre exacto: "includes" aceptaba también "unpkg.com.sitio-falso.net")
+  if(url.hostname === 'unpkg.com'){
     e.respondWith(cacheFirst(req, CACHE_APP, true));
     return;
   }

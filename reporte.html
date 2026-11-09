@@ -4,28 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Reporte 48 HS</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0b08'/%3E%3Cpath d='M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z' fill='%23e8c37e'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Reporte 48h Posadas</title>
+<link rel="icon" href="marca/favicon.svg" type="image/svg+xml">
+<link href="fuentes/fuentes.css" rel="stylesheet">
 <style>
-  /* Tokens. Los colores de los gráficos están validados para daltonismo y
-     contraste en claro y oscuro (naranja = serie principal). */
+  /* Tokens con la identidad 48h Posadas (verde = serie principal, rosa de acento).
+     Subas y bajas mantienen verde y rojo, validados para daltonismo. */
   :root {
     color-scheme: light;
-    --page: #f6f2ec;
-    --surface: #fcfcfb;
-    --ink: #1e1712;
-    --ink-2: #5c5047;
-    --muted: #898781;
-    --grid: #e7e2da;
-    --axis: #c3c2b7;
-    --line: rgba(30,23,18,0.10);
-    --serie: #eb6834;
-    --serie-suave: rgba(235,104,52,0.12);
-    --brand: #1e1712;
-    --brand-ink: #e8c37e;
+    --page: #f7f7f7;
+    --surface: #ffffff;
+    --ink: #2d2d2d;
+    --ink-2: #555555;
+    --muted: #858585;
+    --grid: #e6e6e6;
+    --axis: #c4c4c4;
+    --line: rgba(45,45,45,0.10);
+    --serie: #038a5d;
+    --serie-suave: rgba(5,163,111,0.12);
+    --brand: #003a28;
+    --brand-ink: #05a36f;
     --sube: #006300;
     --baja: #b42318;
     --aviso-bg: #fff4e0;
@@ -35,27 +33,27 @@
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       color-scheme: dark;
-      --page: #0f0b08; --surface: #1a1714; --ink: #f3ece2; --ink-2: #c9bcaa; --muted: #93877a;
-      --grid: #2c2622; --axis: #3d3530; --line: rgba(255,255,255,0.09);
-      --serie: #d95926; --serie-suave: rgba(217,89,38,0.16);
-      --brand: #1e1712; --brand-ink: #e8c37e; --sube: #3fbf3f; --baja: #f08a80;
-      --aviso-bg: #2b2112; --aviso-ink: #f0c779; --sombra: none;
+      --page: #06120e; --surface: #0f241c; --ink: #f2f2f2; --ink-2: #c4c4c4; --muted: #8f8f8f;
+      --grid: #2a2a2a; --axis: #3a3a3a; --line: rgba(255,255,255,0.09);
+      --serie: #05a36f; --serie-suave: rgba(5,163,111,0.18);
+      --brand: #003a28; --brand-ink: #05a36f; --sube: #3fbf3f; --baja: #f08a80;
+      --aviso-bg: #2a2416; --aviso-ink: #f0c779; --sombra: none;
     }
   }
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --page: #0f0b08; --surface: #1a1714; --ink: #f3ece2; --ink-2: #c9bcaa; --muted: #93877a;
-    --grid: #2c2622; --axis: #3d3530; --line: rgba(255,255,255,0.09);
-    --serie: #d95926; --serie-suave: rgba(217,89,38,0.16);
-    --brand: #1e1712; --brand-ink: #e8c37e; --sube: #3fbf3f; --baja: #f08a80;
-    --aviso-bg: #2b2112; --aviso-ink: #f0c779; --sombra: none;
+    --page: #06120e; --surface: #0f241c; --ink: #f2f2f2; --ink-2: #c4c4c4; --muted: #8f8f8f;
+    --grid: #2a2a2a; --axis: #3a3a3a; --line: rgba(255,255,255,0.09);
+    --serie: #05a36f; --serie-suave: rgba(5,163,111,0.18);
+    --brand: #003a28; --brand-ink: #05a36f; --sube: #3fbf3f; --baja: #f08a80;
+    --aviso-bg: #2a2416; --aviso-ink: #f0c779; --sombra: none;
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; }
-  body { background: var(--page); color: var(--ink); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.5; }
+  body { background: var(--page); color: var(--ink); font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 15px; line-height: 1.5; }
   button, input { font-family: inherit; font-size: inherit; }
-  h1, h2 { font-family: 'Fraunces', Georgia, serif; letter-spacing: -0.3px; margin: 0; }
+  h1, h2 { font-family: 'Be Vietnam Pro', system-ui, sans-serif; letter-spacing: -0.3px; margin: 0; }
 
   .envoltura { max-width: 1080px; margin: 0 auto; padding: 0 16px 48px; }
 
@@ -63,9 +61,8 @@
   .top { background: var(--brand); color: #f3ece2; }
   .top .envoltura { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; padding-top: 18px; padding-bottom: 18px; }
   .marca { display: flex; align-items: center; gap: 10px; margin-right: auto; }
-  .marca svg { width: 34px; height: 34px; flex-shrink: 0; }
-  .marca b { display: block; color: var(--brand-ink); font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; }
-  .marca h1 { font-size: 1.35rem; color: #f3ece2; }
+  .marca .logo { width: 176px; height: auto; flex-shrink: 0; padding-right: 12px; margin-right: 2px; border-right: 1px solid rgba(255,255,255,0.18); }
+  .marca h1 { font-size: 1.15rem; font-weight: 400; color: #f2f2f2; }
   .controles { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .mes { display: flex; align-items: center; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; }
   .mes button { background: none; border: 0; color: #f3ece2; width: 40px; height: 40px; cursor: pointer; font-size: 1.1rem; border-radius: 12px; }
@@ -73,7 +70,7 @@
   .mes button[disabled] { opacity: 0.3; cursor: default; }
   .mes span { min-width: 150px; text-align: center; font-weight: 700; }
   .btn { display: inline-flex; align-items: center; gap: 7px; border-radius: 12px; padding: 10px 15px; font-weight: 700; cursor: pointer; border: 1px solid transparent; }
-  .btn-claro { background: var(--brand-ink); color: #2a1405; }
+  .btn-claro { background: var(--brand-ink); color: #ffffff; }
   .btn-borde { background: transparent; color: var(--ink); border-color: var(--line); }
   .btn svg { width: 16px; height: 16px; }
 
@@ -108,7 +105,7 @@
   .lienzo { position: relative; width: 100%; }
   .lienzo svg { display: block; width: 100%; overflow: visible; }
   .lienzo .vacio { color: var(--muted); font-size: 0.85rem; padding: 26px 0; text-align: center; }
-  svg text { fill: var(--muted); font-size: 11px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+  svg text { fill: var(--muted); font-size: 11px; font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
   svg .et-barra { fill: var(--ink-2); font-size: 12px; font-variant-numeric: normal; }
   svg .valor { fill: var(--ink); font-size: 12px; font-weight: 700; }
   svg .grid { stroke: var(--grid); stroke-width: 1; }
@@ -128,6 +125,23 @@
   details.tabla th, details.tabla td { text-align: left; padding: 5px 4px; border-bottom: 1px solid var(--grid); }
   details.tabla td.n, details.tabla th.n { text-align: right; font-variant-numeric: tabular-nums; }
 
+  /* ---------- personas que ingresaron ---------- */
+  .vis-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 4px 0 16px; }
+  .vis-tiles .tile { padding: 12px 14px; box-shadow: none; }
+  .vis-grilla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 18px; align-items: start; }
+  .vis-grilla h3 { font-size: 0.9rem; margin: 0 0 8px; color: var(--ink-2); }
+  .tabla-vis { max-height: 440px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; font-size: 0.8rem; }
+  .tabla-vis table { width: 100%; border-collapse: collapse; }
+  .tabla-vis th { position: sticky; top: 0; background: var(--surface); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--axis); font-weight: 700; white-space: nowrap; }
+  .tabla-vis td { padding: 7px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  .tabla-vis td.fecha { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .tabla-vis td.email { word-break: break-all; }
+  .tabla-vis .vacio { padding: 22px; text-align: center; color: var(--muted); }
+  .vis-acciones { display: flex; justify-content: flex-end; margin-top: 10px; }
+  @media (max-width: 860px) { .vis-grilla { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .vis-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .vis-tiles .tile .num { font-size: 1.3rem; } }
+  @media print { .vis-acciones { display: none !important; } .tabla-vis { max-height: none; overflow: visible; } }
+
   .pie { margin-top: 26px; color: var(--ink-2); font-size: 0.8rem; line-height: 1.6; }
   .pie b { color: var(--ink); }
   .cargando { opacity: 0.45; transition: opacity 0.2s; }
@@ -140,19 +154,20 @@
     .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hero .num { font-size: 2.8rem; }
     .mes span { min-width: 120px; }
-    .marca h1 { font-size: 1.15rem; }
+    .marca h1 { font-size: 1rem; }
+    .marca .logo { width: 140px; }
   }
 
   /* Impresión / PDF: siempre en claro, sin controles */
   @page { size: A4; margin: 12mm; }
   @media print {
     :root, :root[data-theme="dark"] {
-      color-scheme: light; --page: #fff; --surface: #fff; --ink: #1e1712; --ink-2: #5c5047; --muted: #7a756f;
-      --grid: #e7e2da; --axis: #c3c2b7; --line: rgba(30,23,18,0.14); --serie: #eb6834; --sombra: none;
+      color-scheme: light; --page: #fff; --surface: #fff; --ink: #2d2d2d; --ink-2: #555555; --muted: #7a7a7a;
+      --grid: #e7e2da; --axis: #c3c2b7; --line: rgba(30,23,18,0.14); --serie: #038a5d; --sombra: none;
       --sube: #006300; --baja: #b42318; --aviso-bg: #fff4e0; --aviso-ink: #7a4a00;
     }
     body { font-size: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .top { background: #1e1712 !important; }
+    .top { background: #003a28 !important; }
     .controles, details.tabla, .tip { display: none !important; }
     .tarjeta { break-inside: avoid; box-shadow: none; }
     .resumen { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
@@ -165,8 +180,8 @@
 <header class="top">
   <div class="envoltura">
     <div class="marca">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2a2018"/><path d="M32 13c-7.2 0-13 5.8-13 13 0 9.7 13 25 13 25s13-15.3 13-25c0-7.2-5.8-13-13-13zm0 17.8a4.8 4.8 0 110-9.6 4.8 4.8 0 010 9.6z" fill="#e8c37e"/></svg>
-      <div><b>48 HS</b><h1>Reporte de uso</h1></div>
+      <img class="logo" src="marca/logo-48h.svg" width="176" height="40" alt="48h Posadas">
+      <div><h1>Reporte de uso</h1></div>
     </div>
     <div class="controles">
       <div class="mes" role="group" aria-label="Mes del reporte">
@@ -190,7 +205,7 @@
 
   <section class="acceso" id="acceso" hidden>
     <h2>Acceso al reporte</h2>
-    <p>Ingresá la clave del reporte de 48 HS.</p>
+    <p>Ingresá la clave del reporte de 48h Posadas.</p>
     <form id="form-clave">
       <label for="clave" style="position:absolute;left:-9999px">Clave</label>
       <input type="password" id="clave" autocomplete="current-password" placeholder="Clave" required>
@@ -246,8 +261,28 @@
       </section>
     </div>
 
+    <section class="tarjeta chart ancho" id="sec-visitantes">
+      <h2>Personas que ingresaron</h2>
+      <p class="bajada">Quienes dejaron su nombre y email al entrar a la web y aceptaron la política de privacidad. El ingreso es opcional: el resto de las visitas siguen siendo anónimas.</p>
+      <div class="tiles vis-tiles" id="vis-tiles"></div>
+      <div class="vis-grilla">
+        <div>
+          <h3>Qué les interesa</h3>
+          <div class="lienzo" id="g-intereses"></div>
+        </div>
+        <div>
+          <h3>Lista (los más recientes primero)</h3>
+          <div class="tabla-vis" id="t-visitantes"></div>
+          <div class="vis-acciones"><button class="btn btn-borde" type="button" id="vis-csv">Descargar lista (CSV)</button></div>
+        </div>
+      </div>
+    </section>
+
     <p class="pie">
-      <b>Cómo se mide.</b> La app registra eventos anónimos: no usa cookies ni guarda nombres, emails, IP ni ubicación.
+      <b>Datos personales.</b> La lista de personas que ingresaron tiene nombres y emails: usarla solo para lo que dice la política de privacidad (saber quién visita la web y qué le interesa), no compartirla y no usarla para mandar publicidad. Si alguien pide ver o borrar sus datos, se hace desde el SQL Editor de Supabase (ver <code>temporada.sql</code>, parte 6).
+    </p>
+    <p class="pie">
+      <b>Cómo se mide.</b> La app registra eventos sin cookies ni IP ni ubicación. Son anónimos, salvo los de quienes ingresaron con nombre y email.
       Las inscripciones se cuentan cuando la base confirma el lugar; si después alguien cancela, sigue contando acá.
       Para medir carteles, el código QR de cada uno lleva su propio origen (por ejemplo <code>?src=qr-costanera</code>).
       Los días y horarios son de Posadas.
@@ -304,9 +339,17 @@ let MES = /^\d{4}-\d{2}$/.test(qs.get('mes') || '') ? qs.get('mes') : MES_ACTUAL
 if(MES > MES_ACTUAL) MES = MES_ACTUAL;
 let DEMO = qs.get('demo') === '1';
 
-// La clave puede venir en el enlace (?clave=...). Se guarda para la
-// sesión y se saca de la barra de direcciones.
-if(qs.get('clave')){ almacen.escribir('pv-reporte-clave', qs.get('clave')); qs.delete('clave'); }
+// La clave puede venir en el enlace, después de "#" (reporte.html#clave=...):
+// lo que va después de "#" no viaja al servidor ni queda en sus registros.
+// Se guarda para la sesión y se saca de la barra de direcciones.
+// "?clave=" ya no se acepta: esa forma sí quedaba en los registros de Vercel.
+{
+  const h = new URLSearchParams(location.hash.slice(1));
+  if(h.get('clave')){ almacen.escribir('pv-reporte-clave', h.get('clave')); history.replaceState({}, '', location.pathname + location.search); }
+  if(qs.get('clave')) qs.delete('clave');
+  // enlace con clave pegado en una pestaña que ya tenía el reporte abierto
+  addEventListener('hashchange', () => { if(/clave=/.test(location.hash)) location.reload(); });
+}
 function actualizarURL(){
   qs.set('mes', MES);
   if(DEMO) qs.set('demo', '1'); else qs.delete('demo');
@@ -348,6 +391,28 @@ async function cargarNombres(){
   } catch(e){}
 }
 const nombreLugar = id => NOMBRES[id] || id;
+
+// Categoría principal de cada lugar (de catalogo.json, el mismo que usa la app)
+const CATEGORIA = { casco:'paseos', jardin:'paseos', bajada:'paseos', parque:'paseos', murales:'paseos', cementerio:'paseos',
+  catamaran:'nautico', costanera:'naturaleza', brete:'naturaleza', mirador:'naturaleza', holy:'nocturna',
+  catedral:'cultura', feria:'gastronomia', conocimiento:'cultura' };
+const NOMBRE_CAT = { cultura:'Cultura', naturaleza:'Naturaleza', paseos:'Paseos guiados', nautico:'Náutico',
+  gastronomia:'Gastronomía', nocturna:'Vida nocturna', ninos:'Niños', excursiones:'Excursiones' };
+let catalogoCargado = false;
+async function cargarCatalogo(){
+  if(catalogoCargado) return;
+  catalogoCargado = true;
+  try {
+    const r = await fetch('catalogo.json', { cache: 'no-cache' });
+    if(!r.ok) return;
+    const d = await r.json();
+    (Array.isArray(d) ? d : (d.lugares || [])).forEach(l => {
+      if(!l || typeof l.id !== 'string') return;
+      if(typeof l.name === 'string' && !NOMBRES[l.id]) NOMBRES[l.id] = l.name;
+      if(Array.isArray(l.cats) && NOMBRE_CAT[l.cats[0]]) CATEGORIA[l.id] = l.cats[0];
+    });
+  } catch(e){}
+}
 function nombreOrigen(o){
   if(!o) return 'Directo o enlace compartido';
   if(o.startsWith('qr-')) return 'Cartel QR · ' + o.slice(3).replace(/[-_]/g, ' ').replace(/^./, c => c.toUpperCase());
@@ -415,8 +480,28 @@ function generarDemo(m){
       calendario: Math.round(personas * 0.3), instaladas: Math.round(total * 0.03), videos: Math.round(vistas * 0.12)
     },
     anterior: { visitas: ant.total, personas: Math.round(personas * ant.total / total * (0.9 + r() * 0.2)) },
-    por_dia: dias, por_hora, lugares, actividades, origenes
+    por_dia: dias, por_hora, lugares, actividades, origenes,
+    ...demoVisitantes(m, total, r, lugaresIds)
   };
+}
+
+function demoVisitantes(m, total, r, ids){
+  const nombres = ['Lucía Benítez','Martín Ojeda','Carla Sosa','Joaquim Pereira','Sofía Acosta','Diego Fernández','Ana Kowalski',
+    'Pablo Duarte','Mariana Silva','Tomás Rojas','Valentina Morel','Rafael Souza','Julieta Gómez','Nicolás Vera','Camila Ferreira'];
+  const n = Math.round(total * (0.16 + r() * 0.06));
+  const { desde } = rangoMes(m);
+  const lista = Array.from({ length: Math.min(n, 15) }, (_, i) => {
+    const nom = nombres[i % nombres.length];
+    const pt = /Joaquim|Rafael|Mariana Silva|Camila Ferreira/.test(nom);
+    const dia = String(1 + Math.floor(r() * 27)).padStart(2, '0');
+    const usuario = nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(' ', '.');
+    return { nombre: nom, email: usuario + '@ejemplo.com', idioma: pt ? 'pt' : 'es',
+      creado: desde.slice(0, 8) + dia + 'T1' + (i % 10) + ':00:00-03:00', ultimo: desde.slice(0, 8) + dia + 'T2' + (i % 4) + ':00:00-03:00',
+      intereses: [ids[Math.floor(r() * 6)], ids[6 + Math.floor(r() * 6)]] };
+  }).sort((a, b) => b.ultimo.localeCompare(a.ultimo));
+  const visitantes_lugares = ids.map((id, i) => ({ lugar: id, n: Math.round(n * (2.4 - i * 0.17) * (0.8 + r() * 0.4)) }))
+    .sort((a, b) => b.n - a.n);
+  return { visitantes: { nuevos: n, activos: Math.round(n * 1.3), total: Math.round(n * 2.1) }, visitantes_lista: lista, visitantes_lugares };
 }
 
 /* ---------- tooltip compartido ---------- */
@@ -620,6 +705,65 @@ function pintar(){
     { aria: 'Visitas según cómo llegaron a la app' });
   tabla(document.getElementById('t-origenes'), [{ t: 'Origen' }, { t: 'Visitas', n: true }, { t: '%', n: true }],
     d.origenes.map(x => [nombreOrigen(x.origen), num(x.visitas), pct(x.visitas, T.visitas)]));
+
+  pintarVisitantes(d);
+}
+
+const fechaCorta = iso => { const f = new Date(iso); return isNaN(f) ? '' :
+  f.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', timeZone: CONFIG.tz }) + ' ' +
+  f.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: CONFIG.tz }); };
+
+function pintarVisitantes(d){
+  const V = d.visitantes || { nuevos: 0, activos: 0, total: 0 };
+  const lista = d.visitantes_lista || [];
+  const cont = document.getElementById('vis-tiles');
+  cont.textContent = '';
+  [['Ingresaron este mes', num(V.nuevos)], ['Usaron la web este mes', num(V.activos)], ['Total registradas', num(V.total)]].forEach(([et, v]) => {
+    const t = document.createElement('div'); t.className = 'tarjeta tile';
+    [['et', et], ['num', v]].forEach(([c, x]) => { const e = document.createElement('div'); e.className = c; e.textContent = x; t.appendChild(e); });
+    cont.appendChild(t);
+  });
+
+  // intereses agrupados por categoría
+  const porCat = {};
+  (d.visitantes_lugares || []).forEach(x => { const c = CATEGORIA[x.lugar] || 'otros'; porCat[c] = (porCat[c] || 0) + x.n; });
+  barras(document.getElementById('g-intereses'), Object.entries(porCat).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([c, n]) => ({
+    etiqueta: NOMBRE_CAT[c] || 'Otros', valor: n, valorTxt: num(n) + ' interacciones' })),
+    { aria: 'Intereses de las personas que ingresaron, por categoría', vacio: 'Todavía nadie ingresó en este período.' });
+
+  // tabla: se arma con textContent (los nombres los escribe cada persona)
+  const t = document.getElementById('t-visitantes');
+  t.textContent = '';
+  if(!lista.length){ const v = document.createElement('div'); v.className = 'vacio'; v.textContent = 'Todavía nadie ingresó en este período.'; t.appendChild(v); }
+  else {
+    const tb = document.createElement('table');
+    const h = tb.createTHead().insertRow();
+    ['Nombre', 'Email', 'Ingresó', 'Último uso', 'Le interesó'].forEach(c => { const th = document.createElement('th'); th.textContent = c; h.appendChild(th); });
+    const body = tb.createTBody();
+    lista.forEach(x => {
+      const r = body.insertRow();
+      [x.nombre + (x.idioma === 'pt' ? ' (PT)' : ''), x.email, fechaCorta(x.creado), fechaCorta(x.ultimo),
+       (x.intereses || []).map(nombreLugar).join(', ')].forEach((v, i) => { const td = r.insertCell(); td.textContent = v; if(i === 1) td.className = 'email'; if(i === 2 || i === 3) td.className = 'fecha'; });
+    });
+    t.appendChild(tb);
+  }
+  document.getElementById('vis-csv').disabled = !lista.length;
+}
+
+// CSV para Excel. Las celdas que empiezan con = + - @ se protegen: un nombre
+// escrito como fórmula no se ejecuta al abrir el archivo.
+function bajarCSV(){
+  const lista = (DATOS && DATOS.visitantes_lista) || [];
+  if(!lista.length) return;
+  const celda = v => { let s = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
+  const filas = [['Nombre', 'Email', 'Idioma', 'Ingresó', 'Último uso', 'Le interesó']].concat(lista.map(x =>
+    [x.nombre, x.email, x.idioma, fechaCorta(x.creado), fechaCorta(x.ultimo), (x.intereses || []).map(nombreLugar).join(', ')]));
+  const blob = new Blob(['\ufeff' + filas.map(f => f.map(celda).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '48h-posadas-visitantes-' + MES + (DEMO ? '-ejemplo' : '') + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 /* ---------- carga ---------- */
@@ -635,9 +779,10 @@ async function cargar(){
   $('mes-sig').disabled = MES >= MES_ACTUAL;
   $('mes-ant').disabled = !DEMO && MES <= CONFIG.desde;
   $('aviso-demo').hidden = !DEMO;
-  document.title = 'Reporte 48 HS · ' + nombreMes(MES) + (DEMO ? ' (ejemplo)' : '');
+  document.title = 'Reporte 48h Posadas · ' + nombreMes(MES) + (DEMO ? ' (ejemplo)' : '');
   actualizarURL();
 
+  await cargarCatalogo();
   if(DEMO){
     DATOS = generarDemo(MES);
     $('acceso').hidden = true; $('reporte').hidden = false;
@@ -655,6 +800,7 @@ async function cargar(){
     const r = await rpc('estadisticas_resumen', { p_clave: clave, p_desde: desde, p_hasta: hasta });
     if(!r || !r.ok){
       if(r && r.motivo === 'clave'){ almacen.escribir('pv-reporte-clave', ''); return mostrarAcceso('La clave no es correcta.'); }
+      if(r && r.motivo === 'bloqueado'){ almacen.escribir('pv-reporte-clave', ''); return mostrarAcceso('Hubo demasiados intentos con clave equivocada. Probá de nuevo en 15 minutos.'); }
       throw new Error(r && r.motivo || 'sin datos');
     }
     DATOS = r;
@@ -675,6 +821,7 @@ $('form-clave').addEventListener('submit', e => {
   cargar();
 });
 $('ver-demo').addEventListener('click', () => { DEMO = true; cargar(); });
+$('vis-csv').addEventListener('click', bajarCSV);
 $('mes-ant').addEventListener('click', () => { MES = sumarMes(MES, -1); cargar(); });
 $('mes-sig').addEventListener('click', () => { if(MES < MES_ACTUAL){ MES = sumarMes(MES, 1); cargar(); } });
 

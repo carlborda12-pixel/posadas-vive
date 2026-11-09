@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacidad y condiciones · 48h Posadas</title>
+<meta name="description" content="Política de privacidad y condiciones de uso de 48h Posadas, la web turística de Posadas Turismo.">
+<meta name="theme-color" content="#06120e">
+<link rel="icon" href="marca/favicon.svg" type="image/svg+xml">
+<link href="fuentes/fuentes.css" rel="stylesheet">
+<style>
+  /* =================================================================
+     DATOS DEL RESPONSABLE: se completan UNA vez, en el bloque DATOS
+     del script de abajo. Mientras quede alguno entre corchetes, la
+     página muestra un aviso de borrador arriba de todo.
+     ================================================================= */
+  :root {
+    --paper: #06120e; --card: #0f241c; --card-2: #153026;
+    --ink: #f7f7f7; --muted: #a1b3ab; --line: rgba(255,255,255,0.09);
+    --verde: #05a36f; --verde-claro: #3fc898; --rosa: #f23179;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.65 'Be Vietnam Pro', system-ui, sans-serif; }
+  a { color: var(--verde-claro); }
+  .top { position: sticky; top: 0; z-index: 5; background: rgba(6,18,14,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .top-in { max-width: 760px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .top img { height: 26px; width: auto; display: block; }
+  .idiomas { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+  .idiomas button { font: 600 0.78rem 'Be Vietnam Pro', sans-serif; color: var(--muted); background: none; border: 0; border-radius: 7px; padding: 5px 10px; cursor: pointer; }
+  .idiomas button[aria-pressed="true"] { background: var(--verde); color: #fff; }
+  .pestanas { max-width: 760px; margin: 0 auto; padding: 0 16px 10px; display: flex; gap: 8px; }
+  .pestanas a { flex: 1; text-align: center; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 0.88rem; padding: 9px 10px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
+  main { max-width: 760px; margin: 0 auto; padding: 8px 16px 64px; }
+  .volver { display: inline-flex; align-items: center; gap: 6px; margin: 18px 0 4px; font-size: 0.88rem; text-decoration: none; }
+  h1 { font-size: clamp(1.7rem, 6vw, 2.3rem); line-height: 1.15; letter-spacing: -0.5px; margin: 28px 0 6px; scroll-margin-top: 120px; }
+  h1 em { font-style: italic; font-weight: 500; color: var(--rosa); }
+  h2 { font-size: 1.12rem; line-height: 1.3; margin: 34px 0 8px; scroll-margin-top: 120px; }
+  h2 .n { color: var(--verde-claro); margin-right: 6px; }
+  p, li { color: #e4ece8; }
+  ul { padding-left: 1.2em; }
+  li { margin: 4px 0; }
+  .fecha { color: var(--muted); font-size: 0.86rem; margin: 0 0 18px; }
+  .resumen { background: linear-gradient(140deg, rgba(5,163,111,0.16), rgba(5,163,111,0.05)); border: 1px solid rgba(5,163,111,0.35); border-radius: 18px; padding: 16px 18px; margin: 18px 0 8px; }
+  .resumen h3 { margin: 0 0 6px; font-size: 0.95rem; }
+  .resumen ul { margin: 0; }
+  .tabla { width: 100%; overflow-x: auto; margin: 10px 0; border: 1px solid var(--line); border-radius: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; min-width: 520px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { background: var(--card); font-weight: 600; color: var(--ink); }
+  tr:last-child td { border-bottom: 0; }
+  td { color: #dbe5e0; }
+  .leyenda { background: var(--card); border-left: 3px solid var(--verde); border-radius: 0 12px 12px 0; padding: 12px 14px; font-size: 0.9rem; }
+  .aviso-emerg { background: rgba(242,49,121,0.09); border: 1px solid rgba(242,49,121,0.35); border-radius: 14px; padding: 12px 14px; }
+  .aviso-emerg strong { color: #ff7aa9; }
+  .sep { height: 1px; background: var(--line); margin: 56px 0 0; }
+  .dato-falta { background: #ffe066; color: #2d2400; border-radius: 4px; padding: 0 4px; font-weight: 600; }
+  #borrador { display: none; background: #ffe066; color: #2d2400; font-weight: 600; font-size: 0.85rem; text-align: center; padding: 8px 16px; }
+  #borrador.on { display: block; }
+  footer { max-width: 760px; margin: 0 auto; padding: 24px 16px 40px; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  footer img { height: 22px; width: auto; }
+  footer .dev { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; }
+  footer .dev img { height: 14px; }
+  footer .dev b { color: var(--ink); font-weight: 600; }
+  [hidden] { display: none !important; }
+  @media print {
+    :root { --paper: #fff; --card: #f2f5f3; --ink: #111; --muted: #555; --line: #ccc; --verde-claro: #037a52; }
+    body { background: #fff; color: #111; } p, li, td { color: #111; }
+    .top, .volver, .idiomas, #borrador { display: none !important; }
+    .sep { page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+<div id="borrador" role="status"></div>
+
+<header class="top">
+  <div class="top-in">
+    <a href="./" aria-label="48h Posadas"><img src="marca/logo-48h.svg" alt="48h Posadas · Ciudad de experiencias" width="402" height="92"></a>
+    <div class="idiomas" role="group" aria-label="Idioma / Idioma">
+      <button type="button" data-l="es" aria-pressed="true">ES</button>
+      <button type="button" data-l="pt" aria-pressed="false">PT</button>
+    </div>
+  </div>
+  <nav class="pestanas">
+    <a href="#privacidad" data-es="Privacidad" data-pt="Privacidade">Privacidad</a>
+    <a href="#condiciones" data-es="Condiciones de uso" data-pt="Termos de uso">Condiciones de uso</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ===================================================== ESPAÑOL -->
+<div lang="es" data-idioma="es">
+  <a class="volver" href="./">← Volver a 48h Posadas</a>
+
+  <h1 id="privacidad">Política de <em>privacidad</em></h1>
+  <p class="fecha">Última actualización: <span data-d="actualizado"></span></p>
+
+  <div class="resumen">
+    <h3>Lo más importante</h3>
+    <ul>
+      <li>Podés usar toda la web <b>sin registrarte</b> y sin dar ningún dato.</li>
+      <li>Solo te pedimos nombre y email si <b>ingresás</b> (es opcional), si <b>te inscribís</b> a una actividad o si te anotás en una <b>lista de espera</b>.</li>
+      <li><b>No vendemos ni cedemos</b> tus datos, y no los usamos para publicidad.</li>
+      <li>Tu <b>ubicación no se guarda</b>: queda en tu teléfono, salvo el punto de partida cuando pedís “Cómo llegar”.</li>
+      <li>Si ingresás, usamos lo que mirás y guardás para <b>recomendarte planes</b> y para saber qué le interesa a quien visita Posadas. Si no ingresás, tus visitas se cuentan de forma <b>anónima</b>.</li>
+      <li>Podés pedir ver, corregir o borrar tus datos cuando quieras, escribiendo a <span data-d="email"></span>.</li>
+    </ul>
+  </div>
+
+  <h2><span class="n">1.</span>Quién es responsable de tus datos</h2>
+  <p>Esta web, <b>48h Posadas · Ciudad de experiencias</b>, la ofrece <span data-d="entidad"></span> (“Posadas Turismo”), con domicilio en <span data-d="domicilio"></span>. Es la <b>responsable</b> de los datos personales que se recogen acá.</p>
+  <p>El desarrollo y el mantenimiento técnico están a cargo de <b>ApexTech</b> (Posadas, Misiones), que trabaja por cuenta de Posadas Turismo y no usa los datos para nada propio.</p>
+  <p>Para cualquier consulta sobre tus datos: <span data-d="email"></span>.</p>
+
+  <h2><span class="n">2.</span>Qué datos usamos y para qué</h2>
+  <div class="tabla"><table>
+    <thead><tr><th>Cuándo</th><th>Qué datos</th><th>Para qué</th><th>Cuánto tiempo</th></tr></thead>
+    <tbody>
+      <tr><td>Ingresás con tu nombre y email (es opcional)</td><td>Nombre, email, idioma y lo que hacés en la web: qué lugares y eventos mirás, guardás o filtrás, en cuáles pedís “Cómo llegar” y en cuáles te inscribís</td><td>Recomendarte eventos y lugares, y que Posadas Turismo sepa quién visita la web y qué le interesa, para mejorar la oferta turística. No se usa para publicidad ni para mandarte emails</td><td>Hasta que toques “Salir y borrar” en Mis planes, o dos años después de la última vez que usaste la web</td></tr>
+      <tr><td>Te inscribís a una actividad gratuita</td><td>Nombre, email, teléfono (opcional), cantidad de personas, actividad y fecha</td><td>Reservar tu lugar, confirmarte la inscripción, avisarte si la actividad cambia o se suspende y, si está activado, mandarte un recordatorio</td><td>Se borran seis meses después de la actividad</td></tr>
+      <tr><td>Te anotás en una lista de espera</td><td>Nombre, email, teléfono (opcional), cantidad de personas e idioma</td><td>Avisarte por email si se libera un lugar</td><td>Se borran una semana después de la fecha de la actividad</td></tr>
+      <tr><td>Cancelás una inscripción</td><td>El código de la inscripción y tu email</td><td>Comprobar que la inscripción es tuya</td><td>No se guardan aparte</td></tr>
+      <tr><td>Consultás o reservás por WhatsApp</td><td>Lo que escribís en el mensaje (la web lo prepara, pero lo enviás vos)</td><td>Responderte y gestionar tu reserva o consulta</td><td>La web no lo guarda. Lo recibe Posadas Turismo en WhatsApp</td></tr>
+      <tr><td>Usás la web</td><td>Estadísticas anónimas: qué pantallas y lugares se ven, idioma, si la web está instalada, desde qué cartel QR entraste y un número al azar que identifica la visita (se borra al cerrar la pestaña)</td><td>Saber qué se usa y mejorar la oferta turística de la ciudad. Si ingresaste, van con tu identificación; si no, son anónimas</td><td>Dos años, para comparar temporadas</td></tr>
+      <tr><td>Activás tu ubicación</td><td>Tu posición, solo mientras la web está abierta</td><td>Mostrar dónde estás y a qué distancia quedan los lugares</td><td>No se guarda ni se envía a Posadas Turismo</td></tr>
+      <tr><td>Pedís “Cómo llegar”</td><td>El punto de partida y el destino</td><td>Calcular el recorrido</td><td>Lo procesa el servicio de rutas (punto 6). No se guarda en nuestra base</td></tr>
+    </tbody>
+  </table></div>
+  <p>Si no ingresaste, las estadísticas <b>no incluyen</b> tu nombre ni tu email. Nunca incluyen tu dirección IP ni tu ubicación. Si tu navegador tiene activadas las opciones “No rastrear” (Do Not Track) o “Control Global de Privacidad” (GPC), no se envía ninguna estadística, aunque hayas ingresado.</p>
+  <p><b>Las recomendaciones se calculan en tu teléfono.</b> La web nunca le pide a la base de datos tu historial, así que nadie puede ver lo que miraste escribiendo tu email.</p>
+  <p>Para frenar abusos (inscripciones automáticas, ataques), los servidores pueden registrar datos técnicos de la conexión, como la dirección IP, durante un tiempo limitado.</p>
+  <p>Para ingresar tenés que marcar que aceptás esta política. El ingreso es <b>opcional</b>: podés usar toda la web tocando “Seguir sin ingresar”.</p>
+  <p>Los datos de las inscripciones y de la lista de espera los das <b>con tu consentimiento</b>, marcando la casilla del formulario. Son necesarios para reservar el lugar: sin nombre y email no se puede hacer la inscripción. El teléfono es opcional.</p>
+
+  <h2><span class="n">3.</span>Lo que queda guardado en tu teléfono</h2>
+  <p>Para funcionar sin conexión y recordar tus planes, la web guarda en tu propio teléfono (no en nuestros servidores):</p>
+  <ul>
+    <li>el idioma que elegiste;</li>
+    <li>tu nombre y tu email, si ingresaste;</li>
+    <li>un resumen de qué categorías te interesan (cultura, naturaleza, gastronomía…), para las recomendaciones;</li>
+    <li>los lugares que guardaste;</li>
+    <li>tus inscripciones: código, actividad, fecha, cantidad de personas y el email que usaste;</li>
+    <li>qué novedades ya viste;</li>
+    <li>una copia del catálogo de lugares y de las imágenes del mapa.</li>
+  </ul>
+  <p>Podés borrarlo todo desde <b>Mis planes → Borrar mis datos de este teléfono</b>, o borrando los datos del sitio en tu navegador. Esto no cancela tus inscripciones: para darlas de baja, usá la opción “Cancelar inscripción”.</p>
+
+  <h2><span class="n">4.</span>Cookies</h2>
+  <p>La web <b>no usa cookies propias</b>, ni de publicidad ni de seguimiento. Los videos de YouTube, Instagram, TikTok, Vimeo o Google Drive se cargan solo si tocás para verlos. En ese momento rige la política de cada plataforma, que puede usar sus propias cookies. Los de YouTube se cargan en su modo de privacidad mejorada.</p>
+
+  <h2><span class="n">5.</span>Con quién se comparten</h2>
+  <p>Posadas Turismo <b>no vende, no alquila y no cede</b> tus datos. Para que la web funcione, algunos proveedores los procesan por cuenta de Posadas Turismo, solo para prestar su servicio:</p>
+  <ul>
+    <li><b>Supabase</b>: base de datos donde se guardan las inscripciones, la lista de espera y las estadísticas.</li>
+    <li><b>Vercel</b>: alojamiento de la web.</li>
+    <li><b>Resend</b>: envío de los emails de aviso.</li>
+  </ul>
+  <p>También se pueden entregar datos a una autoridad pública cuando lo exija la ley o una orden judicial.</p>
+
+  <h2><span class="n">6.</span>Servicios externos que usa el mapa</h2>
+  <p>Al usar ciertas funciones, tu teléfono se conecta directamente con estos servicios. Como cualquier sitio web, reciben datos técnicos de la conexión, como tu dirección IP:</p>
+  <ul>
+    <li><b>Esri (ArcGIS)</b>: imágenes del mapa.</li>
+    <li><b>FOSSGIS / OpenStreetMap</b> (Alemania): cálculo de rutas para “Cómo llegar”. Recibe el punto de partida y el de llegada.</li>
+    <li><b>Open-Meteo</b>: el clima del encabezado. Se pide para el centro de Posadas, no para tu ubicación.</li>
+    <li><b>unpkg</b>: la librería del mapa (Leaflet).</li>
+    <li><b>Google Maps, Google Calendar y WhatsApp</b>: solo si tocás esos botones. Ahí rigen sus propias condiciones.</li>
+  </ul>
+
+  <h2><span class="n">7.</span>Datos fuera de Argentina</h2>
+  <p>Algunos de estos proveedores tienen servidores fuera de la Argentina, por ejemplo en Estados Unidos o en la Unión Europea. Posadas Turismo usa esos servicios con los resguardos que exige el artículo 12 de la Ley 25.326 y las normas de la Agencia de Acceso a la Información Pública, como las cláusulas contractuales modelo que esa Agencia aprobó.</p>
+
+  <h2><span class="n">8.</span>Cómo cuidamos tus datos</h2>
+  <p>La web funciona solo con conexión cifrada (HTTPS). La base de datos tiene reglas de acceso que impiden que el público lea las inscripciones de otras personas. Las claves del equipo se guardan cifradas, y el sistema tiene límites contra intentos automáticos y revisiones de seguridad periódicas. Ningún sistema es infalible: si ocurriera un incidente que afecte tus datos, te vamos a avisar y vamos a informar a la autoridad cuando corresponda.</p>
+
+  <h2><span class="n">9.</span>Tus derechos</h2>
+  <p>Podés, en cualquier momento y sin costo:</p>
+  <ul>
+    <li><b>acceder</b> a los datos que tenemos sobre vos;</li>
+    <li><b>corregirlos o actualizarlos</b>;</li>
+    <li>pedir que los <b>borremos</b>;</li>
+    <li><b>retirar tu consentimiento</b>: tocando “Salir y borrar” en Mis planes, saliendo de la lista de espera con el enlace del email o cancelando la inscripción.</li>
+  </ul>
+  <p>Escribí a <span data-d="email"></span> con el asunto “Datos personales”, indicando qué pedís, el email que usaste y, si la tenés, la actividad o el código de inscripción. Podemos pedirte algo para confirmar que sos vos. La ley establece diez días corridos para responder un pedido de acceso y cinco días hábiles para corregir o borrar datos.</p>
+  <div class="leyenda">
+    <p>El titular de los datos personales tiene la facultad de ejercer el derecho de acceso a los mismos en forma gratuita a intervalos no inferiores a seis meses, salvo que se acredite un interés legítimo al efecto, conforme lo establecido en el artículo 14, inciso 3 de la Ley N° 25.326.</p>
+    <p style="margin-bottom:0">La AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA, en su carácter de Órgano de Control de la Ley N° 25.326, tiene la atribución de atender las denuncias y reclamos que interpongan quienes resulten afectados en sus derechos por incumplimiento de las normas vigentes en materia de protección de datos personales. Más información en <a href="https://www.argentina.gob.ar/aaip" target="_blank" rel="noopener">argentina.gob.ar/aaip</a>.</p>
+  </div>
+
+  <h2><span class="n">10.</span>Menores de edad</h2>
+  <p>Cualquier persona puede consultar la web. Las inscripciones las tiene que hacer una persona mayor de 18 años: si sos menor, pedile a tu madre, padre o a un adulto responsable que te inscriba.</p>
+
+  <h2><span class="n">11.</span>Cambios en esta política</h2>
+  <p>Si cambiamos algo importante, lo vamos a avisar en la web (en “Novedades”) y vamos a actualizar la fecha de arriba. Si el cambio afecta datos que ya nos diste, te lo vamos a informar antes de aplicarlo.</p>
+
+  <h2><span class="n">12.</span>Marco legal</h2>
+  <p>Esta política se rige por el artículo 43 de la Constitución Nacional, la Ley 25.326 de Protección de los Datos Personales, su Decreto reglamentario 1558/2001 y las normas de la Agencia de Acceso a la Información Pública.</p>
+
+  <div class="sep"></div>
+
+  <h1 id="condiciones">Condiciones <em>de uso</em></h1>
+  <p class="fecha">Última actualización: <span data-d="actualizado"></span></p>
+
+  <div class="aviso-emerg">
+    <p style="margin:0"><strong>Esta web no es un servicio de emergencias.</strong> Ante una emergencia llamá al <b>911</b> (policía), <b>107</b> (emergencias médicas), <b>100</b> (bomberos), <b>103</b> (Defensa Civil) o <b>106</b> (Prefectura Naval, emergencias en el río).</p>
+  </div>
+
+  <h2><span class="n">1.</span>Qué es esta web</h2>
+  <p>48h Posadas es un servicio <b>gratuito e informativo</b> de <span data-d="entidad"></span> para conocer lugares, actividades, eventos y servicios de la ciudad de Posadas. Al usarla, aceptás estas condiciones y la política de privacidad.</p>
+
+  <h2><span class="n">2.</span>La información es orientativa</h2>
+  <p>Cargamos horarios, precios, cupos, direcciones, fotos y eventos con cuidado, pero <b>pueden cambiar sin aviso o tener errores</b>. Antes de ir, confirmá con el lugar o el organizador, sobre todo en feriados, con lluvia o con el río crecido. El clima es un pronóstico de un servicio externo y puede no coincidir con lo que pase.</p>
+
+  <h2><span class="n">3.</span>Lugares y servicios de terceros</h2>
+  <p>Muchos lugares y servicios que aparecen (comercios, gastronomía, alojamientos, excursiones, paseos náuticos, transporte) son de terceros. Cada uno es responsable de lo que ofrece, de su precio, de su calidad, de su seguridad y de sus habilitaciones. Que un lugar aparezca en la web <b>no es una recomendación ni una garantía</b>, y no reemplaza las habilitaciones que le correspondan. Lo que contrates o compres es un acuerdo entre vos y ese tercero.</p>
+
+  <h2><span class="n">4.</span>Inscripciones a actividades</h2>
+  <ul>
+    <li>La inscripción reserva un lugar <b>según el cupo disponible</b>. Cada actividad puede tener sus propias reglas (edad mínima, punto de encuentro, ropa o equipo recomendados).</li>
+    <li>Las actividades se pueden reprogramar o suspender por clima, seguridad u otras causas de fuerza mayor. Te avisaremos al email que dejaste.</li>
+    <li>Si no vas a ir, cancelá la inscripción para liberar el lugar a otra persona.</li>
+    <li>Las inscripciones falsas, repetidas, automatizadas o a nombre de otra persona sin su permiso se pueden anular.</li>
+  </ul>
+
+  <h2><span class="n">5.</span>Mapa y “Cómo llegar”</h2>
+  <p>Los mapas y recorridos son <b>aproximados</b> y vienen de servicios de terceros. Pueden no mostrar cortes, obras, cambios de sentido de calles ni las condiciones de seguridad de una zona. Respetá siempre la señalización y las normas de tránsito, y no uses el teléfono mientras manejás.</p>
+
+  <h2><span class="n">6.</span>Actividades al aire libre y en el río</h2>
+  <p>Las actividades al aire libre, náuticas y en playas tienen riesgos propios. Seguí las indicaciones de guardavidas, guías, prestadores y autoridades, bañate solo en zonas habilitadas y con guardavidas, y tené en cuenta tu estado de salud y el pronóstico del tiempo.</p>
+
+  <h2><span class="n">7.</span>Disponibilidad</h2>
+  <p>La web puede tener interrupciones, cambios o dejar de estar disponible, y sin conexión puede mostrar información desactualizada. Posadas Turismo puede modificar, suspender o dar de baja contenidos o funciones en cualquier momento.</p>
+
+  <h2><span class="n">8.</span>Enlaces y contenidos externos</h2>
+  <p>WhatsApp, Google Maps, las redes sociales y los videos de terceros se rigen por sus propias condiciones y políticas. Posadas Turismo no controla esos servicios ni responde por ellos.</p>
+
+  <h2><span class="n">9.</span>Uso adecuado</h2>
+  <p>No está permitido usar la web para fines ilegales, para intentar vulnerar su seguridad, para sobrecargarla con pedidos automáticos ni para copiar en forma masiva sus contenidos o datos. Si encontrás una falla de seguridad, avisanos a <span data-d="email"></span> sin aprovecharla ni difundirla.</p>
+
+  <h2><span class="n">10.</span>Propiedad intelectual</h2>
+  <p>Los textos, fotos, logos y las marcas “48h Posadas” y “Posadas Turismo” pertenecen a Posadas Turismo o a sus autores. Podés usarlos para fines personales y para compartir la web. Para otros usos, pedí autorización. Los datos de mapa son © colaboradores de OpenStreetMap y © Esri y sus proveedores.</p>
+
+  <h2><span class="n">11.</span>Responsabilidad</h2>
+  <p>En la medida en que la ley lo permita, Posadas Turismo no responde por daños que resulten de: información de terceros, cambios de horarios, precios o cupos, el uso de los recorridos sugeridos, fallas de servicios externos, interrupciones de la web o decisiones tomadas solo en base a información orientativa. Nada de esto limita los derechos que te reconocen las leyes vigentes.</p>
+
+  <h2><span class="n">12.</span>Cambios en estas condiciones</h2>
+  <p>Podemos actualizar estas condiciones. La versión vigente es siempre la publicada en esta página, con su fecha.</p>
+
+  <h2><span class="n">13.</span>Ley aplicable y contacto</h2>
+  <p>Estas condiciones se rigen por las leyes de la República Argentina. Ante cualquier conflicto, serán competentes los tribunales de la ciudad de Posadas, Provincia de Misiones. Contacto: <span data-d="email"></span>.</p>
+</div>
+
+<!-- ===================================================== PORTUGUÊS -->
+<div lang="pt-BR" data-idioma="pt" hidden>
+  <a class="volver" href="./">← Voltar ao 48h Posadas</a>
+
+  <h1 id="privacidade">Política de <em>privacidade</em></h1>
+  <p class="fecha">Última atualização: <span data-d="actualizado_pt"></span></p>
+
+  <div class="resumen">
+    <h3>O mais importante</h3>
+    <ul>
+      <li>Você pode usar todo o site <b>sem se cadastrar</b> e sem fornecer nenhum dado.</li>
+      <li>Só pedimos nome e e-mail se você <b>entrar</b> (é opcional), se <b>se inscrever</b> em uma atividade ou se entrar em uma <b>lista de espera</b>.</li>
+      <li><b>Não vendemos nem cedemos</b> seus dados e não os usamos para publicidade.</li>
+      <li>Sua <b>localização não é armazenada</b>: fica no seu celular, exceto o ponto de partida quando você pede “Como chegar”.</li>
+      <li>Se você entrar, usamos o que você vê e salva para <b>recomendar passeios</b> e para saber o que interessa a quem visita Posadas. Se não entrar, suas visitas são contadas de forma <b>anônima</b>.</li>
+      <li>Você pode pedir para ver, corrigir ou apagar seus dados quando quiser, escrevendo para <span data-d="email"></span>.</li>
+    </ul>
+  </div>
+
+  <h2><span class="n">1.</span>Quem é responsável pelos seus dados</h2>
+  <p>Este site, <b>48h Posadas · Ciudad de experiencias</b>, é oferecido por <span data-d="entidad"></span> (“Posadas Turismo”), com sede em <span data-d="domicilio"></span>. É a <b>responsável</b> pelos dados pessoais coletados aqui.</p>
+  <p>O desenvolvimento e a manutenção técnica estão a cargo da <b>ApexTech</b> (Posadas, Misiones), que trabalha em nome da Posadas Turismo e não usa os dados para fins próprios.</p>
+  <p>Para qualquer dúvida sobre seus dados: <span data-d="email"></span>.</p>
+
+  <h2><span class="n">2.</span>Quais dados usamos e para quê</h2>
+  <div class="tabla"><table>
+    <thead><tr><th>Quando</th><th>Quais dados</th><th>Para quê</th><th>Por quanto tempo</th></tr></thead>
+    <tbody>
+      <tr><td>Você entra com seu nome e e-mail (é opcional)</td><td>Nome, e-mail, idioma e o que você faz no site: quais lugares e eventos vê, salva ou filtra, em quais pede “Como chegar” e em quais se inscreve</td><td>Recomendar eventos e lugares, e permitir que a Posadas Turismo saiba quem visita o site e o que lhe interessa, para melhorar a oferta turística. Não é usado para publicidade nem para enviar e-mails</td><td>Até você tocar em “Sair e apagar” em Meus planos, ou dois anos depois da última vez que usou o site</td></tr>
+      <tr><td>Você se inscreve em uma atividade gratuita</td><td>Nome, e-mail, telefone (opcional), número de pessoas, atividade e data</td><td>Reservar sua vaga, confirmar a inscrição, avisar se a atividade mudar ou for suspensa e, se estiver ativado, enviar um lembrete</td><td>São apagados seis meses depois da atividade</td></tr>
+      <tr><td>Você entra em uma lista de espera</td><td>Nome, e-mail, telefone (opcional), número de pessoas e idioma</td><td>Avisar por e-mail se uma vaga for liberada</td><td>São apagados uma semana depois da data da atividade</td></tr>
+      <tr><td>Você cancela uma inscrição</td><td>O código da inscrição e seu e-mail</td><td>Confirmar que a inscrição é sua</td><td>Não são armazenados à parte</td></tr>
+      <tr><td>Você consulta ou reserva pelo WhatsApp</td><td>O que você escreve na mensagem (o site a prepara, mas quem envia é você)</td><td>Responder e gerenciar sua reserva ou consulta</td><td>O site não armazena. A Posadas Turismo recebe no WhatsApp</td></tr>
+      <tr><td>Você usa o site</td><td>Estatísticas anônimas: quais telas e lugares são vistos, idioma, se o site está instalado, de qual cartaz com QR você entrou e um número aleatório que identifica a visita (apagado ao fechar a aba)</td><td>Saber o que é usado e melhorar a oferta turística da cidade. Se você entrou, vão com a sua identificação; se não, são anônimas</td><td>Dois anos, para comparar temporadas</td></tr>
+      <tr><td>Você ativa a localização</td><td>Sua posição, só enquanto o site está aberto</td><td>Mostrar onde você está e a que distância ficam os lugares</td><td>Não é armazenada nem enviada à Posadas Turismo</td></tr>
+      <tr><td>Você pede “Como chegar”</td><td>O ponto de partida e o destino</td><td>Calcular o trajeto</td><td>Processado pelo serviço de rotas (item 6). Não fica na nossa base</td></tr>
+    </tbody>
+  </table></div>
+  <p>Se você não entrou, as estatísticas <b>não incluem</b> seu nome nem seu e-mail. Nunca incluem seu endereço IP nem sua localização. Se o seu navegador tiver ativadas as opções “Não rastrear” (Do Not Track) ou “Controle Global de Privacidade” (GPC), nenhuma estatística é enviada, mesmo que você tenha entrado.</p>
+  <p><b>As recomendações são calculadas no seu celular.</b> O site nunca pede ao banco de dados o seu histórico, então ninguém pode ver o que você viu escrevendo o seu e-mail.</p>
+  <p>Para evitar abusos (inscrições automáticas, ataques), os servidores podem registrar dados técnicos da conexão, como o endereço IP, por um tempo limitado.</p>
+  <p>Para entrar, você precisa marcar que aceita esta política. Entrar é <b>opcional</b>: você pode usar todo o site tocando em “Continuar sem entrar”.</p>
+  <p>Os dados das inscrições e da lista de espera são fornecidos <b>com o seu consentimento</b>, marcando a caixa do formulário. São necessários para reservar a vaga: sem nome e e-mail não é possível fazer a inscrição. O telefone é opcional.</p>
+
+  <h2><span class="n">3.</span>O que fica armazenado no seu celular</h2>
+  <p>Para funcionar sem conexão e lembrar seus planos, o site guarda no seu próprio celular (não nos nossos servidores):</p>
+  <ul>
+    <li>o idioma escolhido;</li>
+    <li>seu nome e seu e-mail, se você entrou;</li>
+    <li>um resumo de quais categorias te interessam (cultura, natureza, gastronomia…), para as recomendações;</li>
+    <li>os lugares que você salvou;</li>
+    <li>suas inscrições: código, atividade, data, número de pessoas e o e-mail usado;</li>
+    <li>quais novidades você já viu;</li>
+    <li>uma cópia do catálogo de lugares e das imagens do mapa.</li>
+  </ul>
+  <p>Você pode apagar tudo em <b>Meus planos → Apagar meus dados deste celular</b>, ou limpando os dados do site no navegador. Isso não cancela suas inscrições: para cancelá-las, use a opção “Cancelar inscrição”.</p>
+
+  <h2><span class="n">4.</span>Cookies</h2>
+  <p>O site <b>não usa cookies próprios</b>, nem de publicidade nem de rastreamento. Os vídeos do YouTube, Instagram, TikTok, Vimeo ou Google Drive só carregam se você tocar para assistir. Nesse momento vale a política de cada plataforma, que pode usar seus próprios cookies. Os do YouTube carregam no modo de privacidade aprimorada.</p>
+
+  <h2><span class="n">5.</span>Com quem são compartilhados</h2>
+  <p>A Posadas Turismo <b>não vende, não aluga e não cede</b> seus dados. Para o site funcionar, alguns fornecedores os processam em nome da Posadas Turismo, só para prestar o seu serviço:</p>
+  <ul>
+    <li><b>Supabase</b>: banco de dados onde ficam as inscrições, a lista de espera e as estatísticas.</li>
+    <li><b>Vercel</b>: hospedagem do site.</li>
+    <li><b>Resend</b>: envio dos e-mails de aviso.</li>
+  </ul>
+  <p>Os dados também podem ser entregues a uma autoridade pública quando a lei ou uma ordem judicial exigir.</p>
+
+  <h2><span class="n">6.</span>Serviços externos usados pelo mapa</h2>
+  <p>Ao usar certas funções, seu celular se conecta diretamente a esses serviços. Como qualquer site, eles recebem dados técnicos da conexão, como seu endereço IP:</p>
+  <ul>
+    <li><b>Esri (ArcGIS)</b>: imagens do mapa.</li>
+    <li><b>FOSSGIS / OpenStreetMap</b> (Alemanha): cálculo de rotas para “Como chegar”. Recebe o ponto de partida e o de chegada.</li>
+    <li><b>Open-Meteo</b>: o clima do cabeçalho. É pedido para o centro de Posadas, não para a sua localização.</li>
+    <li><b>unpkg</b>: a biblioteca do mapa (Leaflet).</li>
+    <li><b>Google Maps, Google Agenda e WhatsApp</b>: só se você tocar nesses botões. Neles valem as condições de cada serviço.</li>
+  </ul>
+
+  <h2><span class="n">7.</span>Dados fora da Argentina</h2>
+  <p>Alguns desses fornecedores têm servidores fora da Argentina, por exemplo nos Estados Unidos ou na União Europeia. A Posadas Turismo usa esses serviços com as salvaguardas exigidas pelo artigo 12 da Lei 25.326 e pelas normas da Agencia de Acceso a la Información Pública, como as cláusulas contratuais modelo aprovadas por essa Agência.</p>
+
+  <h2><span class="n">8.</span>Como cuidamos dos seus dados</h2>
+  <p>O site funciona só com conexão criptografada (HTTPS). O banco de dados tem regras de acesso que impedem que o público leia as inscrições de outras pessoas. As senhas da equipe são guardadas criptografadas, e o sistema tem limites contra tentativas automáticas e revisões de segurança periódicas. Nenhum sistema é infalível: se ocorrer um incidente que afete seus dados, vamos avisar você e informar a autoridade quando for o caso.</p>
+
+  <h2><span class="n">9.</span>Seus direitos</h2>
+  <p>Você pode, a qualquer momento e sem custo:</p>
+  <ul>
+    <li><b>acessar</b> os dados que temos sobre você;</li>
+    <li><b>corrigi-los ou atualizá-los</b>;</li>
+    <li>pedir que sejam <b>apagados</b>;</li>
+    <li><b>retirar seu consentimento</b>: tocando em “Sair e apagar” em Meus planos, saindo da lista de espera pelo link do e-mail ou cancelando a inscrição.</li>
+  </ul>
+  <p>Escreva para <span data-d="email"></span> com o assunto “Dados pessoais”, indicando o que você pede, o e-mail que usou e, se tiver, a atividade ou o código da inscrição. Podemos pedir alguma informação para confirmar que é você. A lei argentina estabelece dez dias corridos para responder a um pedido de acesso e cinco dias úteis para corrigir ou apagar dados.</p>
+  <div class="leyenda">
+    <p>O titular dos dados pessoais tem a faculdade de exercer o direito de acesso a eles de forma gratuita, em intervalos não inferiores a seis meses, salvo se comprovar um interesse legítimo para isso, conforme o artigo 14, inciso 3 da Lei N° 25.326.</p>
+    <p style="margin-bottom:0">A AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA, como Órgão de Controle da Lei N° 25.326, tem a atribuição de atender às denúncias e reclamações de quem for afetado em seus direitos por descumprimento das normas vigentes de proteção de dados pessoais. Mais informações em <a href="https://www.argentina.gob.ar/aaip" target="_blank" rel="noopener">argentina.gob.ar/aaip</a>.</p>
+  </div>
+
+  <h2><span class="n">10.</span>Menores de idade</h2>
+  <p>Qualquer pessoa pode consultar o site. As inscrições devem ser feitas por uma pessoa maior de 18 anos: se você for menor, peça à sua mãe, ao seu pai ou a um adulto responsável que faça a inscrição.</p>
+
+  <h2><span class="n">11.</span>Mudanças nesta política</h2>
+  <p>Se mudarmos algo importante, vamos avisar no site (em “Novidades”) e atualizar a data acima. Se a mudança afetar dados que você já nos deu, vamos informar antes de aplicá-la.</p>
+
+  <h2><span class="n">12.</span>Marco legal</h2>
+  <p>Esta política se rege pelo artigo 43 da Constituição Nacional argentina, pela Lei 25.326 de Proteção de Dados Pessoais, pelo seu Decreto regulamentar 1558/2001 e pelas normas da Agencia de Acceso a la Información Pública. Esta tradução é informativa: em caso de dúvida, vale a versão em espanhol.</p>
+
+  <div class="sep"></div>
+
+  <h1 id="termos">Termos <em>de uso</em></h1>
+  <p class="fecha">Última atualização: <span data-d="actualizado_pt"></span></p>
+
+  <div class="aviso-emerg">
+    <p style="margin:0"><strong>Este site não é um serviço de emergência.</strong> Em uma emergência na Argentina ligue <b>911</b> (polícia), <b>107</b> (emergências médicas), <b>100</b> (bombeiros), <b>103</b> (Defesa Civil) ou <b>106</b> (Prefectura Naval, emergências no rio).</p>
+  </div>
+
+  <h2><span class="n">1.</span>O que é este site</h2>
+  <p>48h Posadas é um serviço <b>gratuito e informativo</b> de <span data-d="entidad"></span> para conhecer lugares, atividades, eventos e serviços da cidade de Posadas. Ao usá-lo, você aceita estes termos e a política de privacidade.</p>
+
+  <h2><span class="n">2.</span>A informação é orientativa</h2>
+  <p>Cadastramos horários, preços, vagas, endereços, fotos e eventos com cuidado, mas eles <b>podem mudar sem aviso ou conter erros</b>. Antes de ir, confirme com o lugar ou o organizador, principalmente em feriados, com chuva ou com o rio cheio. O clima é uma previsão de um serviço externo e pode não se confirmar.</p>
+
+  <h2><span class="n">3.</span>Lugares e serviços de terceiros</h2>
+  <p>Muitos lugares e serviços que aparecem (comércio, gastronomia, hospedagem, passeios, passeios náuticos, transporte) são de terceiros. Cada um é responsável pelo que oferece, pelo preço, pela qualidade, pela segurança e pelas suas licenças. O fato de um lugar aparecer no site <b>não é uma recomendação nem uma garantia</b> e não substitui as licenças que lhe correspondam. O que você contratar ou comprar é um acordo entre você e esse terceiro.</p>
+
+  <h2><span class="n">4.</span>Inscrições em atividades</h2>
+  <ul>
+    <li>A inscrição reserva uma vaga <b>conforme a disponibilidade</b>. Cada atividade pode ter suas próprias regras (idade mínima, ponto de encontro, roupa ou equipamento recomendados).</li>
+    <li>As atividades podem ser remarcadas ou suspensas por clima, segurança ou outros motivos de força maior. Avisaremos no e-mail que você informou.</li>
+    <li>Se você não for, cancele a inscrição para liberar a vaga para outra pessoa.</li>
+    <li>Inscrições falsas, repetidas, automatizadas ou em nome de outra pessoa sem a permissão dela podem ser anuladas.</li>
+  </ul>
+
+  <h2><span class="n">5.</span>Mapa e “Como chegar”</h2>
+  <p>Os mapas e trajetos são <b>aproximados</b> e vêm de serviços de terceiros. Podem não mostrar bloqueios, obras, mudanças de mão das ruas nem as condições de segurança de uma região. Respeite sempre a sinalização e as normas de trânsito, e não use o celular enquanto dirige.</p>
+
+  <h2><span class="n">6.</span>Atividades ao ar livre e no rio</h2>
+  <p>As atividades ao ar livre, náuticas e em praias têm riscos próprios. Siga as orientações de salva-vidas, guias, prestadores e autoridades, entre na água só em áreas liberadas e com salva-vidas, e leve em conta seu estado de saúde e a previsão do tempo.</p>
+
+  <h2><span class="n">7.</span>Disponibilidade</h2>
+  <p>O site pode ter interrupções, mudanças ou deixar de estar disponível, e sem conexão pode mostrar informações desatualizadas. A Posadas Turismo pode modificar, suspender ou remover conteúdos ou funções a qualquer momento.</p>
+
+  <h2><span class="n">8.</span>Links e conteúdos externos</h2>
+  <p>WhatsApp, Google Maps, as redes sociais e os vídeos de terceiros seguem suas próprias condições e políticas. A Posadas Turismo não controla esses serviços nem responde por eles.</p>
+
+  <h2><span class="n">9.</span>Uso adequado</h2>
+  <p>Não é permitido usar o site para fins ilegais, para tentar violar sua segurança, para sobrecarregá-lo com pedidos automáticos nem para copiar em massa seus conteúdos ou dados. Se encontrar uma falha de segurança, avise em <span data-d="email"></span>, sem explorá-la nem divulgá-la.</p>
+
+  <h2><span class="n">10.</span>Propriedade intelectual</h2>
+  <p>Os textos, fotos, logos e as marcas “48h Posadas” e “Posadas Turismo” pertencem à Posadas Turismo ou aos seus autores. Você pode usá-los para fins pessoais e para compartilhar o site. Para outros usos, peça autorização. Os dados de mapa são © colaboradores do OpenStreetMap e © Esri e seus fornecedores.</p>
+
+  <h2><span class="n">11.</span>Responsabilidade</h2>
+  <p>Na medida em que a lei permitir, a Posadas Turismo não responde por danos resultantes de: informações de terceiros, mudanças de horários, preços ou vagas, uso dos trajetos sugeridos, falhas de serviços externos, interrupções do site ou decisões tomadas apenas com base em informações orientativas. Nada disso limita os direitos garantidos pelas leis vigentes.</p>
+
+  <h2><span class="n">12.</span>Mudanças nestes termos</h2>
+  <p>Podemos atualizar estes termos. A versão vigente é sempre a publicada nesta página, com sua data.</p>
+
+  <h2><span class="n">13.</span>Lei aplicável e contato</h2>
+  <p>Estes termos se regem pelas leis da República Argentina. Em caso de conflito, serão competentes os tribunais da cidade de Posadas, Província de Misiones. Esta tradução é informativa: em caso de dúvida, vale a versão em espanhol. Contato: <span data-d="email"></span>.</p>
+</div>
+
+</main>
+
+<footer>
+  <img src="marca/logo-turismo.svg" alt="Posadas Turismo" width="160" height="40">
+  <span>48h Posadas · Ciudad de experiencias</span>
+  <a class="dev" href="https://www.instagram.com/apex_sec/" target="_blank" rel="noopener"><img src="marca/apextech.svg" alt="" width="14" height="14"><span data-es="Desarrollado por" data-pt="Desenvolvido por">Desarrollado por</span> <b>ApexTech</b></a>
+</footer>
+
+<script>
+/* =================================================================
+   DATOS DEL RESPONSABLE: completar antes de publicar.
+   Lo que está entre corchetes se muestra resaltado en amarillo y
+   prende el aviso de borrador. Revisarlo con Asuntos Jurídicos.
+   ================================================================= */
+const DATOS = {
+  entidad:       '[COMPLETAR: nombre legal del organismo, p. ej. "Agencia Posadas Turismo, Municipalidad de la Ciudad de Posadas"]',
+  domicilio:     '[COMPLETAR: domicilio legal]',
+  email:         '[COMPLETAR: email para consultas de datos personales]',
+  actualizado:   '8 de noviembre de 2026',
+  actualizado_pt:'8 de novembro de 2026'
+};
+
+(function(){
+  let faltan = 0;
+  document.querySelectorAll('[data-d]').forEach(el => {
+    const v = DATOS[el.dataset.d] || '';
+    if(v.startsWith('[')){ faltan++; el.textContent = v; el.className = 'dato-falta'; return; }
+    if(el.dataset.d === 'email' && /^[^@\s]+@[^@\s]+$/.test(v)){
+      const a = document.createElement('a'); a.href = 'mailto:' + v; a.textContent = v; el.replaceWith(a);
+    } else el.textContent = v;
+  });
+  if(faltan){
+    const b = document.getElementById('borrador');
+    b.textContent = 'BORRADOR: faltan los datos del responsable (en amarillo). Completarlos en privacidad.html antes de publicar.';
+    b.classList.add('on');
+  }
+
+  // Idioma: ?lang=pt, o el que eligió la persona en la app
+  const ids = { es: { privacidad: 'privacidad', condiciones: 'condiciones' }, pt: { privacidad: 'privacidade', condiciones: 'termos' } };
+  function poner(l){
+    document.documentElement.lang = l === 'pt' ? 'pt-BR' : 'es';
+    document.querySelectorAll('[data-idioma]').forEach(d => d.hidden = d.dataset.idioma !== l);
+    document.querySelectorAll('.idiomas button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.l === l)));
+    document.querySelectorAll('footer [data-es]').forEach(el => el.textContent = el.dataset[l]);
+    document.querySelectorAll('.pestanas a').forEach((a, i) => {
+      a.textContent = a.dataset[l];
+      a.href = '#' + ids[l][i ? 'condiciones' : 'privacidad'];
+    });
+    document.title = l === 'pt' ? 'Privacidade e termos · 48h Posadas' : 'Privacidad y condiciones · 48h Posadas';
+    try { localStorage.setItem('pv-idioma', l); } catch(e){}
+  }
+  let lang = new URLSearchParams(location.search).get('lang');
+  if(lang !== 'es' && lang !== 'pt'){ try { lang = localStorage.getItem('pv-idioma'); } catch(e){} }
+  if(lang !== 'pt') lang = 'es';
+  poner(lang);
+  // Los enlaces de la app usan #privacidad / #condiciones: llevarlos a la sección del idioma
+  const h = location.hash.slice(1);
+  const destino = h === 'condiciones' || h === 'termos' ? ids[lang].condiciones : (h ? ids[lang].privacidad : '');
+  if(destino) requestAnimationFrame(() => { const el = document.getElementById(destino); if(el) el.scrollIntoView(); });
+  document.querySelectorAll('.idiomas button').forEach(b => b.addEventListener('click', () => poner(b.dataset.l)));
+})();
+</script>
+</body>
+</html>

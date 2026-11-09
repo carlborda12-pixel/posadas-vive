@@ -1,0 +1,9 @@
+# Lo que está en el repositorio pero NO se publica en la web.
+# Sin esto, Vercel serviría estos archivos a cualquiera que adivine la ruta.
+herramientas/
+supabase/
+datos/
+*.xlsx
+*.csv
+LEEME.md
+SEGURIDAD.md
