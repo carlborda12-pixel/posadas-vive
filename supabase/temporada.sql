@@ -12,6 +12,8 @@
 --   PARTE 4  Columnas en portugués        (lugares.*_pt)
 --   PARTE 5  Recordatorios                (plantilla: se ajusta con el
 --                                           nombre real de tu tabla)
+--   PARTE 6  Visitantes que ingresan      (visitante_ingresar / _baja)
+--            con nombre y email
 --
 -- Las tareas programadas (avisos por email y limpieza) están en cron.sql.
 -- =====================================================================
@@ -43,6 +45,28 @@ create index if not exists estadisticas_eventos_sesion_idx on public.estadistica
 alter table public.estadisticas_eventos enable row level security;
 revoke all on public.estadisticas_eventos from anon, authenticated;
 
+-- Personas que ingresaron con nombre y email (PARTE 6). Va acá porque los
+-- eventos de quien ingresó llevan su id. Si la persona pide la baja, se
+-- borra su fila y sus eventos quedan anónimos (on delete set null).
+create table if not exists public.visitantes (
+  id        uuid primary key,
+  creado    timestamptz not null default now(),
+  ultimo    timestamptz not null default now(),
+  nombre    text not null check (char_length(nombre) between 2 and 80),
+  email     text not null check (char_length(email) <= 160),
+  idioma    text not null default 'es' check (idioma in ('es','pt')),
+  politica  text not null
+);
+create index if not exists visitantes_creado_idx on public.visitantes (creado);
+create index if not exists visitantes_email_idx on public.visitantes (lower(email));
+alter table public.visitantes enable row level security;
+revoke all on public.visitantes from anon, authenticated;
+
+alter table public.estadisticas_eventos
+  add column if not exists visitante uuid references public.visitantes(id) on delete set null;
+create index if not exists estadisticas_eventos_visitante_idx
+  on public.estadisticas_eventos (visitante, creado) where visitante is not null;
+
 create or replace function public.registrar_eventos(p_eventos jsonb)
 returns void
 language plpgsql
@@ -55,6 +79,8 @@ declare
   v_sesion text;
   v_tipo   text;
   v_hoy    int;
+  v_min    int;
+  v_vis    uuid;
   v_tipos  text[] := array['visita','vista_lugar','como_llegar','inscripcion_inicio','inscripcion_ok',
                            'lista_espera','whatsapp','compartir','guardar','ruta','filtro','idioma',
                            'instalada','cancelacion','calendario','contacto','video'];
@@ -62,6 +88,18 @@ begin
   if p_eventos is null or jsonb_typeof(p_eventos) <> 'array' then return; end if;
   -- la app manda lotes de hasta 25; más que eso no viene de la app
   if jsonb_array_length(p_eventos) > 30 then return; end if;
+
+  -- tope general: la "sesión" la inventa el teléfono, así que alguien podría
+  -- inventar miles y llenar la base. Más de 3000 eventos por minuto no es uso real.
+  select count(*) into v_min from estadisticas_eventos where creado > now() - interval '1 minute';
+  if v_min >= 3000 then return; end if;
+
+  -- quien ingresó con nombre y email: todo el lote es del mismo teléfono.
+  -- Solo se acepta un id que exista (lo crea visitante_ingresar).
+  select v.id into v_vis from visitantes v
+   where v.id = (select (j.value->>'v')::uuid from jsonb_array_elements(p_eventos) j
+                  where j.value->>'v' ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' limit 1);
+  if v_vis is not null then update visitantes set ultimo = now() where id = v_vis; end if;
 
   for e in select value from jsonb_array_elements(p_eventos) loop
     continue when jsonb_typeof(e) <> 'object';
@@ -84,7 +122,7 @@ begin
     -- extra: solo las claves que usa la app, con formato controlado
     x := case when jsonb_typeof(e->'x') = 'object' then e->'x' else '{}'::jsonb end;
 
-    insert into estadisticas_eventos (tipo, lugar, idioma, sesion, origen, extra)
+    insert into estadisticas_eventos (tipo, lugar, idioma, sesion, origen, extra, visitante)
     values (
       v_tipo,
       case when e->>'l' ~ '^[a-z0-9_-]{1,40}$' then e->>'l' end,
@@ -99,7 +137,8 @@ begin
         'k',    case when x->>'k' ~ '^[a-z_-]{1,20}$' then x->>'k' end,
         'a',    case when x->>'a' in ('es','pt') then x->>'a' end,
         'f',    case when x->>'f' ~ '^\d{4}-\d{2}-\d{2}$' then x->>'f' end
-      )), '{}'::jsonb)
+      )), '{}'::jsonb),
+      v_vis
     );
     v_hoy := v_hoy + 1;
   end loop;
@@ -118,7 +157,9 @@ grant execute on function public.registrar_eventos(jsonb) to anon, authenticated
 -- Para definir o cambiar la clave (cambiar el texto entre comillas):
 --
 --   insert into public.reporte_acceso (id, clave_hash)
---   values (1, extensions.crypt('ELEGIR-UNA-CLAVE', extensions.gen_salt('bf')))
+--   values (1, extensions.crypt('ELEGIR-UNA-CLAVE', extensions.gen_salt('bf', 10)))
+--
+-- La clave: 12 caracteres o más, que no se use en otro lado.
 --   on conflict (id) do update set clave_hash = excluded.clave_hash;
 -- =====================================================================
 
@@ -129,6 +170,17 @@ create table if not exists public.reporte_acceso (
 alter table public.reporte_acceso enable row level security;
 revoke all on public.reporte_acceso from anon, authenticated;
 
+-- Intentos fallidos de clave. Se guarda un resumen (hash) de la conexión, no la IP.
+-- Antes cada error esperaba 0,8 s con pg_sleep: muchos pedidos juntos dejaban
+-- la base sin conexiones libres. Ahora se cuenta y se bloquea.
+create table if not exists public.reporte_intentos (
+  creado  timestamptz not null default now(),
+  origen  text not null
+);
+create index if not exists reporte_intentos_idx on public.reporte_intentos (creado);
+alter table public.reporte_intentos enable row level security;
+revoke all on public.reporte_intentos from anon, authenticated;
+
 create or replace function public.estadisticas_resumen(p_clave text, p_desde date, p_hasta date)
 returns jsonb
 language plpgsql
@@ -136,15 +188,26 @@ security definer
 set search_path = public, extensions, pg_temp
 as $$
 declare
-  v_tz   constant text := 'America/Argentina/Buenos_Aires';
-  v_hash text;
-  v_ini  timestamptz;
-  v_fin  timestamptz;
-  r      jsonb;
+  v_tz     constant text := 'America/Argentina/Buenos_Aires';
+  v_hash   text;
+  v_ini    timestamptz;
+  v_fin    timestamptz;
+  v_origen text;
+  r        jsonb;
 begin
+  -- quién pregunta, resumido: el hash de la IP con la que llega el pedido
+  v_origen := encode(digest(coalesce(
+    split_part(current_setting('request.headers', true)::json->>'x-forwarded-for', ',', 1), 'sin-ip'), 'sha256'), 'hex');
+
+  -- 10 errores en 15 minutos desde el mismo lugar, o 200 en total: se bloquea
+  if (select count(*) from reporte_intentos where origen = v_origen and creado > now() - interval '15 minutes') >= 10
+     or (select count(*) from reporte_intentos where creado > now() - interval '15 minutes') >= 200 then
+    return jsonb_build_object('ok', false, 'motivo', 'bloqueado');
+  end if;
+
   select clave_hash into v_hash from reporte_acceso where id = 1;
-  if v_hash is null or p_clave is null or crypt(p_clave, v_hash) <> v_hash then
-    perform pg_sleep(0.8);   -- frena a quien prueba claves a ciegas
+  if v_hash is null or p_clave is null or char_length(p_clave) > 200 or crypt(p_clave, v_hash) <> v_hash then
+    insert into reporte_intentos (origen) values (v_origen);
     return jsonb_build_object('ok', false, 'motivo', 'clave');
   end if;
   if p_desde is null or p_hasta is null or p_hasta < p_desde or p_hasta - p_desde > 366 then
@@ -218,7 +281,36 @@ begin
 
     'origenes', (select coalesce(jsonb_agg(jsonb_build_object('origen', origen, 'visitas', n) order by n desc, origen), '[]'::jsonb)
       from (select origen, count(*) n from ev where tipo = 'visita'
-             group by origen order by 2 desc limit 12) s)
+             group by origen order by 2 desc limit 12) s),
+
+    -- Personas que ingresaron con nombre y email (aceptaron la política)
+    'visitantes', (select jsonb_build_object(
+        'nuevos',  (select count(*) from visitantes where creado >= v_ini and creado < v_fin),
+        'activos', (select count(distinct visitante) from ev where visitante is not null),
+        'total',   (select count(*) from visitantes where creado < v_fin))),
+
+    -- Lista para Turismo: hasta 300, los más recientes primero, con los
+    -- tres lugares o actividades que más les interesaron en el período
+    'visitantes_lista', (select coalesce(jsonb_agg(jsonb_build_object(
+          'nombre', v.nombre, 'email', v.email, 'idioma', v.idioma,
+          'creado', v.creado, 'ultimo', v.ultimo,
+          'intereses', coalesce((select jsonb_agg(lugar order by n desc, lugar) from (
+              select lugar, count(*) n from ev
+               where visitante = v.id and lugar is not null
+                 and tipo in ('vista_lugar','guardar','como_llegar','inscripcion_ok','lista_espera','calendario','contacto','whatsapp')
+               group by lugar order by 2 desc, lugar limit 3) i), '[]'::jsonb))
+        order by v.ultimo desc), '[]'::jsonb)
+      from (select * from visitantes
+             where creado < v_fin
+               and (creado >= v_ini or id in (select visitante from ev where visitante is not null))
+             order by ultimo desc limit 300) v),
+
+    -- Qué les interesa a quienes ingresaron (para agrupar por categoría en el reporte)
+    'visitantes_lugares', (select coalesce(jsonb_agg(jsonb_build_object('lugar', lugar, 'n', n) order by n desc, lugar), '[]'::jsonb)
+      from (select lugar, count(*) n from ev
+             where visitante is not null and lugar is not null
+               and tipo in ('vista_lugar','guardar','como_llegar','inscripcion_ok','lista_espera','calendario','contacto','whatsapp')
+             group by lugar order by 2 desc, lugar limit 60) s)
   ) into r;
 
   return r;
@@ -283,6 +375,10 @@ begin
 
   if char_length(p_nombre) < 2 or char_length(p_nombre) > 120 then
     return jsonb_build_object('ok', false, 'motivo', 'datos_invalidos'); end if;
+  -- el nombre va dentro del email de aviso: sin enlaces ni etiquetas, así nadie
+  -- usa la lista para mandar mensajes engañosos a nombre de 48 HS
+  if p_nombre ~* '(https?:|www\.|://|[<>{}\\]|\.(com|net|org|ar|io|xyz)\y)' then
+    return jsonb_build_object('ok', false, 'motivo', 'datos_invalidos'); end if;
   if char_length(p_email) > 200 or p_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then
     return jsonb_build_object('ok', false, 'motivo', 'email_invalido'); end if;
   if p_cantidad is null or p_cantidad < 1 or p_cantidad > 10 then
@@ -300,6 +396,11 @@ begin
   select count(*) into v_n from lista_espera
    where lower(email) = p_email and creado > now() - interval '1 hour';
   if v_n >= 5 then return jsonb_build_object('ok', false, 'motivo', 'demasiadas'); end if;
+
+  -- tope general: con emails inventados alguien podría anotar a cientos de
+  -- personas que después reciben avisos que no pidieron
+  select count(*) into v_n from lista_espera where creado > now() - interval '1 hour';
+  if v_n >= 300 then return jsonb_build_object('ok', false, 'motivo', 'demasiadas'); end if;
 
   select count(*) into v_n from lista_espera
    where actividad_id = p_actividad and fecha_evento = p_fecha and estado = 'esperando';
@@ -398,3 +499,85 @@ select i.id,
 
 revoke all on public.recordatorios_pendientes from anon, authenticated;
 */
+
+
+-- =====================================================================
+-- PARTE 6 · VISITANTES QUE INGRESAN CON NOMBRE Y EMAIL
+-- El ingreso es opcional (la web se puede usar sin ingresar). Quien
+-- ingresa acepta la política de privacidad, y sus eventos llevan su id
+-- para que Turismo sepa quién visita y qué le interesó.
+-- El id lo genera el teléfono (uuid al azar) y solo lo conoce ese
+-- teléfono. La web NUNCA lee estos datos: las recomendaciones se
+-- calculan en el teléfono. Así, escribir el email de otra persona no
+-- muestra nada de ella.
+-- La tabla "visitantes" se crea en la PARTE 1.
+-- =====================================================================
+
+create or replace function public.visitante_ingresar(
+  p_id uuid, p_nombre text, p_email text,
+  p_idioma text default 'es', p_politica text default null, p_trampa text default null)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_n int;
+begin
+  -- campo trampa completo = bot. Le respondemos "ok" para que no insista.
+  if coalesce(p_trampa, '') <> '' then return jsonb_build_object('ok', true); end if;
+  if p_id is null then return jsonb_build_object('ok', false, 'motivo', 'datos_invalidos'); end if;
+
+  p_nombre := regexp_replace(btrim(coalesce(p_nombre, '')), '\s+', ' ', 'g');
+  p_email  := lower(btrim(coalesce(p_email, '')));
+  if char_length(p_nombre) < 2 or char_length(p_nombre) > 80 then
+    return jsonb_build_object('ok', false, 'motivo', 'datos_invalidos'); end if;
+  if p_nombre ~* '(https?:|www\.|://|[<>{}\\]|\.(com|net|org|ar|io|xyz)\y)' then
+    return jsonb_build_object('ok', false, 'motivo', 'datos_invalidos'); end if;
+  if char_length(p_email) > 160 or p_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then
+    return jsonb_build_object('ok', false, 'motivo', 'email_invalido'); end if;
+  if p_idioma is null or p_idioma not in ('es','pt') then p_idioma := 'es'; end if;
+  if p_politica is null or p_politica !~ '^\d{4}-\d{2}-\d{2}$' then
+    return jsonb_build_object('ok', false, 'motivo', 'sin_consentimiento'); end if;
+
+  -- frenos contra abuso: el mismo email muchas veces en una hora, o una
+  -- avalancha general (alguien inventando personas para llenar la base)
+  select count(*) into v_n from visitantes where lower(email) = p_email and creado > now() - interval '1 hour';
+  if v_n >= 5 then return jsonb_build_object('ok', false, 'motivo', 'demasiadas'); end if;
+  select count(*) into v_n from visitantes where creado > now() - interval '1 hour';
+  if v_n >= 1000 then return jsonb_build_object('ok', false, 'motivo', 'demasiadas'); end if;
+
+  insert into visitantes (id, nombre, email, idioma, politica)
+  values (p_id, p_nombre, p_email, p_idioma, p_politica)
+  on conflict (id) do update
+     set nombre = excluded.nombre, email = excluded.email, idioma = excluded.idioma,
+         politica = excluded.politica, ultimo = now();
+
+  return jsonb_build_object('ok', true);
+end;
+$$;
+
+revoke all on function public.visitante_ingresar(uuid, text, text, text, text, text) from public;
+grant execute on function public.visitante_ingresar(uuid, text, text, text, text, text) to anon, authenticated;
+
+-- "Salir y borrar" en Mis planes. Borra a la persona; sus estadísticas
+-- quedan, pero anónimas. El id es un uuid al azar: no se puede adivinar.
+create or replace function public.visitante_baja(p_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+begin
+  delete from visitantes where id = p_id;
+  return jsonb_build_object('ok', found);
+end;
+$$;
+
+revoke all on function public.visitante_baja(uuid) from public;
+grant execute on function public.visitante_baja(uuid) to anon, authenticated;
+
+-- Pedidos de acceso o borrado que lleguen por email (Ley 25.326):
+--   select * from public.visitantes where lower(email) = lower('persona@ejemplo.com');
+--   delete from public.visitantes where lower(email) = lower('persona@ejemplo.com');
+
