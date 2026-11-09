@@ -60,7 +60,7 @@ begin
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and has_function_privilege('anon', p.oid, 'execute');
   insert into _auditoria values (5, 'Funciones que el público puede llamar', 'REVISAR',
-    coalesce(v_txt, '(ninguna)') || '. Esperadas: reservar, cancelar, cupos_estado, registrar_eventos, estadisticas_resumen, lista_espera_unirse, lista_espera_baja. Cualquier otra: revoke execute on function <nombre> from anon, public;');
+    coalesce(v_txt, '(ninguna)') || '. Esperadas: reservar, cancelar, cupos_estado, registrar_eventos, estadisticas_resumen, lista_espera_unirse, lista_espera_baja, visitante_ingresar, visitante_baja. Cualquier otra: revoke execute on function <nombre> from anon, public;');
 
   -- 6. Vistas que saltean la RLS (sin security_invoker)
   select string_agg(c.relname, ', ') into v_txt

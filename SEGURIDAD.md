@@ -1,6 +1,6 @@
 # 48 HS · seguridad
 
-Revisión del 4 de noviembre de 2026 (versión `pv-2026-11-08-2`). Se revisó todo el repositorio: la web (`index.html`, `sw.js`, `reporte.html`), la base (`supabase/*.sql`), la función de avisos, las herramientas y la configuración de Vercel.
+Revisión del 4 de noviembre de 2026 (versión `pv-2026-11-09-1`). Se revisó todo el repositorio: la web (`index.html`, `sw.js`, `reporte.html`), la base (`supabase/*.sql`), la función de avisos, las herramientas y la configuración de Vercel.
 
 ## Cómo se probó
 

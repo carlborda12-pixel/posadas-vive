@@ -38,10 +38,13 @@ Con la planilla en `datos/`, el importador se corre así:
 
 ## Qué se sube ahora (Vercel)
 
+**Versión plana para subir arrastrando** (`48hs-para-subir.zip`): los mismos archivos públicos pero todos sueltos, sin carpetas (29 archivos), con las rutas ya ajustadas. Sirve cuando GitHub desarma las carpetas al arrastrar. No lleva `supabase/`, `herramientas/` ni `datos/`, así que no hace falta `.vercelignore`. Esta carpeta (`48hs/`) sigue siendo la fuente para trabajar; la versión plana se arma a partir de ella en cada entrega.
+
+
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-11-08-2`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-11-09-1`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `privacidad.html` | Política de privacidad y condiciones de uso (español y portugués). **Antes de publicar, completar los datos del responsable** (ver "Privacidad y condiciones") |
 | `fuentes/` | La tipografía Be Vietnam Pro, servida desde el mismo sitio (con su licencia `OFL.txt`) |
