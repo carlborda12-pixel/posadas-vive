@@ -41,14 +41,14 @@ CATEGORIAS = [
     ('naturaleza',  'Naturaleza',    []),
     ('paseos',      'Paseo guiado',  []),
     ('nautico',     'Náutico',       []),
-    ('gastronomia', 'Gastronomía',   ['pescados', 'parrillas', 'vinos', 'internacional']),
+    ('gastronomia', 'Gastronomía',   ['pescados', 'parrillas', 'vinos', 'internacional', 'cafes']),
     ('nocturna',    'Vida nocturna', ['bares', 'bowling']),
     ('ninos',       'Niños',         []),
     ('excursiones', 'Excursiones',   []),
 ]
 SUBCATEGORIAS = {
     'museos': 'Museos', 'salas': 'Salas culturales',
-    'pescados': 'Pescados', 'parrillas': 'Galetos y parrillas', 'vinos': 'Vinos', 'internacional': 'Internacional',
+    'pescados': 'Pescados', 'parrillas': 'Galetos y parrillas', 'vinos': 'Vinos', 'internacional': 'Internacional', 'cafes': 'Café y té',
     'bares': 'Bares', 'bowling': 'Bowling',
 }
 # Formas en que puede venir escrita una subcategoría
@@ -60,6 +60,8 @@ SINONIMOS_SUB = {
     'galetos y parrillas': 'parrillas', 'galetos parrillas': 'parrillas',
     'vino': 'vinos', 'vinos': 'vinos',
     'internacional': 'internacional',
+    'cafe': 'cafes', 'cafes': 'cafes', 'cafe y te': 'cafes', 'cafes y te': 'cafes', 'cafe te': 'cafes',
+    'cafeteria': 'cafes', 'cafeterias': 'cafes', 'te': 'cafes', 'casa de te': 'cafes', 'casas de te': 'cafes',
     'bar': 'bares', 'bares': 'bares',
     'bowling': 'bowling',
 }
@@ -186,6 +188,74 @@ def coordenadas(v, link=''):
     if m:
         return [round(float(m.group(1)), 6), round(float(m.group(2)), 6)]
     return None
+
+
+# ---------------------------------------------------------------------
+# Horarios como los escribe Turismo ("L a V 8-12.30 / 17-20 S 9-13") →
+# "Lun a Vie 8 a 12:30 y 17 a 20 hs · Sáb 9 a 13 hs" (y en portugués).
+# Si el texto no sigue ese formato se publica tal cual.
+# ---------------------------------------------------------------------
+DIAS = {'l': 0, 'lu': 0, 'lun': 0, 'lunes': 0, 'm': 1, 'ma': 1, 'mar': 1, 'martes': 1,
+        'mi': 2, 'mie': 2, 'miercoles': 2, 'x': 2, 'j': 3, 'ju': 3, 'jue': 3, 'jueves': 3,
+        'v': 4, 'vi': 4, 'vie': 4, 'viernes': 4, 's': 5, 'sa': 5, 'sab': 5, 'sabado': 5, 'sabados': 5,
+        'd': 6, 'do': 6, 'dom': 6, 'domingo': 6, 'domingos': 6}
+DIAS_ES = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+DIAS_PT = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+_HORA = r'(\d{1,2})(?:[.:](\d{2}))?'
+_RANGO = re.compile(_HORA + r'\s*(?:-|a|al)\s*' + _HORA)
+
+
+def horario_legible(t: str):
+    """Devuelve (es, pt) o None si no se entiende del todo."""
+    s = unicodedata.normalize('NFKD', t).encode('ascii', 'ignore').decode().lower()
+    s = re.sub(r'([a-z])(\d)', r'\1 \2', s)                      # "V8-12" → "V 8-12"
+    grupos, i = [], 0
+    dia = r'(lunes|martes|miercoles|jueves|viernes|sabados?|domingos?|lun|mar|mie|jue|vie|sab|dom|mi|l|m|j|v|s|d|x)\b'
+    pat_dias = re.compile(r'\s*' + dia + r'(?:\s*(a|al|-|y)\s*' + dia + r')?')
+    pat_hora = re.compile(r'\s*/?\s*' + _RANGO.pattern)
+    while i < len(s):
+        if not s[i:].strip(' /,·;'):
+            break
+        m = pat_dias.match(s, i)
+        if not m:
+            return None
+        d1, sep, d2 = DIAS[m.group(1)], m.group(2), (DIAS[m.group(3)] if m.group(3) else None)
+        i = m.end()
+        rangos = []
+        while True:
+            r = pat_hora.match(s, i)
+            if not r:
+                break
+            h1, m1, h2, m2 = int(r.group(1)), int(r.group(2) or 0), int(r.group(3)), int(r.group(4) or 0)
+            if h1 > 24 or h2 > 24 or m1 > 59 or m2 > 59:
+                return None
+            rangos.append((h1, m1, h2, m2)); i = r.end()
+        if not rangos:
+            return None
+        grupos.append((d1, sep, d2, rangos))
+        while i < len(s) and s[i] in ' /,;·':
+            i += 1
+    if not grupos:
+        return None
+
+    def h(hh, mm):
+        if hh in (0, 24) and mm == 0:
+            return '00'
+        return f'{hh}' + (f':{mm:02d}' if mm else '')
+
+    def armar(nombres, y, a, sufijo):
+        partes = []
+        for d1, sep, d2, rangos in grupos:
+            if d2 is None:
+                dias = nombres[d1]
+            elif sep == 'y':
+                dias = f'{nombres[d1]} {y} {nombres[d2]}'
+            else:
+                dias = f'{nombres[d1]} a {nombres[d2]}'
+            horas = f' {y} '.join(f'{h(a1, b1)} {a} {h(a2, b2)}' for a1, b1, a2, b2 in rangos)
+            partes.append(f'{dias} {horas} {sufijo}')
+        return ' · '.join(partes)
+    return armar(DIAS_ES, 'y', 'a', 'hs'), armar(DIAS_PT, 'e', 'às', 'h')
 
 
 def coords_ok(c):
@@ -455,7 +525,10 @@ def armar(lugares_raw, agenda_raw, hoy: dt.date, inf: Informe):
         if pt:
             L['pt'] = pt
         if horario and tipo != 'evento':
-            L['schedule'] = {'kind': 'siempre', 'label': horario}
+            leg = horario_legible(horario)
+            L['schedule'] = {'kind': 'siempre', 'label': leg[0] if leg else horario}
+            if leg:
+                L.setdefault('pt', {})['label'] = leg[1]
         if tipo == 'excursion' and 'schedule' not in L:
             L['schedule'] = {'kind': 'siempre', 'label': 'Consultar fechas'}
         lugares.append(L)
