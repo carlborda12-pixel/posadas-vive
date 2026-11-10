@@ -16,6 +16,8 @@
 --            con nombre y email
 --   PARTE 7  Ajustes, resumen mensual     (topes y plazos editables,
 --            y limpieza                    limpieza_diaria para cron)
+--   PARTE 8  Panel de carga               (cargar.html: Turismo publica
+--                                          la planilla sin tocar código)
 --
 -- Se puede volver a correr entero cuantas veces haga falta: no borra datos
 -- y deja todo actualizado.
@@ -800,4 +802,181 @@ revoke all on function public.limpieza_diaria() from public, anon, authenticated
 -- Para ver cuánto ocupa la base (el plan gratis tiene 500 MB):
 --   select pg_size_pretty(pg_database_size(current_database())) as base_total,
 --          pg_size_pretty(pg_total_relation_size('public.estadisticas_eventos')) as estadisticas;
+
+
+-- =====================================================================
+-- PARTE 8 · PANEL DE CARGA (cargar.html)
+-- Turismo sube la planilla en cargar.html, la página la revisa y publica
+-- el catálogo acá. La web lo lee con catalogo_actual(); si no hay nada
+-- publicado o falla, usa catalogo.json. Se guardan las últimas 30
+-- versiones para poder volver atrás.
+--
+-- Clave del panel (distinta de la del reporte). Para definirla o cambiarla:
+--
+--   insert into public.carga_acceso (id, clave_hash)
+--   values (1, extensions.crypt('ELEGIR-OTRA-CLAVE', extensions.gen_salt('bf', 10)))
+--   on conflict (id) do update set clave_hash = excluded.clave_hash;
+--
+-- 14 caracteres o más. Quien la tenga puede cambiar todo lo que muestra la
+-- web: darla solo a quien cargue datos y cambiarla si alguien deja el equipo.
+-- =====================================================================
+
+create table if not exists public.carga_acceso (
+  id         int primary key default 1 check (id = 1),
+  clave_hash text not null
+);
+alter table public.carga_acceso enable row level security;
+revoke all on public.carga_acceso from anon, authenticated;
+
+create table if not exists public.catalogo_versiones (
+  version bigserial primary key,
+  creado  timestamptz not null default now(),
+  datos   jsonb not null,
+  resumen jsonb,
+  nota    text check (nota is null or char_length(nota) <= 200)
+);
+alter table public.catalogo_versiones enable row level security;
+revoke all on public.catalogo_versiones from anon, authenticated;
+
+-- Los intentos fallidos de clave del panel se anotan junto a los del reporte
+alter table public.reporte_intentos add column if not exists rol text not null default 'reporte';
+
+-- Verifica la clave del panel, con el mismo bloqueo que el reporte.
+-- Devuelve 'ok', 'clave' o 'bloqueado'. Es interna.
+create or replace function public.carga_verificar(p_clave text)
+returns text
+language plpgsql
+security definer
+set search_path = public, extensions, pg_temp
+as $$
+declare
+  v_hash   text;
+  v_origen text;
+begin
+  v_origen := encode(digest(coalesce(
+    split_part(current_setting('request.headers', true)::json->>'x-forwarded-for', ',', 1), 'sin-ip'), 'sha256'), 'hex');
+  if (select count(*) from reporte_intentos where origen = v_origen and creado > now() - interval '15 minutes') >= 10
+     or (select count(*) from reporte_intentos where rol = 'carga' and creado > now() - interval '15 minutes') >= 100 then
+    return 'bloqueado';
+  end if;
+  select clave_hash into v_hash from carga_acceso where id = 1;
+  if v_hash is null or p_clave is null or char_length(p_clave) > 200 or crypt(p_clave, v_hash) <> v_hash then
+    insert into reporte_intentos (origen, rol) values (v_origen, 'carga');
+    return 'clave';
+  end if;
+  return 'ok';
+end;
+$$;
+revoke all on function public.carga_verificar(text) from public, anon, authenticated;
+
+-- Lo que lee la web. Si la app ya tiene esa versión, no se manda de nuevo.
+create or replace function public.catalogo_actual(p_version bigint default null)
+returns jsonb
+language sql
+stable
+security definer
+set search_path = public, pg_temp
+as $$
+  select coalesce(
+    (select case when c.version = p_version
+                 then jsonb_build_object('version', c.version, 'igual', true)
+                 else jsonb_build_object('version', c.version, 'datos', c.datos) end
+       from catalogo_versiones c order by c.version desc limit 1),
+    jsonb_build_object('vacio', true));
+$$;
+revoke all on function public.catalogo_actual(bigint) from public;
+grant execute on function public.catalogo_actual(bigint) to anon, authenticated;
+
+-- Publicar una planilla ya revisada por cargar.html. Acá se vuelve a
+-- controlar lo básico, por si alguien llama la función a mano.
+create or replace function public.catalogo_publicar(p_clave text, p_datos jsonb, p_resumen jsonb default null, p_nota text default null)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_ok  text := carga_verificar(p_clave);
+  v_n   int;
+  v_ver bigint;
+begin
+  if v_ok <> 'ok' then return jsonb_build_object('ok', false, 'motivo', v_ok); end if;
+
+  if p_datos is null or jsonb_typeof(p_datos) <> 'object' or jsonb_typeof(p_datos->'lugares') <> 'array' then
+    return jsonb_build_object('ok', false, 'motivo', 'formato');
+  end if;
+  v_n := jsonb_array_length(p_datos->'lugares');
+  if v_n < 1 or v_n > 5000 or octet_length(p_datos::text) > 3000000 then
+    return jsonb_build_object('ok', false, 'motivo', 'tamano');
+  end if;
+  if exists (select 1 from jsonb_array_elements(p_datos->'lugares') l
+              where jsonb_typeof(l) <> 'object'
+                 or coalesce(l->>'id', '') !~ '^[a-z0-9_-]{1,40}$'
+                 or jsonb_typeof(l->'name') <> 'string'
+                 or char_length(l->>'name') > 200) then
+    return jsonb_build_object('ok', false, 'motivo', 'lugar_invalido');
+  end if;
+  if (select count(*) from catalogo_versiones where creado > now() - interval '1 hour') >= 60 then
+    return jsonb_build_object('ok', false, 'motivo', 'demasiadas');
+  end if;
+
+  insert into catalogo_versiones (datos, resumen, nota)
+  values (p_datos,
+          case when jsonb_typeof(p_resumen) = 'object' and octet_length(p_resumen::text) < 5000 then p_resumen end,
+          nullif(left(btrim(coalesce(p_nota, '')), 200), ''))
+  returning version into v_ver;
+
+  -- se guardan las últimas 30 versiones
+  delete from catalogo_versiones
+   where version not in (select version from catalogo_versiones order by version desc limit 30);
+
+  return jsonb_build_object('ok', true, 'version', v_ver);
+end;
+$$;
+revoke all on function public.catalogo_publicar(text, jsonb, jsonb, text) from public;
+grant execute on function public.catalogo_publicar(text, jsonb, jsonb, text) to anon, authenticated;
+
+-- Historial para el panel (sin los datos completos)
+create or replace function public.catalogo_historial(p_clave text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_ok text := carga_verificar(p_clave);
+begin
+  if v_ok <> 'ok' then return jsonb_build_object('ok', false, 'motivo', v_ok); end if;
+  return jsonb_build_object('ok', true, 'versiones', coalesce((
+    select jsonb_agg(jsonb_build_object('version', version, 'creado', creado, 'resumen', resumen, 'nota', nota,
+                                        'lugares', jsonb_array_length(datos->'lugares')) order by version desc)
+      from catalogo_versiones), '[]'::jsonb));
+end;
+$$;
+revoke all on function public.catalogo_historial(text) from public;
+grant execute on function public.catalogo_historial(text) to anon, authenticated;
+
+-- Volver a una versión anterior: se publica de nuevo como la más reciente
+create or replace function public.catalogo_restaurar(p_clave text, p_version bigint)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_ok  text := carga_verificar(p_clave);
+  v_ver bigint;
+begin
+  if v_ok <> 'ok' then return jsonb_build_object('ok', false, 'motivo', v_ok); end if;
+  insert into catalogo_versiones (datos, resumen, nota)
+  select datos, resumen, 'Vuelta a la versión ' || version from catalogo_versiones where version = p_version
+  returning version into v_ver;
+  if v_ver is null then return jsonb_build_object('ok', false, 'motivo', 'no_existe'); end if;
+  delete from catalogo_versiones
+   where version not in (select version from catalogo_versiones order by version desc limit 30);
+  return jsonb_build_object('ok', true, 'version', v_ver);
+end;
+$$;
+revoke all on function public.catalogo_restaurar(text, bigint) from public;
+grant execute on function public.catalogo_restaurar(text, bigint) to anon, authenticated;
 

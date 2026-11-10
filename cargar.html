@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel de carga · 48h Posadas</title>
+<meta name="theme-color" content="#06120e">
+<link rel="icon" href="marca/favicon.svg" type="image/svg+xml">
+<link href="fuentes/fuentes.css" rel="stylesheet">
+<style>
+  :root {
+    --paper: #06120e; --card: #0f241c; --card-2: #153026; --ink: #f7f7f7; --muted: #a1b3ab;
+    --line: rgba(255,255,255,0.09); --verde: #05a36f; --verde-2: #037a52; --verde-claro: #3fc898;
+    --rosa: #f23179; --rojo: #ff6b6b; --amarillo: #ffd166;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 15px/1.55 'Be Vietnam Pro', system-ui, sans-serif; }
+  a { color: var(--verde-claro); }
+  button { font: inherit; cursor: pointer; }
+  .top { border-bottom: 1px solid var(--line); background: rgba(6,18,14,0.95); position: sticky; top: 0; z-index: 5; }
+  .top-in { max-width: 860px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+  .top img { height: 26px; }
+  .top b { font-size: 0.9rem; color: var(--muted); font-weight: 600; margin-right: auto; }
+  .top b { white-space: nowrap; }
+  @media (max-width: 420px) { .top img { height: 22px; } .top b { font-size: 0.8rem; } }
+  main { max-width: 860px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 1.5rem; margin: 6px 0 4px; letter-spacing: -0.3px; }
+  .bajada { color: var(--muted); margin: 0 0 20px; }
+  .tarjeta { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; margin-bottom: 16px; }
+  .tarjeta h2 { font-size: 1.02rem; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+  .tarjeta h2 .n { width: 26px; height: 26px; border-radius: 50%; background: rgba(5,163,111,0.18); color: var(--verde-claro); display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  input[type=password], input[type=text] { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font: inherit; }
+  input:focus { outline: 2px solid var(--verde); outline-offset: 1px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border-radius: 12px; border: 0; background: linear-gradient(120deg, var(--verde), var(--verde-2)); color: #fff; font-weight: 700; }
+  .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .btn-borde { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  .btn-peligro.confirmar { background: #c81e5f; }
+  .fila { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .msg { margin-top: 10px; font-size: 0.88rem; }
+  .msg.err { color: var(--rojo); } .msg.ok { color: var(--verde-claro); }
+  .zona { display: block; cursor: pointer; border: 2px dashed rgba(5,163,111,0.4); border-radius: 16px; padding: 26px 16px; text-align: center; color: var(--muted); transition: background .15s; }
+  .zona.sobre { background: rgba(5,163,111,0.08); }
+  .zona b { color: var(--ink); }
+  .estado { border-radius: 14px; padding: 12px 14px; font-weight: 600; margin: 14px 0; }
+  .estado.ok { background: rgba(5,163,111,0.14); border: 1px solid rgba(5,163,111,0.4); }
+  .estado.err { background: rgba(255,107,107,0.12); border: 1px solid rgba(255,107,107,0.45); color: #ffb3b3; }
+  .estado.igual { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.4); color: #ffe3a3; }
+  .nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 10px 0; }
+  .num { background: var(--card-2); border-radius: 12px; padding: 10px 12px; }
+  .num b { display: block; font-size: 1.35rem; }
+  .num span { color: var(--muted); font-size: 0.78rem; }
+  details { background: var(--card-2); border-radius: 12px; padding: 10px 14px; margin: 8px 0; }
+  summary { cursor: pointer; font-weight: 600; }
+  details ul { margin: 8px 0 2px; padding-left: 18px; max-height: 320px; overflow: auto; }
+  details li { margin: 3px 0; color: #dbe5e0; font-size: 0.86rem; }
+  .err-lista li { color: #ffb3b3; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 2px; }
+  .chip { background: rgba(255,255,255,0.06); border-radius: 20px; padding: 3px 10px; font-size: 0.78rem; color: var(--muted); }
+  .chip b { color: var(--ink); }
+  .hist { list-style: none; padding: 0; margin: 0; }
+  .hist li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .hist li:last-child { border-bottom: 0; }
+  .hist .v { font-weight: 700; min-width: 54px; }
+  .hist .t { flex: 1; min-width: 180px; font-size: 0.86rem; color: var(--muted); }
+  .hist .t b { color: var(--ink); font-weight: 600; }
+  .actual { font-size: 0.72rem; background: var(--verde); color: #fff; border-radius: 10px; padding: 2px 8px; font-weight: 700; }
+  .aviso-borrar { margin-top: 10px; font-size: 0.86rem; color: #ffe3a3; display: flex; gap: 8px; align-items: flex-start; }
+  [hidden] { display: none !important; }
+  .guia { font-size: 0.86rem; color: var(--muted); }
+  .guia ol { padding-left: 18px; margin: 6px 0 0; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <img src="marca/logo-48h.svg" alt="48h Posadas" width="402" height="92">
+  <b>Panel de carga</b>
+  <button class="btn btn-borde" id="salir" hidden type="button">Salir</button>
+</div></header>
+
+<main>
+  <!-- ============ Entrar ============ -->
+  <section id="entrar">
+    <h1>Panel de carga</h1>
+    <p class="bajada">Para actualizar los lugares y la agenda de la web subiendo la planilla de carga.</p>
+    <div class="tarjeta">
+      <form id="form-clave" autocomplete="off">
+        <label for="clave" style="display:block;font-weight:600;margin-bottom:8px">Clave del panel</label>
+        <input type="password" id="clave" autocomplete="current-password" required>
+        <div class="fila" style="margin-top:12px"><button class="btn" type="submit">Entrar</button></div>
+        <div class="msg err" id="clave-msg" role="alert"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ Panel ============ -->
+  <section id="panel" hidden>
+    <h1>Actualizar la web</h1>
+    <p class="bajada">Subí la planilla, revisá lo que cambia y publicá. Si algo sale mal, podés volver a la versión anterior.</p>
+
+    <div class="tarjeta">
+      <h2>Lo que muestra la web ahora</h2>
+      <div id="actual-txt" class="guia">Cargando…</div>
+      <div class="fila" style="margin-top:10px">
+        <button class="btn btn-borde" id="bajar" type="button">Descargar una copia (JSON)</button>
+        <a class="btn btn-borde" href="./" target="_blank" rel="noopener" style="text-decoration:none">Abrir la web</a>
+      </div>
+    </div>
+
+    <div class="tarjeta">
+      <h2><span class="n">1</span>Subir la planilla</h2>
+      <label class="zona" id="zona" for="archivo">
+        <b>Tocá para elegir la planilla</b> o arrastrala acá<br>
+        <span style="font-size:.84rem">“48 HS - Carga de datos” (.xlsx), con las hojas Lugares y Agenda</span>
+      </label>
+      <input type="file" id="archivo" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+      <div class="msg err" id="archivo-msg" role="alert"></div>
+    </div>
+
+    <div class="tarjeta" id="revision" hidden>
+      <h2><span class="n">2</span>Revisar</h2>
+      <div id="rev-archivo" class="guia"></div>
+      <div class="estado" id="rev-estado"></div>
+      <div class="nums" id="rev-nums"></div>
+      <div class="chips" id="rev-cats"></div>
+      <div id="rev-detalles"></div>
+    </div>
+
+    <div class="tarjeta" id="publicar-caja" hidden>
+      <h2><span class="n">3</span>Publicar</h2>
+      <label for="nota" style="display:block;font-size:.86rem;color:var(--muted);margin-bottom:6px">¿Qué cambiaste? (opcional, queda en el historial)</label>
+      <input type="text" id="nota" maxlength="200" placeholder="Ej.: agenda de diciembre y 3 cafés nuevos">
+      <label class="aviso-borrar" id="borrar-confirm" hidden><input type="checkbox" id="borrar-check"> <span id="borrar-txt"></span></label>
+      <div class="fila" style="margin-top:12px"><button class="btn" id="publicar" type="button">Publicar en la web</button></div>
+      <div class="msg" id="publicar-msg" role="status"></div>
+    </div>
+
+    <div class="tarjeta">
+      <h2>Historial</h2>
+      <p class="guia" style="margin:0 0 6px">Las últimas 30 versiones. “Volver a esta” la publica de nuevo tal cual estaba.</p>
+      <ul class="hist" id="historial"><li class="guia">Cargando…</li></ul>
+      <div class="msg" id="hist-msg" role="status"></div>
+    </div>
+
+    <div class="tarjeta guia">
+      <b style="color:var(--ink)">Para tener en cuenta</b>
+      <ol>
+        <li>Siempre trabajar sobre la misma planilla (“48 HS - Carga de datos”): no cambiar los nombres de las columnas ni de las hojas.</li>
+        <li>Para sacar un lugar de la web sin borrarlo, poner “No” en la columna Publicar.</li>
+        <li>Las fechas de la Agenda que ya pasaron se ignoran solas.</li>
+        <li>Los cambios aparecen en la web al abrirla o recargarla (en un minuto, como mucho).</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<script src="libs/importador.js"></script>
+<script>
+'use strict';
+const CONFIG = {
+  url:     'https://vqkjldyqgitzrhksiofd.supabase.co',
+  anonKey: 'sb_publishable_ZEaBonm4MGXbL1O4gjckUQ_A1MBjWX0',
+  tz: 'America/Argentina/Buenos_Aires'
+};
+const $ = id => document.getElementById(id);
+const almacen = {
+  leer(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } },
+  escribir(k, v){ try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch(e){} }
+};
+let CLAVE = almacen.leer('pv-carga-clave') || '';
+let ACTUAL = null;          // { version, datos } publicado (o catalogo.json si no hay nada)
+let NUEVO = null;           // resultado del importador listo para publicar
+let VERSIONES = [];
+
+function hoyPosadas(){
+  const p = {};
+  new Intl.DateTimeFormat('en-CA', { timeZone: CONFIG.tz, year: 'numeric', month: '2-digit', day: '2-digit' })
+    .formatToParts(new Date()).forEach(x => p[x.type] = x.value);
+  return `${p.year}-${p.month}-${p.day}`;
+}
+const fechaLinda = iso => new Date(iso).toLocaleString('es-AR', { timeZone: CONFIG.tz, day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const el = (tag, txt, cls) => { const e = document.createElement(tag); if(txt != null) e.textContent = txt; if(cls) e.className = cls; return e; };
+
+async function rpc(fn, body){
+  const r = await fetch(CONFIG.url + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': CONFIG.anonKey, 'Authorization': 'Bearer ' + CONFIG.anonKey },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok){ const e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
+  return r.json();
+}
+const MOTIVOS = {
+  clave: 'La clave no es correcta.',
+  bloqueado: 'Demasiados intentos con la clave equivocada. Esperá 15 minutos.',
+  formato: 'El catálogo no tiene el formato esperado.',
+  tamano: 'El catálogo está vacío o es demasiado grande.',
+  lugar_invalido: 'Hay un lugar con un ID o nombre no válido.',
+  demasiadas: 'Se publicó demasiadas veces en la última hora. Esperá un rato.',
+  no_existe: 'Esa versión ya no existe.'
+};
+const textoError = e => e && e.status === 404 ? 'El panel todavía no está instalado en la base (falta correr temporada.sql).'
+  : 'No hay conexión con la base. Probá de nuevo en un rato.';
+
+/* ---------------- entrar ---------------- */
+async function entrar(clave){
+  const r = await rpc('catalogo_historial', { p_clave: clave });
+  if(!r.ok) throw Object.assign(new Error(MOTIVOS[r.motivo] || 'No se pudo entrar.'), { motivo: r.motivo });
+  CLAVE = clave; almacen.escribir('pv-carga-clave', clave);
+  VERSIONES = r.versiones || [];
+  $('entrar').hidden = true; $('panel').hidden = false; $('salir').hidden = false;
+  pintarHistorial();
+  await cargarActual();
+}
+$('form-clave').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const m = $('clave-msg'); m.textContent = '';
+  try { await entrar($('clave').value); }
+  catch(e){ m.textContent = e.motivo ? e.message : textoError(e); }
+});
+$('salir').addEventListener('click', () => { almacen.escribir('pv-carga-clave', null); location.reload(); });
+
+/* ---------------- lo publicado ---------------- */
+async function cargarActual(){
+  const txt = $('actual-txt');
+  try {
+    const r = await rpc('catalogo_actual', { p_version: null });
+    if(r && r.datos){ ACTUAL = { version: r.version, datos: r.datos }; }
+    else {
+      const j = await fetch('catalogo.json', { cache: 'no-cache' });
+      ACTUAL = { version: null, datos: j.ok ? await j.json() : { lugares: [] } };
+    }
+  } catch(e){ ACTUAL = { version: null, datos: { lugares: [] } }; }
+  const v = VERSIONES[0];
+  txt.textContent = '';
+  if(ACTUAL.version && v){
+    txt.append('Versión ', el('b', String(v.version)), ` · publicada el ${fechaLinda(v.creado)} · ${v.lugares} lugares y actividades`);
+    if(v.nota) txt.append(el('div', '“' + v.nota + '”'));
+  } else {
+    txt.append(`Todavía no se publicó nada desde el panel: la web muestra el catálogo original (${(ACTUAL.datos.lugares || []).length} lugares y actividades).`);
+  }
+  if(NUEVO) mostrarRevision();
+}
+$('bajar').addEventListener('click', () => {
+  if(!ACTUAL) return;
+  const blob = new Blob([JSON.stringify(ACTUAL.datos, null, 1)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '48h-posadas-catalogo-' + (ACTUAL.version ? 'v' + ACTUAL.version : 'original') + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+
+/* ---------------- subir planilla ---------------- */
+const zona = $('zona');
+['dragenter', 'dragover'].forEach(t => zona.addEventListener(t, e => { e.preventDefault(); zona.classList.add('sobre'); }));
+['dragleave', 'drop'].forEach(t => zona.addEventListener(t, e => { e.preventDefault(); zona.classList.remove('sobre'); }));
+zona.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if(f) procesar(f); });
+$('archivo').addEventListener('change', e => { const f = e.target.files[0]; if(f) procesar(f); e.target.value = ''; });
+
+async function procesar(archivo){
+  const m = $('archivo-msg'); m.textContent = '';
+  $('publicar-msg').textContent = '';
+  if(!/\.xlsx$/i.test(archivo.name)){ m.textContent = 'Tiene que ser la planilla en formato Excel (.xlsx).'; return; }
+  if(archivo.size > 20e6){ m.textContent = 'El archivo es demasiado grande (más de 20 MB).'; return; }
+  try {
+    const hojas = await Importador.leerXlsx(await archivo.arrayBuffer());
+    const r = Importador.armar(hojas.lugares, hojas.agenda, hoyPosadas());
+    NUEVO = { ...r, archivo: archivo.name };
+    mostrarRevision();
+  } catch(e){
+    NUEVO = null; $('revision').hidden = true; $('publicar-caja').hidden = true;
+    m.textContent = e.message || 'No se pudo leer la planilla.';
+  }
+}
+
+// Compara por ID con lo publicado: qué se agrega, qué se saca y qué cambia
+const canon = v => Array.isArray(v) ? v.map(canon) : v && typeof v === 'object'
+  ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canon(v[k])])) : v;
+function diferencias(antes, despues){
+  const A = new Map((antes || []).map(x => [x.id, x])), D = new Map(despues.map(x => [x.id, x]));
+  const nuevos = [], quitados = [], cambiados = [];
+  D.forEach((x, id) => { if(!A.has(id)) nuevos.push(x.name); else if(JSON.stringify(canon(x)) !== JSON.stringify(canon(A.get(id)))) cambiados.push(x.name); });
+  A.forEach((x, id) => { if(!D.has(id)) quitados.push(x.name); });
+  return { nuevos, quitados, cambiados };
+}
+
+function lista(titulo, items, cls, abierto){
+  if(!items.length) return null;
+  const d = document.createElement('details');
+  if(abierto) d.open = true;
+  d.append(el('summary', `${titulo} (${items.length})`));
+  const ul = document.createElement('ul'); if(cls) ul.className = cls;
+  items.forEach(t => ul.append(el('li', t)));
+  d.append(ul);
+  return d;
+}
+
+function mostrarRevision(){
+  const r = NUEVO;
+  $('revision').hidden = false;
+  $('rev-archivo').textContent = 'Archivo: ' + r.archivo;
+  const dif = diferencias(ACTUAL && ACTUAL.datos.lugares, r.lugares);
+  NUEVO.dif = dif;
+  const hayCambios = dif.nuevos.length + dif.quitados.length + dif.cambiados.length > 0;
+
+  const est = $('rev-estado');
+  if(r.errores.length){
+    est.className = 'estado err';
+    est.textContent = `No se puede publicar: hay ${r.errores.length} error${r.errores.length > 1 ? 'es' : ''}. Corregilos en la planilla y volvé a subirla.`;
+  } else if(!hayCambios){
+    est.className = 'estado igual';
+    est.textContent = 'La planilla es igual a lo que ya muestra la web: no hay nada para publicar.';
+  } else {
+    est.className = 'estado ok';
+    est.textContent = 'Lista para publicar.' + (r.avisos.length ? ` Revisá los ${r.avisos.length} avisos de abajo: no frenan la publicación.` : '');
+  }
+
+  const nums = $('rev-nums'); nums.textContent = '';
+  [[r.resumen.lugares, 'lugares y actividades'], [r.resumen.fechas, 'fechas próximas en la agenda'],
+   [dif.nuevos.length, 'nuevos'], [dif.cambiados.length, 'con cambios'], [dif.quitados.length, 'salen de la web']].forEach(([n, t]) => {
+    const d = el('div', null, 'num'); d.append(el('b', String(n)), el('span', t)); nums.append(d);
+  });
+  const cats = $('rev-cats'); cats.textContent = '';
+  Importador.CATEGORIAS.forEach(([cid, nombre]) => {
+    const c = el('span', null, 'chip'); c.append(nombre + ': ', el('b', String(r.resumen.porCategoria[cid] || 0))); cats.append(c);
+  });
+
+  const det = $('rev-detalles'); det.textContent = '';
+  [lista('Errores', r.errores, 'err-lista', true),
+   lista('Nuevos', dif.nuevos), lista('Con cambios', dif.cambiados), lista('Salen de la web', dif.quitados, null, dif.quitados.length > 0),
+   lista('Sin coordenadas (no aparecen en el mapa)', r.resumen.sinCoordenadas),
+   lista('Avisos', r.avisos)].forEach(x => { if(x) det.append(x); });
+  if(r.pasadas) det.append(el('p', `${r.pasadas} fechas de la Agenda ya pasaron y se ignoraron.`, 'guia'));
+
+  // publicar
+  const caja = $('publicar-caja');
+  caja.hidden = !!r.errores.length || !hayCambios;
+  $('publicar').hidden = false;
+  $('publicar-msg').textContent = '';
+  const total = (ACTUAL && ACTUAL.datos.lugares || []).length;
+  const muchos = dif.quitados.length >= 5 && dif.quitados.length > total * 0.2;
+  $('borrar-confirm').hidden = !muchos;
+  $('borrar-check').checked = false;
+  $('borrar-txt').textContent = `Sí, quiero sacar ${dif.quitados.length} lugares de la web (de ${total}). Si fue un error, revisá que la planilla sea la completa.`;
+}
+
+$('publicar').addEventListener('click', async () => {
+  if(!NUEVO || NUEVO.errores.length) return;
+  const m = $('publicar-msg'); m.className = 'msg'; m.textContent = '';
+  if(!$('borrar-confirm').hidden && !$('borrar-check').checked){ m.className = 'msg err'; m.textContent = 'Marcá la casilla para confirmar que querés sacar esos lugares.'; return; }
+  const b = $('publicar'); b.disabled = true; b.textContent = 'Publicando…';
+  try {
+    const datos = { version: 1, generado: new Date().toISOString(), lugares: NUEVO.lugares };
+    const resumen = { lugares: NUEVO.resumen.lugares, fechas: NUEVO.resumen.fechas, nuevos: NUEVO.dif.nuevos.length,
+                      cambiados: NUEVO.dif.cambiados.length, quitados: NUEVO.dif.quitados.length, archivo: NUEVO.archivo.slice(0, 80) };
+    const r = await rpc('catalogo_publicar', { p_clave: CLAVE, p_datos: datos, p_resumen: resumen, p_nota: $('nota').value.trim() || null });
+    if(!r.ok) throw Object.assign(new Error(MOTIVOS[r.motivo] || 'No se pudo publicar.'), { motivo: r.motivo });
+    m.className = 'msg ok';
+    m.textContent = `Listo: se publicó la versión ${r.version}. La web la muestra al abrirla o recargarla.`;
+    NUEVO = null; $('nota').value = '';
+    $('revision').hidden = true; $('publicar-caja').hidden = false; b.hidden = true;
+    await refrescar();
+  } catch(e){
+    m.className = 'msg err'; m.textContent = e.motivo ? e.message : textoError(e);
+  } finally { b.disabled = false; b.textContent = 'Publicar en la web'; }
+});
+
+/* ---------------- historial ---------------- */
+async function refrescar(){
+  const r = await rpc('catalogo_historial', { p_clave: CLAVE });
+  if(r.ok){ VERSIONES = r.versiones || []; pintarHistorial(); }
+  await cargarActual();
+}
+function pintarHistorial(){
+  const ul = $('historial'); ul.textContent = '';
+  if(!VERSIONES.length){ ul.append(el('li', 'Todavía no hay versiones publicadas desde el panel.', 'guia')); return; }
+  VERSIONES.forEach((v, i) => {
+    const li = document.createElement('li');
+    li.append(el('span', 'v' + v.version, 'v'));
+    const t = el('span', null, 't');
+    t.append(el('b', fechaLinda(v.creado)), ` · ${v.lugares} lugares`);
+    const rs = v.resumen || {};
+    if(rs.nuevos || rs.cambiados || rs.quitados) t.append(` · +${rs.nuevos || 0} nuevos, ${rs.cambiados || 0} cambios, −${rs.quitados || 0}`);
+    if(v.nota) t.append(el('div', '“' + v.nota + '”'));
+    li.append(t);
+    if(i === 0) li.append(el('span', 'En la web', 'actual'));
+    else {
+      const b = el('button', 'Volver a esta', 'btn btn-borde btn-peligro'); b.type = 'button';
+      b.addEventListener('click', () => restaurar(v.version, b));
+      li.append(b);
+    }
+    ul.append(li);
+  });
+}
+async function restaurar(version, b){
+  if(!b.classList.contains('confirmar')){
+    b.classList.add('confirmar'); b.textContent = '¿Seguro? Tocá de nuevo';
+    setTimeout(() => { b.classList.remove('confirmar'); b.textContent = 'Volver a esta'; }, 4000);
+    return;
+  }
+  const m = $('hist-msg'); m.className = 'msg'; m.textContent = '';
+  b.disabled = true;
+  try {
+    const r = await rpc('catalogo_restaurar', { p_clave: CLAVE, p_version: version });
+    if(!r.ok) throw Object.assign(new Error(MOTIVOS[r.motivo] || 'No se pudo.'), { motivo: r.motivo });
+    m.className = 'msg ok'; m.textContent = `Listo: la web vuelve a mostrar la versión ${version} (publicada como versión ${r.version}).`;
+    await refrescar();
+  } catch(e){ m.className = 'msg err'; m.textContent = e.motivo ? e.message : textoError(e); b.disabled = false; }
+}
+
+/* ---------------- al abrir ---------------- */
+if(CLAVE) entrar(CLAVE).catch(() => { almacen.escribir('pv-carga-clave', null); CLAVE = ''; });
+</script>
+</body>
+</html>

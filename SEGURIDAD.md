@@ -1,6 +1,6 @@
 # 48 HS · seguridad
 
-Revisión del 4 de noviembre de 2026 (versión `pv-2026-11-10-1`). Se revisó todo el repositorio: la web (`index.html`, `sw.js`, `reporte.html`), la base (`supabase/*.sql`), la función de avisos, las herramientas y la configuración de Vercel.
+Revisión del 4 de noviembre de 2026 (versión `pv-2026-11-10-2`). Se revisó todo el repositorio: la web (`index.html`, `sw.js`, `reporte.html`), la base (`supabase/*.sql`), la función de avisos, las herramientas y la configuración de Vercel.
 
 ## Cómo se probó
 
@@ -64,6 +64,14 @@ Se revisó otra vez todo, con el ingreso, las recomendaciones, las consultas en 
 **Ataques probados sin éxito.** Datos guardados con código (nombre, email, consultas, intereses, códigos de inscripción armados) y nombres con enlaces en el ingreso. La base no deja que el público lea visitantes, ajustes ni resúmenes, ni que llame al cálculo del reporte o a la limpieza.
 
 **Riesgo aceptado.** La política de contenido permite conexiones a cualquier sitio `https:`, porque el service worker guarda en caché fotos que pueden venir de cualquier dirección cargada en la planilla. Si alguien lograra meter código en la página, podría mandar datos afuera. Por eso todo dato se escapa al mostrarse, y los ataques no ejecutaron nada.
+
+## Panel de carga (10 de noviembre de 2026)
+
+- **Clave propia** (`carga_acceso`), distinta de la del reporte, guardada cifrada. Tiene el mismo bloqueo: 10 errores en 15 minutos desde el mismo lugar. La clave queda solo en la pestaña (`sessionStorage`) y se borra al tocar "Salir".
+- **La base vuelve a controlar todo lo que llega**, aunque alguien llame a la función a mano: formato, entre 1 y 5000 lugares, hasta 3 MB, IDs válidos, nombres de hasta 200 caracteres y hasta 60 publicaciones por hora. El público solo puede leer la versión publicada (`catalogo_actual`), no el historial ni la clave.
+- **La web limpia cada lugar al cargarlo** (`limpiarLugar`), sin importar de dónde venga: enlaces solo `http`/`https`, coordenadas válidas, textos escapados. Una planilla con código no ejecuta nada.
+- **El Excel se lee sin librerías de afuera:** el lector de `.xlsx` está en `libs/importador.js`. Así no hay dependencias con fallas conocidas (como las versiones viejas de SheetJS) y no se carga código de otros sitios.
+- **Riesgo propio del modelo:** quien tenga la clave puede cambiar todo lo que muestra la web. Se puede volver atrás con el historial (últimas 30 versiones).
 
 ## Lo que queda por decidir (no es código)
 

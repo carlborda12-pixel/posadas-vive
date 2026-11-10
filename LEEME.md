@@ -44,8 +44,10 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-11-10-1`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-11-10-2`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
+| `cargar.html` | Panel de carga para Turismo (con clave): sube la planilla y publica los cambios. Ver "Panel de carga" |
+| `libs/importador.js` | El importador de la planilla para el navegador (mismas reglas que `herramientas/importar_catalogo.py`) |
 | `privacidad.html` | Política de privacidad y condiciones de uso (español y portugués). **Antes de publicar, completar los datos del responsable** (ver "Privacidad y condiciones") |
 | `libs/leaflet/` | La librería del mapa (Leaflet 1.9.4), servida desde el mismo sitio. Si falta, la web usa la copia de unpkg |
 | `fuentes/` | La tipografía Be Vietnam Pro, servida desde el mismo sitio (con su licencia `OFL.txt`) |
@@ -213,6 +215,32 @@ La web se llama **48 HS** (antes PosadasVive). Por dentro quedan algunos nombres
 - **Panel de ingreso**: al tocar "Explorar la ciudad", la primera vez, aparece antes de "¿Qué estás buscando hoy?". Ver "Ingreso y recomendaciones".
 - **Aviso de novedades**: se sacó para la presentación (8/11). Queda solo el aviso "Hay una versión nueva de la guía · Actualizar", que aparece cuando se sube una versión nueva a Vercel.
 - **Equipo de Turismo**: abrir una vez `?equipo=turismo` en cada teléfono, así sus visitas no cuentan en el reporte. Se desactiva con `?equipo=no`.
+
+## Panel de carga: Turismo actualiza la web solo
+
+`cargar.html` es una página con clave (distinta de la del reporte) para que Turismo actualice lugares y agenda sin pasar por vos:
+
+1. Suben la planilla **"48 HS - Carga de datos"** (`.xlsx`, con las hojas Lugares y Agenda).
+2. La página la revisa en el navegador, con las mismas reglas que `herramientas/importar_catalogo.py` (`libs/importador.js`; probado: da el mismo resultado). Muestra:
+   - errores, que no dejan publicar (por ejemplo, IDs repetidos);
+   - avisos (coordenadas raras, teléfonos que no se entienden, fechas mal escritas);
+   - qué lugares son nuevos, cuáles cambian y cuáles salen;
+   - qué lugares no tienen coordenadas.
+3. **Publicar** guarda la versión en Supabase (`catalogo_versiones`). La web la lee al abrirse (`catalogo_actual`) y, si no hay nada publicado o la base no responde, usa `catalogo.json`.
+4. **Historial:** las últimas 30 versiones. "Volver a esta" la publica de nuevo.
+5. **Freno:** si una planilla saca más del 20 % de los lugares, pide confirmar (suele ser una planilla incompleta).
+
+**Para activarlo (una vez):**
+1. Correr `supabase/temporada.sql` (PARTE 8).
+2. Cargar la clave del panel, de 14 caracteres o más:
+   ```sql
+   insert into public.carga_acceso (id, clave_hash)
+   values (1, extensions.crypt('ELEGIR-OTRA-CLAVE', extensions.gen_salt('bf', 10)))
+   on conflict (id) do update set clave_hash = excluded.clave_hash;
+   ```
+3. Pasarle a Turismo el link (`https://…/cargar.html`), la clave (por separado) y la planilla `datos/48 HS - Carga de datos.xlsx`, que es la que tienen que usar siempre.
+
+Quien tiene la clave puede cambiar todo lo que muestra la web: dársela solo a quien carga datos y cambiarla si alguien deja el equipo. El importador de Python sigue sirviendo para regenerar `catalogo.json` (el respaldo). Si se cambia una regla de importación, cambiarla en los dos archivos.
 
 ## Cargar los datos de la Muni
 

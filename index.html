@@ -1409,6 +1409,10 @@ const CONFIG = {
   // Si falla, se usa la lista incluida en esta página.
   fuenteCatalogo: 'json',
   catalogo: 'catalogo.json',
+  // Primero se usa lo que Turismo publica desde cargar.html (tabla
+  // catalogo_versiones en Supabase). Si no hay nada publicado o la base no
+  // responde, se usa catalogo.json.
+  catalogoPanel: true,
 
   // Punto de referencia para el clima del encabezado
   clima: { lat: -27.3671, lon: -55.8961 },
@@ -2703,7 +2707,32 @@ function usarCatalogoGuardado(){
   catch(e){ try { localStorage.removeItem(CLAVE_CATALOGO); } catch(_){} }
 }
 
+// Lo publicado desde el panel de carga. Devuelve true si la web quedó con esa versión.
+const CLAVE_CATALOGO_VERSION = 'pv-catalogo-version';
+async function cargarCatalogoPublicado(){
+  let ver = null;
+  try { ver = Number(localStorage.getItem(CLAVE_CATALOGO_VERSION)) || null; } catch(e){}
+  const r = await sbRpc('catalogo_actual', { p_version: catalogoTexto ? ver : null });
+  if(!r || r.vacio || !Number.isInteger(r.version)) return false;
+  if(r.igual) return true;                              // ya tiene esa versión: no se baja de nuevo
+  if(!r.datos || typeof r.datos !== 'object') return false;
+  const texto = JSON.stringify(r.datos);
+  if(texto !== catalogoTexto){
+    const n = aplicarCatalogo(texto);
+    try {
+      if(texto.length < 2000000){ localStorage.setItem(CLAVE_CATALOGO, texto); localStorage.setItem(CLAVE_CATALOGO_VERSION, String(r.version)); }
+    } catch(e){}
+    despuesDeCargar(n, 'panel de carga (versión ' + r.version + ')');
+  }
+  return true;
+}
+
 async function cargarCatalogoJSON(){
+  if(CONFIG.catalogoPanel && SB_ON()){
+    try { if(await cargarCatalogoPublicado()) return; }
+    catch(e){ if(!noExiste(e)) console.warn('[48 HS] No se pudo leer el catálogo publicado:', e.message); }
+  }
+  try { localStorage.removeItem(CLAVE_CATALOGO_VERSION); } catch(e){}
   try {
     const r = await fetch(CONFIG.catalogo, { cache: 'no-cache' });
     if(!r.ok) throw new Error('HTTP ' + r.status);
@@ -3200,7 +3229,7 @@ function borrarDatosLocales(){
   }
   clearTimeout(borrarTimer);
   bajaUsuario();
-  ['pv-planes-v1', 'pv-novedades', 'pv-usuario', 'pv-intereses', 'pv-ingreso', 'pv-idioma', 'pv-catalogo', 'pv-equipo'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  ['pv-planes-v1', 'pv-novedades', 'pv-usuario', 'pv-intereses', 'pv-ingreso', 'pv-idioma', 'pv-catalogo', 'pv-catalogo-version', 'pv-equipo'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
   try { sessionStorage.removeItem('pv-sesion'); } catch(e){}
   PLANES.guardados = []; PLANES.inscripciones = []; INTERESES = interesesVacios();
   actualizarBadge(); pintarBotonesGuardar(); renderPlanes();
@@ -3643,7 +3672,7 @@ function switchView(v, opts){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-11-10-1';
+const APP_VERSION = 'pv-2026-11-10-2';
 
 function esEquipo(){
   try {
