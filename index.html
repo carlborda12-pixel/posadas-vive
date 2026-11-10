@@ -1387,6 +1387,11 @@ const CONFIG = {
   // el pedido se manda por WhatsApp.
   listaEspera: true,
 
+  // ¿Ya se mandan emails? (funcion "avisos" + dominio verificado en Resend).
+  // Mientras sea false, la lista de espera va por WhatsApp a Turismo (no se
+  // guarda en la base ni se promete un email). Ver LEEME, "Emails".
+  avisosEmail: false,
+
   // Recordatorio por email el dia anterior. Ponerlo en true SOLO cuando la
   // funcion "avisos" este funcionando con un dominio verificado: cambia el
   // texto de privacidad y le promete el aviso a la persona.
@@ -1827,6 +1832,7 @@ const TEXTOS = {
     'ticket.btnReservarWapp':'Reservar por WhatsApp', 'ticket.btnConsultarPrecio':'Consultar precio por WhatsApp',
     'ticket.btnConfirmar':'Confirmar inscripción', 'ticket.btnWapp':'Enviar inscripción por WhatsApp',
     'ticket.btnEspera':'Anotarme en la lista de espera',
+    'ticket.btnEsperaWapp':'Pedir lugar en lista de espera por WhatsApp',
     'ticket.confirmando':'Confirmando lugar…', 'ticket.enviando':'Enviando…',
     'ticket.notaPago':'El organizador te confirma disponibilidad y cómo pagar',
     'ticket.notaConsulta':'Te derivamos a WhatsApp para consultar precio y disponibilidad',
@@ -1857,6 +1863,7 @@ const TEXTOS = {
     'datos.listo':'Listo: se borraron los datos de este teléfono. Tus inscripciones siguen vigentes.',
     'ticket.cupoEstimado':'Cupo limitado: {t} lugares. Confirmamos disponibilidad al enviar tu inscripción.',
     'ticket.lleno':'Esta fecha ya no tiene lugares. Anotate en la lista de espera y te avisamos por email si se libera uno.',
+    'ticket.llenoWapp':'Esta fecha ya no tiene lugares. Escribile a Posadas Turismo por WhatsApp para quedar en lista de espera: si se libera uno, te avisan.',
     'ticket.llenoSinEspera':'Esta fecha ya no tiene lugares disponibles. Probá con otra fecha o escribinos por WhatsApp.',
     'ticket.quedaUno':'Queda 1 lugar para esta fecha.', 'ticket.quedanPocos':'Quedan {n} lugares para esta fecha.',
     'ticket.quedan':'Quedan {n} de {t} lugares.',
@@ -2019,6 +2026,7 @@ const TEXTOS = {
     'ticket.btnReservarWapp':'Reservar pelo WhatsApp', 'ticket.btnConsultarPrecio':'Consultar preço pelo WhatsApp',
     'ticket.btnConfirmar':'Confirmar inscrição', 'ticket.btnWapp':'Enviar inscrição pelo WhatsApp',
     'ticket.btnEspera':'Entrar na lista de espera',
+    'ticket.btnEsperaWapp':'Pedir vaga na lista de espera pelo WhatsApp',
     'ticket.confirmando':'Confirmando vaga…', 'ticket.enviando':'Enviando…',
     'ticket.notaPago':'O organizador confirma a disponibilidade e como pagar',
     'ticket.notaConsulta':'Você vai para o WhatsApp para consultar preço e disponibilidade',
@@ -2049,6 +2057,7 @@ const TEXTOS = {
     'datos.listo':'Pronto: os dados deste celular foram apagados. Suas inscrições continuam valendo.',
     'ticket.cupoEstimado':'Vagas limitadas: {t}. Confirmamos a disponibilidade ao enviar sua inscrição.',
     'ticket.lleno':'Esta data está lotada. Entre na lista de espera e avisamos por e-mail se uma vaga for liberada.',
+    'ticket.llenoWapp':'Esta data está lotada. Escreva para a Posadas Turismo pelo WhatsApp para ficar na lista de espera: se uma vaga for liberada, eles avisam.',
     'ticket.llenoSinEspera':'Esta data está lotada. Escolha outra data ou fale com a gente pelo WhatsApp.',
     'ticket.quedaUno':'Resta 1 vaga para esta data.', 'ticket.quedanPocos':'Restam {n} vagas para esta data.',
     'ticket.quedan':'Restam {n} de {t} vagas.',
@@ -3634,7 +3643,7 @@ function switchView(v, opts){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-11-09-3';
+const APP_VERSION = 'pv-2026-11-10-1';
 
 function esEquipo(){
   try {
@@ -5477,7 +5486,8 @@ function aplicarCupo(){
   // La casilla va solo donde la web guarda datos (inscripción y lista de espera).
   // Por WhatsApp los datos los manda la persona misma: alcanza con la nota.
   const consent = document.getElementById('ticket-consent-row');
-  consent.hidden = !(modo === 'espera' || modo === 'reserva');
+  const esperaEmail = modo === 'espera' && CONFIG.avisosEmail;
+  consent.hidden = !(esperaEmail || modo === 'reserva');
   consent.classList.remove('falta');
   if(modo === 'pago'){
     botonEnvio('pay', 'ph-whatsapp-logo', t(p.ticketPrice ? 'ticket.btnReservarWapp' : 'ticket.btnConsultarPrecio'));
@@ -5486,8 +5496,8 @@ function aplicarCupo(){
     botonEnvio('free', 'ph-whatsapp-logo', t('ticket.btnWapp'));
     nota('priv.whatsapp');
   } else if(modo === 'espera'){
-    botonEnvio('espera', 'ph-hourglass-medium', t('ticket.btnEspera'));
-    nota('priv.espera');
+    botonEnvio('espera', esperaEmail ? 'ph-hourglass-medium' : 'ph-whatsapp-logo', t(esperaEmail ? 'ticket.btnEspera' : 'ticket.btnEsperaWapp'));
+    nota(esperaEmail ? 'priv.espera' : 'priv.whatsapp');
   } else {
     botonEnvio('free', 'ph-check-circle', t('ticket.btnConfirmar'));
     nota(CONFIG.recordatorios ? 'priv.baseRecordatorio' : 'priv.base');
@@ -5500,7 +5510,7 @@ function aplicarCupo(){
   }
   if(c.disponibles <= 0){
     if(modo === 'espera'){
-      setAviso('warn', '<i class="ph-fill ph-hourglass-medium"></i> ' + esc(t('ticket.lleno')));
+      setAviso('warn', '<i class="ph-fill ph-hourglass-medium"></i> ' + esc(t(CONFIG.avisosEmail ? 'ticket.lleno' : 'ticket.llenoWapp')));
     } else {
       setAviso('err', '<i class="ph-fill ph-prohibit"></i> ' + esc(t('ticket.llenoSinEspera')));
       submit.setAttribute('disabled', 'disabled');
@@ -5689,6 +5699,9 @@ async function unirseEspera(p, datos){
     stat('lista_espera', p.id, { k: 'wapp' });
     showTicketSuccess(p, datos, { tipo: 'esperaWapp', wapp: wappURL, wappAbierto: !!w });
   };
+
+  // Sin emails todavía: la lista de espera la lleva Turismo por WhatsApp
+  if(!CONFIG.avisosEmail) return porWhatsapp();
 
   try {
     const trampa = document.getElementById('ticket-web');

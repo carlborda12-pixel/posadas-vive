@@ -44,7 +44,7 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-11-09-3`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-11-10-1`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `privacidad.html` | Política de privacidad y condiciones de uso (español y portugués). **Antes de publicar, completar los datos del responsable** (ver "Privacidad y condiciones") |
 | `libs/leaflet/` | La librería del mapa (Leaflet 1.9.4), servida desde el mismo sitio. Si falta, la web usa la copia de unpkg |
@@ -125,7 +125,7 @@ El logo actual (`marca/apextech.svg`) es **provisorio**. Para poner el oficial:
 
 ## Privacidad y condiciones
 
-La web la presenta un organismo público y junta datos personales (inscripciones y lista de espera), así que tiene que cumplir la **Ley 25.326 de Protección de Datos Personales**. La autoridad de control es la Agencia de Acceso a la Información Pública (AAIP).
+La web la presenta un organismo público y junta datos personales (inscripciones y personas que ingresan), así que tiene que cumplir la **Ley 25.326 de Protección de Datos Personales**. La autoridad de control es la Agencia de Acceso a la Información Pública (AAIP).
 
 - **`privacidad.html`:** política de privacidad y condiciones de uso con el deslinde de responsabilidad, en español y portugués. Cuenta qué datos se usan, para qué, cuánto tiempo se guardan, con qué proveedores y cómo pedir verlos, corregirlos o borrarlos. Incluye las dos leyendas que exige la ley: el acceso gratuito cada seis meses y la AAIP como órgano de control.
 - **Datos a completar:** el bloque `DATOS`, al final de `privacidad.html`, con el nombre legal del organismo, el domicilio y un email para consultas de datos personales. Mientras falte alguno, la página muestra una franja amarilla de BORRADOR.
@@ -136,7 +136,7 @@ La web la presenta un organismo público y junta datos personales (inscripciones
   4. En Misiones hay un proyecto de ley provincial de datos personales (junio de 2026). Si se aprueba, revisar la política.
 - **En la app:**
   - enlaces en la portada, en "Mis planes" y en las notas de los formularios;
-  - en la inscripción y en la lista de espera, una casilla obligatoria "Leí y acepto la política de privacidad" (por WhatsApp no hace falta, porque los datos los manda la persona misma);
+  - en la inscripción (y en la lista de espera, cuando vaya por email), una casilla obligatoria "Leí y acepto la política de privacidad" (por WhatsApp no hace falta, porque los datos los manda la persona misma);
   - en "Mis planes", el botón "Borrar mis datos de este teléfono" (dos toques).
 - **Lo que la política promete y quién lo cumple:**
 
@@ -251,6 +251,22 @@ La app junta el catálogo con la lista que trae adentro:
   - `https://TU-DOMINIO/?src=qr-terminal&lang=pt` (por ejemplo, en la terminal, para turistas brasileños)
   - Solo minúsculas, números y guiones.
 - **Abrir un lugar directo:** `https://TU-DOMINIO/?lugar=catamaran`
+
+## Emails (todavía no: no hay dominio)
+
+Para mandar emails a cualquier persona hace falta un dominio propio verificado en Resend. Con la dirección `.vercel.app` no se puede, porque ese dominio es de Vercel y no se pueden cargar sus registros. Mientras no haya dominio (`CONFIG.avisosEmail: false` en `index.html`):
+
+- **Lista de espera:** va por WhatsApp a Turismo. La web arma el mensaje y no guarda nada en la base.
+- **Recordatorio del día anterior:** apagado. La persona tiene el botón "Agregar al calendario".
+- **Reporte mensual:** Turismo entra a `reporte.html` con la clave.
+- **La tarea `48hs-avisos` de `cron.sql` no se programa.** Si quedó programada: `select cron.unschedule('48hs-avisos');`.
+
+**Cuando haya dominio** (por ejemplo, comprado en Vercel):
+1. En Resend, agregar el subdominio `avisos.` del dominio y copiar sus registros DNS en Vercel (Domains → DNS Records). Después, Verify.
+2. Publicar la función `supabase/functions/avisos` y cargar sus datos secretos en Supabase: `RESEND_API_KEY`, `AVISOS_SECRET` (24 caracteres o más), `REMITENTE` (`48h Posadas <avisos@avisos.tu-dominio>`), `APP_URL` y, si se quiere el reporte mensual, `REPORTE_DESTINATARIOS` y `REPORTE_CLAVE`.
+3. Guardar el mismo `AVISOS_SECRET` en el Vault como `avisos_secret` y correr la parte de avisos de `cron.sql`.
+4. En `index.html`, poner `avisosEmail: true` (y `recordatorios: true` si se quieren).
+5. En `privacidad.html`, volver a agregar la lista de espera por email, el recordatorio y a Resend como proveedor.
 
 ## Etapa Supabase (lo dejamos para el final)
 
