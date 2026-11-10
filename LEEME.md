@@ -46,7 +46,7 @@ Con la planilla en `datos/`, el importador se corre así:
 | `index.html` | La app |
 | `sw.js` | Modo sin conexión (versión `pv-2026-11-10-2`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
-| `cargar.html` | Panel de carga para Turismo (con clave): sube la planilla y publica los cambios. Ver "Panel de carga" |
+| `cargar.html` | Panel de carga para Turismo (con clave): sube la planilla, carga rápida de un evento, descarga de la planilla y publicación. Ver "Panel de carga" |
 | `libs/importador.js` | El importador de la planilla para el navegador (mismas reglas que `herramientas/importar_catalogo.py`) |
 | `privacidad.html` | Política de privacidad y condiciones de uso (español y portugués). **Antes de publicar, completar los datos del responsable** (ver "Privacidad y condiciones") |
 | `libs/leaflet/` | La librería del mapa (Leaflet 1.9.4), servida desde el mismo sitio. Si falta, la web usa la copia de unpkg |
@@ -229,9 +229,17 @@ La web se llama **48 HS** (antes PosadasVive). Por dentro quedan algunos nombres
 3. **Publicar** guarda la versión en Supabase (`catalogo_versiones`). La web la lee al abrirse (`catalogo_actual`) y, si no hay nada publicado o la base no responde, usa `catalogo.json`.
 4. **Historial:** las últimas 30 versiones. "Volver a esta" la publica de nuevo.
 5. **Freno:** si una planilla saca más del 20 % de los lugares, pide confirmar (suele ser una planilla incompleta).
+6. **Descargar la planilla:** cada versión guarda su `.xlsx` en la base. "Descargar la planilla (Excel)" baja la de la versión que está en la web; el historial tiene un botón "Planilla" por versión. Si Turismo pierde el archivo, baja ese, lo modifica y lo sube.
+7. **Carga rápida:** para un evento de último momento, sin abrir el Excel. Dos opciones:
+   - **Evento nuevo:** nombre, categorías, dónde (se puede elegir un lugar de la web y se completan dirección y coordenadas), fecha, hora, precio, inscripción y descripción; opcional: organiza, teléfono, Instagram, web, foto, destacado.
+   - **Otra fecha de una actividad:** elige la actividad, fecha, hora, punto de encuentro y cupo. No deja repetir una fecha ya cargada ni cargar fechas pasadas.
+
+   La página agrega las filas a la planilla guardada (Lugares y Agenda, con la observación "Carga rápida desde el panel") y la pasa por el mismo importador, así que tiene las mismas revisiones. Lo publicado queda en la planilla, y la próxima vez que bajen la planilla ya viene incluido. Si después suben una planilla vieja, el panel avisa que lo cargado rápido se perdería.
+
+La carga rápida y la descarga necesitan que la versión publicada tenga la planilla guardada. Las versiones publicadas antes del 10/11 no la tienen: subir la planilla completa una vez (aunque sea igual a la web, el panel deja publicarla para guardarla).
 
 **Para activarlo (una vez):**
-1. Correr `supabase/temporada.sql` (PARTE 8).
+1. Correr `supabase/temporada.sql` (PARTE 8). Si ya estaba corrido, correrlo de nuevo cuando haya cambios en la PARTE 8 (por ejemplo, la descarga de la planilla y la carga rápida, del 10/11).
 2. Cargar la clave del panel, de 14 caracteres o más:
    ```sql
    insert into public.carga_acceso (id, clave_hash)

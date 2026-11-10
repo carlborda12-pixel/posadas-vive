@@ -581,5 +581,246 @@ async function leerXlsx(buffer){
   return { lugares: hojas.lugares, agenda: hojas.agenda || [], nombres: Object.keys(hojas) };
 }
 
-global.Importador = { leerXlsx, armar, CATEGORIAS, SUBCATEGORIAS, _prueba: { telefono, coordenadas, horarioLegible, fecha, hora, slug, plano } };
+// ---------------------------------------------------------------------
+// Escritura: agrega filas a las hojas Lugares y Agenda de una planilla
+// existente (la carga rápida de cargar.html). Toca solo esas dos hojas:
+// formatos, listas desplegables, comentarios y la hoja de instrucciones
+// quedan como estaban. El resultado se vuelve a leer con leerXlsx, así
+// pasa por las mismas revisiones que una planilla subida.
+// ---------------------------------------------------------------------
+const NS_MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+const NS_XML = 'http://www.w3.org/XML/1998/namespace';
+
+const CRC_TABLA = (() => {
+  const t = new Uint32Array(256);
+  for(let n = 0; n < 256; n++){ let c = n; for(let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+  return t;
+})();
+function crc32(b){
+  let c = 0xFFFFFFFF;
+  for(let i = 0; i < b.length; i++) c = CRC_TABLA[(c ^ b[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+async function desinflar(datos){
+  if(typeof CompressionStream === 'undefined') return null;
+  const cs = new CompressionStream('deflate-raw');
+  return new Uint8Array(await new Response(new Blob([datos]).stream().pipeThrough(cs)).arrayBuffer());
+}
+
+// Entradas del zip tal como están (comprimidas), para volver a armarlo
+function entradasZip(buffer){
+  const b = new Uint8Array(buffer), dv = new DataView(buffer);
+  let fin = -1;
+  for(let i = b.length - 22; i >= Math.max(0, b.length - 66000); i--){ if(dv.getUint32(i, true) === 0x06054b50){ fin = i; break; } }
+  if(fin < 0) throw new Error('El archivo .xlsx está dañado.');
+  const total = dv.getUint16(fin + 10, true);
+  let p = dv.getUint32(fin + 16, true);
+  const dec = new TextDecoder(), out = [];
+  for(let k = 0; k < total; k++){
+    const metodo = dv.getUint16(p + 10, true), hora = dv.getUint16(p + 12, true), dia = dv.getUint16(p + 14, true);
+    const crc = dv.getUint32(p + 16, true), comp = dv.getUint32(p + 20, true), real = dv.getUint32(p + 24, true);
+    const ln = dv.getUint16(p + 28, true), le = dv.getUint16(p + 30, true), lc = dv.getUint16(p + 32, true);
+    const local = dv.getUint32(p + 42, true);
+    const nombreB = b.slice(p + 46, p + 46 + ln);
+    const ini = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+    out.push({ nombre: dec.decode(nombreB), nombreB, metodo, hora, dia, crc, comp, real, datos: b.slice(ini, ini + comp) });
+    p += 46 + ln + le + lc;
+  }
+  return out;
+}
+
+function armarZip(entradas){
+  const partes = [], central = [];
+  let pos = 0;
+  for(const e of entradas){
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true);
+    h.setUint16(8, e.metodo, true); h.setUint16(10, e.hora, true); h.setUint16(12, e.dia, true);
+    h.setUint32(14, e.crc, true); h.setUint32(18, e.datos.length, true); h.setUint32(22, e.real, true);
+    h.setUint16(26, e.nombreB.length, true); h.setUint16(28, 0, true);
+    partes.push(new Uint8Array(h.buffer), e.nombreB, e.datos);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true);
+    c.setUint16(10, e.metodo, true); c.setUint16(12, e.hora, true); c.setUint16(14, e.dia, true);
+    c.setUint32(16, e.crc, true); c.setUint32(20, e.datos.length, true); c.setUint32(24, e.real, true);
+    c.setUint16(28, e.nombreB.length, true); c.setUint32(42, pos, true);
+    central.push(new Uint8Array(c.buffer), e.nombreB);
+    pos += 30 + e.nombreB.length + e.datos.length;
+  }
+  const tamCentral = central.reduce((a, x) => a + x.length, 0);
+  const f = new DataView(new ArrayBuffer(22));
+  f.setUint32(0, 0x06054b50, true); f.setUint16(8, entradas.length, true); f.setUint16(10, entradas.length, true);
+  f.setUint32(12, tamCentral, true); f.setUint32(16, pos, true);
+  return new Blob([...partes, ...central, new Uint8Array(f.buffer)]).arrayBuffer();
+}
+
+const colLetra = i => { let s = ''; i++; while(i > 0){ const r = (i - 1) % 26; s = String.fromCharCode(65 + r) + s; i = Math.floor((i - 1) / 26); } return s; };
+const fechaASerial = iso => { const [y, m, d] = iso.split('-').map(Number); return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(1899, 11, 30)) / 86400000); };
+const limpiarXml = s => String(s).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F￾￿]/g, '').slice(0, 32000);
+
+// filas: { lugares: [ {campo: valor} ], agenda: [ {campo: valor} ] }
+//   campos de Lugares: los de COLUMNAS_LUGARES, el id de una categoría (cultura, nautico…) y "observaciones"
+//   campos de Agenda:  los de COLUMNAS_AGENDA y "notas"
+//   valor: texto, número o { fecha: 'AAAA-MM-DD' }
+async function agregarFilas(buffer, filas){
+  const leer = await abrirZip(buffer);
+  const entradas = entradasZip(buffer);
+  const libro = await leer('xl/workbook.xml');
+  const rels = (await leer('xl/_rels/workbook.xml.rels')) || '';
+  const destinos = {};
+  for(const m of rels.matchAll(/<Relationship\b[^>]*>/g)) destinos[attr(m[0], 'Id')] = attr(m[0], 'Target');
+  const compartidos = [];
+  const ss = await leer('xl/sharedStrings.xml');
+  if(ss) for(const m of ss.matchAll(/<si>([\s\S]*?)<\/si>/g)) compartidos.push(textoDe(m[1]));
+  const estilos = (await leer('xl/styles.xml')) || '';
+  const fmtFecha = new Set([14, 15, 16, 17, 22]);
+  for(const m of estilos.matchAll(/<numFmt\b[^>]*>/g)){
+    const codigo = (attr(m[0], 'formatCode') || '').replace(/"[^"]*"|\[[^\]]*\]/g, '');
+    if(/[dy]/i.test(codigo)) fmtFecha.add(+attr(m[0], 'numFmtId'));
+  }
+  const xfFecha = [];
+  const cellXfs = estilos.match(/<cellXfs\b[^>]*>([\s\S]*?)<\/cellXfs>/);
+  if(cellXfs) for(const m of cellXfs[1].matchAll(/<xf\b[^>]*>/g)) xfFecha.push(fmtFecha.has(+(attr(m[0], 'numFmtId') || 0)));
+
+  const rutas = {};
+  for(const m of libro.matchAll(/<sheet\b[^>]*>/g)){
+    let d = destinos[attr(m[0], 'r:id')] || '';
+    rutas[plano(attr(m[0], 'name'))] = d.startsWith('/') ? d.slice(1) : 'xl/' + d.replace(/^\.\//, '');
+  }
+
+  const colCat = {};
+  CATEGORIAS.forEach(([cid, col]) => { colCat[plano(col)] = cid; });
+  Object.assign(colCat, { 'paseos guiados': 'paseos', 'pg': 'paseos', 'paquetes': 'excursiones' });
+
+  const cambios = {};
+  for(const [hoja, alias, extra] of [['lugares', COLUMNAS_LUGARES, 'observaciones'], ['agenda', COLUMNAS_AGENDA, 'notas']]){
+    const nuevas = (filas[hoja] || []);
+    if(!nuevas.length) continue;
+    const ruta = rutas[hoja];
+    if(!ruta) throw new Error(`La planilla no tiene la hoja "${hoja === 'lugares' ? 'Lugares' : 'Agenda'}".`);
+    const doc = new DOMParser().parseFromString(await leer(ruta), 'application/xml');
+    if(doc.getElementsByTagName('parsererror').length) throw new Error('No se pudo leer la hoja ' + hoja + '.');
+    const datos = doc.getElementsByTagNameNS(NS_MAIN, 'sheetData')[0];
+    const pre = datos.prefix ? datos.prefix + ':' : '';
+    const nuevo = tag => doc.createElementNS(NS_MAIN, pre + tag);
+    const hijos = (e, tag) => Array.from(e.childNodes).filter(n => n.nodeType === 1 && n.localName === tag);
+    const filasDom = hijos(datos, 'row');
+    const numFila = r => +r.getAttribute('r');
+    const valor = c => {
+      const t = c.getAttribute('t');
+      if(t === 'inlineStr'){ const is = hijos(c, 'is')[0]; return is ? is.textContent : ''; }
+      const v = hijos(c, 'v')[0]; const tv = v ? v.textContent : '';
+      return t === 's' ? (compartidos[+tv] || '') : tv;
+    };
+    const esDato = c => !hijos(c, 'f').length && texto(valor(c)) !== '';
+    const celdaDe = (fila, col) => fila && hijos(fila, 'c').find(c => colIndice(c.getAttribute('r')) === col);
+
+    // fila de títulos: la primera con "Nombre" o "Fecha", como al leer
+    const titulos = filasDom.filter(f => numFila(f) <= 10).find(f => hijos(f, 'c').some(c => ['nombre', 'fecha'].includes(plano(valor(c)))));
+    if(!titulos) throw new Error('No se encontró la fila de títulos en la hoja ' + hoja + '.');
+    const columnas = {};                       // título normalizado → índice
+    hijos(titulos, 'c').forEach(c => { const k = plano(valor(c)); if(k && !(k in columnas)) columnas[k] = colIndice(c.getAttribute('r')); });
+    const colDe = campo => {
+      if(CATEGORIAS.some(c => c[0] === campo)){
+        const k = Object.keys(columnas).find(k => colCat[k] === campo); return k === undefined ? null : columnas[k];
+      }
+      if(campo === extra){ const k = Object.keys(columnas).find(k => k.startsWith(extra)); return k === undefined ? null : columnas[k]; }
+      for(const a of alias[campo] || []) if(a in columnas) return columnas[a];
+      return null;
+    };
+
+    let ultima = numFila(titulos);
+    filasDom.forEach(f => { if(numFila(f) > ultima && hijos(f, 'c').some(esDato)) ultima = numFila(f); });
+    const referencia = filasDom.find(f => numFila(f) === ultima && ultima > numFila(titulos)) || filasDom.find(f => numFila(f) === numFila(titulos) + 1);
+
+    let r = ultima;
+    for(const datosFila of nuevas){
+      r++;
+      let fila = filasDom.find(f => numFila(f) === r);
+      if(!fila){
+        fila = nuevo('row'); fila.setAttribute('r', r);
+        if(referencia) ['ht', 'customHeight', 's', 'customFormat'].forEach(a => { if(referencia.hasAttribute(a)) fila.setAttribute(a, referencia.getAttribute(a)); });
+        const sig = filasDom.find(f => numFila(f) > r);
+        datos.insertBefore(fila, sig || null);
+        filasDom.push(fila); filasDom.sort((a, b) => numFila(a) - numFila(b));
+      }
+      const celda = col => {
+        let c = celdaDe(fila, col);
+        if(!c){
+          c = nuevo('c'); c.setAttribute('r', colLetra(col) + r);
+          const sig = hijos(fila, 'c').find(x => colIndice(x.getAttribute('r')) > col);
+          fila.insertBefore(c, sig || null);
+        }
+        if(!c.hasAttribute('s')){ const ref = celdaDe(referencia, col); if(ref && ref.hasAttribute('s')) c.setAttribute('s', ref.getAttribute('s')); }
+        return c;
+      };
+      for(const [campo, v] of Object.entries(datosFila)){
+        if(v === null || v === undefined || v === '') continue;
+        const col = colDe(campo);
+        if(col === null){
+          if(['id', 'nombre', 'fecha'].includes(campo)) throw new Error(`Falta la columna "${campo}" en la hoja ${hoja}.`);
+          continue;
+        }
+        const c = celda(col);
+        while(c.firstChild) c.removeChild(c.firstChild);
+        c.removeAttribute('t');
+        const esF = v && typeof v === 'object' && v.fecha;
+        if(esF && xfFecha[+(c.getAttribute('s') || 0)]){
+          const ve = nuevo('v'); ve.textContent = String(fechaASerial(v.fecha)); c.append(ve);
+        } else if(typeof v === 'number'){
+          const ve = nuevo('v'); ve.textContent = String(v); c.append(ve);
+        } else {
+          const txt = esF ? v.fecha.split('-').reverse().join('/') : limpiarXml(v);
+          c.setAttribute('t', 'inlineStr');
+          const is = nuevo('is'), t = nuevo('t');
+          t.setAttributeNS(NS_XML, 'xml:space', 'preserve'); t.textContent = txt;
+          is.append(t); c.append(is);
+        }
+      }
+      // fórmulas de la fila de referencia (p. ej. "Nombre según ID") en las celdas vacías
+      if(referencia && referencia !== fila){
+        const prev = numFila(referencia);
+        hijos(referencia, 'c').forEach(rc => {
+          const f = hijos(rc, 'f')[0];
+          if(!f || !f.textContent) return;
+          const col = colIndice(rc.getAttribute('r'));
+          const c = celda(col);
+          if(c.childNodes.length) return;
+          const nf = nuevo('f');
+          nf.textContent = f.textContent.replace(/(\$?)([A-Z]{1,3})(\$?)(\d+)(?![\d(])/g, (m, a, colL, b, n) => !b && +n === prev ? a + colL + r : m);
+          if(f.getAttribute('t') === 'array'){ nf.setAttribute('t', 'array'); nf.setAttribute('ref', colLetra(col) + r); }
+          c.append(nf);
+        });
+      }
+    }
+    const dim = doc.getElementsByTagNameNS(NS_MAIN, 'dimension')[0];
+    if(dim){
+      const m = (dim.getAttribute('ref') || '').match(/^([A-Z]+\d+):([A-Z]+)(\d+)$/);
+      if(m && +m[3] < r) dim.setAttribute('ref', `${m[1]}:${m[2]}${r}`);
+    }
+    cambios[ruta] = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + new XMLSerializer().serializeToString(doc).replace(/^<\?xml[^>]*\?>\s*/, '');
+  }
+
+  // que Excel recalcule las fórmulas al abrir
+  let wb = libro;
+  if(/<calcPr\b/.test(wb)){ if(!/<calcPr\b[^>]*fullCalcOnLoad=/.test(wb)) wb = wb.replace(/<calcPr\b/, '<calcPr fullCalcOnLoad="1"'); }
+  else wb = wb.replace(/(<\/definedNames>|<definedNames\/>|<\/sheets>)/, '$1<calcPr fullCalcOnLoad="1"/>');
+  if(wb !== libro) cambios['xl/workbook.xml'] = wb;
+
+  const enc = new TextEncoder();
+  for(const e of entradas){
+    if(!(e.nombre in cambios)) continue;
+    const crudo = enc.encode(cambios[e.nombre]);
+    const comp = await desinflar(crudo);
+    Object.assign(e, { crc: crc32(crudo), real: crudo.length, metodo: comp ? 8 : 0, datos: comp || crudo });
+  }
+  return armarZip(entradas);
+}
+
+// Todos los ID de la hoja Lugares, también los que no se publican (para no repetir)
+function idsUsados(lugaresFilas){
+  return leerTabla(lugaresFilas || []).map(f => texto(tomar(f, COLUMNAS_LUGARES.id)).toLowerCase() || (texto(tomar(f, COLUMNAS_LUGARES.nombre)) ? slug(texto(tomar(f, COLUMNAS_LUGARES.nombre))) : '')).filter(Boolean);
+}
+
+global.Importador = { leerXlsx, armar, agregarFilas, idsUsados, slug, CATEGORIAS, SUBCATEGORIAS, _prueba: { telefono, coordenadas, horarioLegible, fecha, hora, slug, plano, crc32 } };
 })(typeof window !== 'undefined' ? window : globalThis);

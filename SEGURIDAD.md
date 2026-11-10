@@ -72,6 +72,7 @@ Se revisó otra vez todo, con el ingreso, las recomendaciones, las consultas en 
 - **La web limpia cada lugar al cargarlo** (`limpiarLugar`), sin importar de dónde venga: enlaces solo `http`/`https`, coordenadas válidas, textos escapados. Una planilla con código no ejecuta nada.
 - **El Excel se lee sin librerías de afuera:** el lector de `.xlsx` está en `libs/importador.js`. Así no hay dependencias con fallas conocidas (como las versiones viejas de SheetJS) y no se carga código de otros sitios.
 - **Riesgo propio del modelo:** quien tenga la clave puede cambiar todo lo que muestra la web. Se puede volver atrás con el historial (últimas 30 versiones).
+- **Planilla guardada y carga rápida:** la planilla (.xlsx) de cada versión se guarda en `catalogo_versiones.planilla`, que el público no puede leer. Solo la devuelve `catalogo_planilla`, con la clave del panel. La base acepta solo un .xlsx (empieza con la firma de zip) de hasta 5 MB. La carga rápida escribe las filas en el navegador como texto (una descripción que empieza con `=` no se convierte en fórmula) y el resultado pasa por el mismo importador y las mismas revisiones que una planilla subida.
 
 ## Lo que queda por decidir (no es código)
 

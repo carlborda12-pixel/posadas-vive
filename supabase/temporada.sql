@@ -835,6 +835,10 @@ create table if not exists public.catalogo_versiones (
   resumen jsonb,
   nota    text check (nota is null or char_length(nota) <= 200)
 );
+-- La planilla (.xlsx) de cada versión: el panel la ofrece para descargar y
+-- la carga rápida le agrega filas. Así la planilla siempre tiene todo.
+alter table public.catalogo_versiones add column if not exists planilla bytea;
+alter table public.catalogo_versiones add column if not exists archivo text;
 alter table public.catalogo_versiones enable row level security;
 revoke all on public.catalogo_versiones from anon, authenticated;
 
@@ -889,7 +893,11 @@ grant execute on function public.catalogo_actual(bigint) to anon, authenticated;
 
 -- Publicar una planilla ya revisada por cargar.html. Acá se vuelve a
 -- controlar lo básico, por si alguien llama la función a mano.
-create or replace function public.catalogo_publicar(p_clave text, p_datos jsonb, p_resumen jsonb default null, p_nota text default null)
+-- p_planilla: el .xlsx en base64 (opcional), hasta 5 MB.
+drop function if exists public.catalogo_publicar(text, jsonb, jsonb, text);
+create or replace function public.catalogo_publicar(p_clave text, p_datos jsonb, p_resumen jsonb default null,
+                                                    p_nota text default null, p_planilla text default null,
+                                                    p_archivo text default null)
 returns jsonb
 language plpgsql
 security definer
@@ -899,6 +907,7 @@ declare
   v_ok  text := carga_verificar(p_clave);
   v_n   int;
   v_ver bigint;
+  v_xls bytea;
 begin
   if v_ok <> 'ok' then return jsonb_build_object('ok', false, 'motivo', v_ok); end if;
 
@@ -916,14 +925,28 @@ begin
                  or char_length(l->>'name') > 200) then
     return jsonb_build_object('ok', false, 'motivo', 'lugar_invalido');
   end if;
+  -- la planilla: un .xlsx es un zip, empieza con "PK"
+  if p_planilla is not null then
+    if char_length(p_planilla) > 7000000 then return jsonb_build_object('ok', false, 'motivo', 'planilla'); end if;
+    begin
+      v_xls := decode(p_planilla, 'base64');
+    exception when others then
+      return jsonb_build_object('ok', false, 'motivo', 'planilla');
+    end;
+    if octet_length(v_xls) < 100 or substring(v_xls from 1 for 4) <> '\x504b0304'::bytea then
+      return jsonb_build_object('ok', false, 'motivo', 'planilla');
+    end if;
+  end if;
   if (select count(*) from catalogo_versiones where creado > now() - interval '1 hour') >= 60 then
     return jsonb_build_object('ok', false, 'motivo', 'demasiadas');
   end if;
 
-  insert into catalogo_versiones (datos, resumen, nota)
+  insert into catalogo_versiones (datos, resumen, nota, planilla, archivo)
   values (p_datos,
           case when jsonb_typeof(p_resumen) = 'object' and octet_length(p_resumen::text) < 5000 then p_resumen end,
-          nullif(left(btrim(coalesce(p_nota, '')), 200), ''))
+          nullif(left(btrim(coalesce(p_nota, '')), 200), ''),
+          v_xls,
+          case when v_xls is not null then nullif(left(btrim(coalesce(p_archivo, '')), 120), '') end)
   returning version into v_ver;
 
   -- se guardan las últimas 30 versiones
@@ -933,8 +956,32 @@ begin
   return jsonb_build_object('ok', true, 'version', v_ver);
 end;
 $$;
-revoke all on function public.catalogo_publicar(text, jsonb, jsonb, text) from public;
-grant execute on function public.catalogo_publicar(text, jsonb, jsonb, text) to anon, authenticated;
+revoke all on function public.catalogo_publicar(text, jsonb, jsonb, text, text, text) from public;
+grant execute on function public.catalogo_publicar(text, jsonb, jsonb, text, text, text) to anon, authenticated;
+
+-- La planilla de una versión (la última si no se dice cuál), para descargarla
+-- o para la carga rápida. Pide la clave del panel.
+create or replace function public.catalogo_planilla(p_clave text, p_version bigint default null)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_ok text := carga_verificar(p_clave);
+  r    record;
+begin
+  if v_ok <> 'ok' then return jsonb_build_object('ok', false, 'motivo', v_ok); end if;
+  select version, planilla, archivo into r from catalogo_versiones
+   where version = coalesce(p_version, (select max(version) from catalogo_versiones));
+  if not found then return jsonb_build_object('ok', false, 'motivo', 'no_existe'); end if;
+  if r.planilla is null then return jsonb_build_object('ok', true, 'version', r.version, 'planilla', null); end if;
+  return jsonb_build_object('ok', true, 'version', r.version, 'archivo', r.archivo,
+                            'planilla', translate(encode(r.planilla, 'base64'), E'\n', ''));
+end;
+$$;
+revoke all on function public.catalogo_planilla(text, bigint) from public;
+grant execute on function public.catalogo_planilla(text, bigint) to anon, authenticated;
 
 -- Historial para el panel (sin los datos completos)
 create or replace function public.catalogo_historial(p_clave text)
@@ -949,7 +996,8 @@ begin
   if v_ok <> 'ok' then return jsonb_build_object('ok', false, 'motivo', v_ok); end if;
   return jsonb_build_object('ok', true, 'versiones', coalesce((
     select jsonb_agg(jsonb_build_object('version', version, 'creado', creado, 'resumen', resumen, 'nota', nota,
-                                        'lugares', jsonb_array_length(datos->'lugares')) order by version desc)
+                                        'lugares', jsonb_array_length(datos->'lugares'),
+                                        'planilla', planilla is not null) order by version desc)
       from catalogo_versiones), '[]'::jsonb));
 end;
 $$;
@@ -968,8 +1016,9 @@ declare
   v_ver bigint;
 begin
   if v_ok <> 'ok' then return jsonb_build_object('ok', false, 'motivo', v_ok); end if;
-  insert into catalogo_versiones (datos, resumen, nota)
-  select datos, resumen, 'Vuelta a la versión ' || version from catalogo_versiones where version = p_version
+  insert into catalogo_versiones (datos, resumen, nota, planilla, archivo)
+  select datos, resumen, 'Vuelta a la versión ' || version, planilla, archivo
+    from catalogo_versiones where version = p_version
   returning version into v_ver;
   if v_ver is null then return jsonb_build_object('ok', false, 'motivo', 'no_existe'); end if;
   delete from catalogo_versiones

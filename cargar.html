@@ -69,6 +69,54 @@
   [hidden] { display: none !important; }
   .guia { font-size: 0.86rem; color: var(--muted); }
   .guia ol { padding-left: 18px; margin: 6px 0 0; }
+  .btn-chico { padding: 6px 12px; font-size: 0.8rem; border-radius: 10px; }
+  .tag { font-size: 0.7rem; border-radius: 10px; padding: 2px 8px; font-weight: 700; background: rgba(255,209,102,0.16); color: #ffe3a3; margin-left: 6px; }
+  .nota-aviso { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.4); color: #ffe3a3; border-radius: 12px; padding: 10px 14px; font-size: 0.86rem; margin: 10px 0; }
+  /* carga rápida */
+  .modos { display: flex; max-width: 460px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 3px; margin-bottom: 14px; }
+  .modos button { flex: 1; line-height: 1.25; border: 0; background: transparent; color: var(--muted); padding: 8px 14px; border-radius: 9px; font-weight: 600; font-size: 0.86rem; }
+  .modos button[aria-pressed="true"] { background: var(--card-2); color: var(--ink); }
+  .campos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .campos .ancho { grid-column: 1 / -1; }
+  @media (max-width: 560px) { .campos { grid-template-columns: 1fr; } .modos button { padding: 8px 8px; font-size: 0.8rem; } }
+  .campo label, .campo .etq { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
+  .campo label i, .campo .etq i { font-style: normal; color: var(--verde-claro); }
+  .campo input[type=text], .campo input[type=date], .campo input[type=time], .campo input[type=number], .campo input[type=url], .campo select, .campo textarea {
+    width: 100%; padding: 10px 12px; border-radius: 11px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font: inherit; font-size: 0.92rem; }
+  .campo textarea { min-height: 84px; resize: vertical; }
+  .campo select:focus, .campo textarea:focus { outline: 2px solid var(--verde); outline-offset: 1px; }
+  .campo .ayuda { font-size: 0.76rem; color: var(--muted); margin-top: 4px; }
+  input[type=date]::-webkit-calendar-picker-indicator, input[type=time]::-webkit-calendar-picker-indicator { filter: invert(0.8); }
+  .cats { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cats label { display: inline-flex; align-items: center; gap: 6px; background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 6px 12px; font-size: 0.84rem; cursor: pointer; color: var(--ink); font-weight: 500; margin: 0; }
+  .cats input { accent-color: var(--verde); margin: 0; }
+  .cats label:has(input:checked) { border-color: var(--verde); background: rgba(5,163,111,0.14); }
+  .chk { display: flex; gap: 8px; align-items: center; font-size: 0.88rem; }
+  .chk input { accent-color: var(--verde); }
+  .btn-grande { padding: 14px 22px; font-size: 1rem; }
+  .modal { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,0.62); display: flex; align-items: center; justify-content: center; padding: 18px; }
+  .modal[hidden] { display: none; }
+  .hoja { background: var(--card); border: 1px solid var(--line); border-radius: 20px; width: 100%; max-width: 760px; max-height: 94vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .hoja-cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .hoja-cab h2 { margin: 0; font-size: 1.15rem; }
+  .cerrar { border: 1px solid var(--line); background: var(--paper); color: var(--ink); width: 38px; height: 38px; border-radius: 11px; font-size: 1rem; flex-shrink: 0; }
+  .hoja-cuerpo { overflow-y: auto; padding: 18px 20px; flex: 1; overscroll-behavior: contain; }
+  .hoja-pie { border-top: 1px solid var(--line); padding: 12px 20px; background: var(--card); }
+  .hoja-pie .msg { margin: 0 0 8px; }
+  .hoja-pie .msg:empty { display: none; }
+  .bloque { background: var(--card-2); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 0 0 12px; }
+  .bloque h3, .bloque .h3 { font-size: 0.98rem; margin: 0 0 12px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+  details.bloque .h3 { margin: 0; }
+  .bloque h3 span { background: var(--verde); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 0.75rem; }
+  .bloque .campo input[type=text], .bloque .campo input[type=date], .bloque .campo input[type=time], .bloque .campo input[type=number], .bloque .campo input[type=url], .bloque .campo select, .bloque .campo textarea { background: var(--paper); }
+  .bloque .cats label { background: var(--paper); }
+  body.con-modal { overflow: hidden; }
+  @media (max-width: 560px) {
+    .modal { padding: 0; align-items: stretch; }
+    .hoja { max-height: none; height: 100%; border-radius: 0; border: 0; }
+    .hoja-cuerpo { padding: 14px; } .hoja-cab, .hoja-pie { padding: 12px 14px; }
+    .hoja-pie .btn { flex: 1; }
+  }
 </style>
 </head>
 <body>
@@ -82,7 +130,7 @@
   <!-- ============ Entrar ============ -->
   <section id="entrar">
     <h1>Panel de carga</h1>
-    <p class="bajada">Para actualizar los lugares y la agenda de la web subiendo la planilla de carga.</p>
+    <p class="bajada">Para actualizar los lugares y la agenda de la web: subiendo la planilla de carga o con la carga rápida de un evento.</p>
     <div class="tarjeta">
       <form id="form-clave" autocomplete="off">
         <label for="clave" style="display:block;font-weight:600;margin-bottom:8px">Clave del panel</label>
@@ -96,19 +144,24 @@
   <!-- ============ Panel ============ -->
   <section id="panel" hidden>
     <h1>Actualizar la web</h1>
-    <p class="bajada">Subí la planilla, revisá lo que cambia y publicá. Si algo sale mal, podés volver a la versión anterior.</p>
+    <p class="bajada">Subí la planilla (o cargá un evento rápido), revisá lo que cambia y publicá. Si algo sale mal, podés volver a la versión anterior.</p>
 
     <div class="tarjeta">
       <h2>Lo que muestra la web ahora</h2>
       <div id="actual-txt" class="guia">Cargando…</div>
-      <div class="fila" style="margin-top:10px">
-        <button class="btn btn-borde" id="bajar" type="button">Descargar una copia (JSON)</button>
-        <a class="btn btn-borde" href="./" target="_blank" rel="noopener" style="text-decoration:none">Abrir la web</a>
+      <div class="fila" style="margin-top:12px">
+        <button class="btn" id="bajar-planilla" type="button">Descargar la planilla (Excel)</button>
+        <a class="btn btn-borde" id="abrir-web" href="./" target="_blank" rel="noopener" style="text-decoration:none">Abrir la web</a>
       </div>
+      <p class="guia" id="planilla-txt" style="margin:8px 0 0">La planilla con todo lo que muestra la web ahora, incluidos los eventos de la carga rápida. Si perdieron el archivo, bajen este, modifíquenlo y súbanlo en el paso 1.</p>
+      <div class="nota-aviso" id="planilla-falta" hidden>Todavía no hay una planilla guardada en el panel. Se guarda sola la primera vez que suban la planilla completa en el paso 1; desde ahí se puede descargar y usar la carga rápida.
+        <div style="margin-top:8px"><button class="btn btn-chico" type="button" data-elegir>Subir la planilla ahora</button></div></div>
+      <div class="msg" id="planilla-msg" role="status"></div>
     </div>
 
     <div class="tarjeta">
       <h2><span class="n">1</span>Subir la planilla</h2>
+      <p class="guia" style="margin:-4px 0 10px">Para cambios grandes: la agenda del mes, lugares nuevos, correcciones.</p>
       <label class="zona" id="zona" for="archivo">
         <b>Tocá para elegir la planilla</b> o arrastrala acá<br>
         <span style="font-size:.84rem">“48 HS - Carga de datos” (.xlsx), con las hojas Lugares y Agenda</span>
@@ -117,8 +170,18 @@
       <div class="msg err" id="archivo-msg" role="alert"></div>
     </div>
 
+    <div class="tarjeta" id="rapida">
+      <h2><span class="n" title="o bien">o</span>Carga rápida</h2>
+      <p class="guia" style="margin:-4px 0 14px">Para un evento de último momento, sin abrir el Excel: se abre un formulario, lo completan y lo publican. El evento queda agregado también en la planilla.</p>
+      <div class="fila">
+        <button class="btn btn-grande" type="button" data-abrir="evento">＋ Cargar un evento nuevo</button>
+        <button class="btn btn-borde" type="button" data-abrir="fecha">＋ Agregar una fecha a una actividad</button>
+      </div>
+    </div>
+
     <div class="tarjeta" id="revision" hidden>
       <h2><span class="n">2</span>Revisar</h2>
+      <div id="rev-aviso"></div>
       <div id="rev-archivo" class="guia"></div>
       <div class="estado" id="rev-estado"></div>
       <div class="nums" id="rev-nums"></div>
@@ -146,17 +209,119 @@
       <b style="color:var(--ink)">Para tener en cuenta</b>
       <ol>
         <li>Siempre trabajar sobre la misma planilla (“48 HS - Carga de datos”): no cambiar los nombres de las columnas ni de las hojas.</li>
+        <li>Si hubo cargas rápidas, antes de cambiar la planilla bajen la última (arriba, “Descargar la planilla”): así lo cargado rápido no se pierde.</li>
         <li>Para sacar un lugar de la web sin borrarlo, poner “No” en la columna Publicar.</li>
         <li>Las fechas de la Agenda que ya pasaron se ignoran solas.</li>
         <li>Los cambios aparecen en la web al abrirla o recargarla (en un minuto, como mucho).</li>
       </ol>
+      <p style="margin:10px 0 0">Para soporte técnico: <button class="btn btn-borde btn-chico" id="bajar" type="button">copia del catálogo en JSON</button> (no sirve para editar: para eso está la planilla).</p>
     </div>
   </section>
 </main>
 
+  <!-- Formulario de carga rápida -->
+  <div class="modal" id="rapida-modal" hidden>
+    <form class="hoja" id="rapida-form" novalidate role="dialog" aria-modal="true" aria-labelledby="rapida-titulo">
+      <header class="hoja-cab">
+        <h2 id="rapida-titulo">Cargar un evento nuevo</h2>
+        <button type="button" class="cerrar" data-cerrar aria-label="Cerrar">✕</button>
+      </header>
+      <div class="hoja-cuerpo">
+        <div class="modos" role="group" aria-label="Qué cargar">
+          <button type="button" data-modo="evento" aria-pressed="true">Evento nuevo</button>
+          <button type="button" data-modo="fecha" aria-pressed="false">Otra fecha de una actividad</button>
+        </div>
+
+        <div class="nota-aviso" id="primera-vez" hidden>
+          <b>Solo esta primera vez:</b> elegí la planilla “48 HS - Carga de datos.xlsx”. El evento se agrega ahí y la planilla queda guardada en el panel; la próxima vez no la pide.
+          <div style="margin-top:8px"><input type="file" id="r-planilla" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+        </div>
+
+        <div id="campos-evento">
+          <section class="bloque" id="ancla-evento">
+            <h3><span>1</span>¿Qué es?</h3>
+            <div class="campos">
+              <div class="campo ancho"><label for="r-nombre">Nombre del evento <i>*</i></label>
+                <input type="text" id="r-nombre" maxlength="120" placeholder="Ej.: Feria de artesanos en la Costanera"></div>
+              <div class="campo ancho"><span class="etq">Clasificación <i>*</i>: en qué secciones de la web aparece (todas las que correspondan)</span><div class="cats" id="r-cats"></div></div>
+              <div class="campo ancho"><label for="r-desc">Descripción</label><textarea id="r-desc" maxlength="1200" placeholder="De qué se trata, qué hay, para quién es, qué llevar."></textarea></div>
+            </div>
+          </section>
+          <section class="bloque">
+            <h3><span>3</span>¿Dónde?</h3>
+            <div class="campos">
+              <div class="campo ancho"><label for="r-donde">Lugar</label>
+                <select id="r-donde"><option value="">Otro lugar (escribir la dirección abajo)</option></select>
+                <div class="ayuda">Si es en un lugar que ya está en la web, elegilo y se completan la dirección y la ubicación.</div></div>
+              <div class="campo"><label for="r-dir">Dirección</label><input type="text" id="r-dir" maxlength="160" placeholder="Ej.: Costanera y Av. Roque Pérez"></div>
+              <div class="campo"><label for="r-ubic">Coordenadas o link de Google Maps</label><input type="text" id="r-ubic" maxlength="400" placeholder="-27.3620, -55.8990">
+                <div class="ayuda">Sin esto el evento sale en la agenda pero no en el mapa.</div></div>
+            </div>
+          </section>
+          <section class="bloque">
+            <h3><span>4</span>Entrada</h3>
+            <div class="campos">
+              <div class="campo"><label for="r-precio">Precio</label><input type="text" id="r-precio" maxlength="80" placeholder="Ej.: Gratis · $5.000"></div>
+              <div class="campo"><label for="r-insc">Inscripción</label>
+                <select id="r-insc"><option value="">Sin inscripción (entrada libre)</option><option value="Gratis con inscripción">Gratis con inscripción (con cupo)</option><option value="Paga (reserva por WhatsApp)">Paga (reserva por WhatsApp)</option></select></div>
+              <div class="campo" id="r-cupo-campo" hidden><label for="r-cupo">Cupo <i>*</i></label><input type="number" id="r-cupo" min="1" max="5000" inputmode="numeric" placeholder="Ej.: 30"></div>
+            </div>
+          </section>
+          <details class="bloque">
+            <summary><span class="h3">Contacto y extras (opcional)</span></summary>
+            <div class="campos" style="margin-top:12px">
+              <div class="campo"><label for="r-org">Organiza</label><input type="text" id="r-org" maxlength="120"></div>
+              <div class="campo"><label for="r-tel">Teléfono de contacto</label><input type="text" id="r-tel" maxlength="40" placeholder="376 412-3456"></div>
+              <div class="campo"><label for="r-ig">Instagram</label><input type="text" id="r-ig" maxlength="120" placeholder="@cuenta o link"></div>
+              <div class="campo"><label for="r-web">Web o más info (link)</label><input type="url" id="r-web" maxlength="400" placeholder="https://…"></div>
+              <div class="campo ancho"><label for="r-foto">Foto (link)</label><input type="url" id="r-foto" maxlength="400" placeholder="https://… (de Drive con acceso público o de la web del lugar)"></div>
+              <label class="chk ancho"><input type="checkbox" id="r-wapp"> El teléfono atiende por WhatsApp</label>
+              <label class="chk ancho"><input type="checkbox" id="r-dest"> Destacado (sale en el panel de destacados de la web)</label>
+            </div>
+          </details>
+        </div>
+
+        <div id="campos-fecha" hidden>
+          <section class="bloque" id="ancla-fecha">
+            <h3><span>1</span>¿Qué actividad?</h3>
+            <div class="campo"><label for="r-act">Actividad <i>*</i></label><select id="r-act"></select>
+              <div class="ayuda" id="r-act-ayuda"></div></div>
+          </section>
+          <section class="bloque">
+            <h3><span>3</span>Detalles de esta fecha (opcional)</h3>
+            <div class="campos">
+              <div class="campo"><label for="r-enc">Punto de encuentro</label><input type="text" id="r-enc" maxlength="160" placeholder="Ej.: Entrada principal"></div>
+              <div class="campo"><label for="r-cupo2">Cupo de esta fecha</label><input type="number" id="r-cupo2" min="1" max="5000" inputmode="numeric" placeholder="El de siempre"></div>
+            </div>
+          </section>
+        </div>
+
+        <section class="bloque" id="bloque-cuando">
+          <h3><span>2</span>¿Cuándo?</h3>
+          <div class="campos">
+            <div class="campo"><label for="r-fecha">Fecha <i>*</i></label><input type="date" id="r-fecha"></div>
+            <div class="campo"><label for="r-hora">Hora</label><input type="time" id="r-hora">
+              <div class="ayuda">Si todavía no está, dejala vacía: sale “a confirmar”.</div></div>
+          </div>
+        </section>
+      </div>
+      <footer class="hoja-pie">
+        <div class="msg err" id="rapida-msg" role="alert"></div>
+        <div class="fila" style="justify-content:flex-end">
+          <button class="btn btn-borde" type="button" data-cerrar>Cancelar</button>
+          <button class="btn" type="submit" id="r-revisar">Revisar antes de publicar</button>
+        </div>
+      </footer>
+    </form>
+  </div>
+
+
 <script src="libs/importador.js"></script>
 <script>
 'use strict';
+// Abierto como archivo desde la compu, "./" es la carpeta: se manda a la web publicada
+const WEB_PUBLICA = 'https://mundial-mapa-posadas.vercel.app/';
+if(location.protocol === 'file:') document.getElementById('abrir-web').href = WEB_PUBLICA;
 const CONFIG = {
   url:     'https://vqkjldyqgitzrhksiofd.supabase.co',
   anonKey: 'sb_publishable_ZEaBonm4MGXbL1O4gjckUQ_A1MBjWX0',
@@ -171,6 +336,25 @@ let CLAVE = almacen.leer('pv-carga-clave') || '';
 let ACTUAL = null;          // { version, datos } publicado (o catalogo.json si no hay nada)
 let NUEVO = null;           // resultado del importador listo para publicar
 let VERSIONES = [];
+let PLANILLA = null;        // { version, buffer, archivo } la planilla guardada de la versión publicada
+const TOPE_PLANILLA = 4.5e6; // más grande que esto, se publica igual pero sin guardar la planilla
+
+// ArrayBuffer ⇄ base64 (la planilla viaja así a la base)
+function aBase64(buf){
+  const b = new Uint8Array(buf); let s = '';
+  for(let i = 0; i < b.length; i += 8192) s += String.fromCharCode.apply(null, b.subarray(i, i + 8192));
+  return btoa(s);
+}
+function deBase64(t){ const s = atob(t), b = new Uint8Array(s.length); for(let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b.buffer; }
+function descargar(datos, nombre, tipo){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([datos], { type: tipo }));
+  a.download = nombre;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const XLSX_TIPO = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const nombrePlanilla = v => `48 HS - Carga de datos (v${v}).xlsx`;
 
 function hoyPosadas(){
   const p = {};
@@ -197,7 +381,8 @@ const MOTIVOS = {
   tamano: 'El catálogo está vacío o es demasiado grande.',
   lugar_invalido: 'Hay un lugar con un ID o nombre no válido.',
   demasiadas: 'Se publicó demasiadas veces en la última hora. Esperá un rato.',
-  no_existe: 'Esa versión ya no existe.'
+  no_existe: 'Esa versión ya no existe.',
+  planilla: 'La planilla no se pudo guardar (el archivo está dañado o es demasiado grande).'
 };
 const textoError = e => e && e.status === 404 ? 'El panel todavía no está instalado en la base (falta correr temporada.sql).'
   : 'No hay conexión con la base. Probá de nuevo en un rato.';
@@ -211,6 +396,7 @@ async function entrar(clave){
   $('entrar').hidden = true; $('panel').hidden = false; $('salir').hidden = false;
   pintarHistorial();
   await cargarActual();
+  prepararRapida();
 }
 $('form-clave').addEventListener('submit', async ev => {
   ev.preventDefault();
@@ -243,13 +429,38 @@ async function cargarActual(){
 }
 $('bajar').addEventListener('click', () => {
   if(!ACTUAL) return;
-  const blob = new Blob([JSON.stringify(ACTUAL.datos, null, 1)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = '48h-posadas-catalogo-' + (ACTUAL.version ? 'v' + ACTUAL.version : 'original') + '.json';
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  descargar(JSON.stringify(ACTUAL.datos, null, 1), '48h-posadas-catalogo-' + (ACTUAL.version ? 'v' + ACTUAL.version : 'original') + '.json', 'application/json');
 });
+
+/* ---------------- la planilla guardada ---------------- */
+// Trae la planilla de una versión (la publicada si no se dice cuál). null si esa versión no la tiene.
+async function traerPlanilla(version){
+  const ultima = VERSIONES[0] && VERSIONES[0].version;
+  const v = version || ultima;
+  if(!v) return null;
+  if(PLANILLA && PLANILLA.version === v) return PLANILLA;
+  const info = VERSIONES.find(x => x.version === v);
+  if(info && info.planilla === false) return null;
+  const r = await rpc('catalogo_planilla', { p_clave: CLAVE, p_version: v });
+  if(!r.ok) throw Object.assign(new Error(MOTIVOS[r.motivo] || 'No se pudo traer la planilla.'), { motivo: r.motivo });
+  if(!r.planilla) return null;
+  const p = { version: r.version, buffer: deBase64(r.planilla), archivo: r.archivo };
+  if(r.version === ultima) PLANILLA = p;
+  return p;
+}
+async function bajarPlanilla(version, msg){
+  msg.className = 'msg'; msg.textContent = '';
+  try {
+    const p = await traerPlanilla(version);
+    if(!p){
+      msg.className = 'msg err';
+      msg.textContent = 'Esta versión se publicó antes de que el panel guardara la planilla. Se va a poder descargar desde la próxima vez que suban la planilla completa.';
+      return;
+    }
+    descargar(p.buffer, nombrePlanilla(p.version), XLSX_TIPO);
+  } catch(e){ msg.className = 'msg err'; msg.textContent = e.motivo ? e.message : textoError(e); }
+}
+$('bajar-planilla').addEventListener('click', () => bajarPlanilla(null, $('planilla-msg')));
 
 /* ---------------- subir planilla ---------------- */
 const zona = $('zona');
@@ -264,10 +475,12 @@ async function procesar(archivo){
   if(!/\.xlsx$/i.test(archivo.name)){ m.textContent = 'Tiene que ser la planilla en formato Excel (.xlsx).'; return; }
   if(archivo.size > 20e6){ m.textContent = 'El archivo es demasiado grande (más de 20 MB).'; return; }
   try {
-    const hojas = await Importador.leerXlsx(await archivo.arrayBuffer());
+    const buffer = await archivo.arrayBuffer();
+    const hojas = await Importador.leerXlsx(buffer);
     const r = Importador.armar(hojas.lugares, hojas.agenda, hoyPosadas());
-    NUEVO = { ...r, archivo: archivo.name };
+    NUEVO = { ...r, archivo: archivo.name, origen: 'planilla', planilla: buffer.byteLength <= TOPE_PLANILLA ? buffer : null };
     mostrarRevision();
+    $('revision').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch(e){
     NUEVO = null; $('revision').hidden = true; $('publicar-caja').hidden = true;
     m.textContent = e.message || 'No se pudo leer la planilla.';
@@ -299,10 +512,24 @@ function lista(titulo, items, cls, abierto){
 function mostrarRevision(){
   const r = NUEVO;
   $('revision').hidden = false;
-  $('rev-archivo').textContent = 'Archivo: ' + r.archivo;
+  $('rev-archivo').textContent = r.origen === 'rapida' ? r.archivo : 'Archivo: ' + r.archivo;
   const dif = diferencias(ACTUAL && ACTUAL.datos.lugares, r.lugares);
   NUEVO.dif = dif;
-  const hayCambios = dif.nuevos.length + dif.quitados.length + dif.cambiados.length > 0;
+  // la web ya muestra esto, pero la versión publicada no tiene la planilla guardada: se deja publicar para guardarla
+  const ult = VERSIONES[0];
+  const guardarPlanilla = !!(r.planilla && ult && ult.planilla === false) || !!(r.planilla && !ult);
+  const hayCambios = dif.nuevos.length + dif.quitados.length + dif.cambiados.length > 0 || guardarPlanilla;
+
+  const aviso = $('rev-aviso'); aviso.textContent = '';
+  if(r.origen === 'planilla' && ult && ult.resumen && ult.resumen.origen === 'rapida' && (dif.quitados.length || dif.cambiados.length)){
+    aviso.append(el('div', `Ojo: lo último que se publicó fue una carga rápida${ult.nota ? ' (“' + ult.nota + '”)' : ''}. Si esta planilla es de antes, eso se pierde: fijate en “Salen de la web” y “Con cambios”. Para no perderlo, descargá la planilla actual (arriba), hacé tus cambios en esa y subila.`, 'nota-aviso'));
+  }
+  if(r.origen === 'rapida' && r.primeraVez && dif.nuevos.length + dif.quitados.length + dif.cambiados.length > 1){
+    aviso.append(el('div', 'Además del evento, aparecen otras diferencias: son las de la planilla que elegiste con lo que muestra la web ahora. Revisalas antes de publicar.', 'nota-aviso'));
+  }
+  if(!r.planilla && r.origen === 'planilla'){
+    aviso.append(el('div', 'La planilla es muy pesada para guardarla en el panel: se publica igual, pero después no se va a poder descargar ni usar la carga rápida. Probá sacarle imágenes o pestañas que no se usan.', 'nota-aviso'));
+  }
 
   const est = $('rev-estado');
   if(r.errores.length){
@@ -311,6 +538,9 @@ function mostrarRevision(){
   } else if(!hayCambios){
     est.className = 'estado igual';
     est.textContent = 'La planilla es igual a lo que ya muestra la web: no hay nada para publicar.';
+  } else if(guardarPlanilla && dif.nuevos.length + dif.quitados.length + dif.cambiados.length === 0){
+    est.className = 'estado ok';
+    est.textContent = 'La web ya muestra esto. Publicala igual una vez para que el panel guarde la planilla: la necesitan “Descargar la planilla” y la carga rápida.';
   } else {
     est.className = 'estado ok';
     est.textContent = 'Lista para publicar.' + (r.avisos.length ? ` Revisá los ${r.avisos.length} avisos de abajo: no frenan la publicación.` : '');
@@ -353,14 +583,20 @@ $('publicar').addEventListener('click', async () => {
   try {
     const datos = { version: 1, generado: new Date().toISOString(), lugares: NUEVO.lugares };
     const resumen = { lugares: NUEVO.resumen.lugares, fechas: NUEVO.resumen.fechas, nuevos: NUEVO.dif.nuevos.length,
-                      cambiados: NUEVO.dif.cambiados.length, quitados: NUEVO.dif.quitados.length, archivo: NUEVO.archivo.slice(0, 80) };
-    const r = await rpc('catalogo_publicar', { p_clave: CLAVE, p_datos: datos, p_resumen: resumen, p_nota: $('nota').value.trim() || null });
+                      cambiados: NUEVO.dif.cambiados.length, quitados: NUEVO.dif.quitados.length, archivo: NUEVO.archivo.slice(0, 80),
+                      origen: NUEVO.origen };
+    const archivo = NUEVO.origen === 'rapida' ? (NUEVO.archivoBase || '48 HS - Carga de datos.xlsx') : NUEVO.archivo;
+    const r = await rpc('catalogo_publicar', { p_clave: CLAVE, p_datos: datos, p_resumen: resumen, p_nota: $('nota').value.trim() || null,
+                                              p_planilla: NUEVO.planilla ? aBase64(NUEVO.planilla) : null, p_archivo: archivo.slice(0, 120) });
     if(!r.ok) throw Object.assign(new Error(MOTIVOS[r.motivo] || 'No se pudo publicar.'), { motivo: r.motivo });
     m.className = 'msg ok';
     m.textContent = `Listo: se publicó la versión ${r.version}. La web la muestra al abrirla o recargarla.`;
+    const eraRapida = NUEVO.origen === 'rapida';
     NUEVO = null; $('nota').value = '';
     $('revision').hidden = true; $('publicar-caja').hidden = false; b.hidden = true;
+    if(eraRapida) limpiarRapida();
     await refrescar();
+    prepararRapida();
   } catch(e){
     m.className = 'msg err'; m.textContent = e.motivo ? e.message : textoError(e);
   } finally { b.disabled = false; b.textContent = 'Publicar en la web'; }
@@ -380,10 +616,17 @@ function pintarHistorial(){
     li.append(el('span', 'v' + v.version, 'v'));
     const t = el('span', null, 't');
     t.append(el('b', fechaLinda(v.creado)), ` · ${v.lugares} lugares`);
+    if(rs_origen(v) === 'rapida') t.append(el('span', 'Carga rápida', 'tag'));
     const rs = v.resumen || {};
     if(rs.nuevos || rs.cambiados || rs.quitados) t.append(` · +${rs.nuevos || 0} nuevos, ${rs.cambiados || 0} cambios, −${rs.quitados || 0}`);
     if(v.nota) t.append(el('div', '“' + v.nota + '”'));
     li.append(t);
+    if(v.planilla){
+      const bp = el('button', 'Planilla', 'btn btn-borde btn-chico'); bp.type = 'button';
+      bp.title = 'Descargar la planilla de esta versión';
+      bp.addEventListener('click', () => bajarPlanilla(v.version, $('hist-msg')));
+      li.append(bp);
+    }
     if(i === 0) li.append(el('span', 'En la web', 'actual'));
     else {
       const b = el('button', 'Volver a esta', 'btn btn-borde btn-peligro'); b.type = 'button';
@@ -393,6 +636,7 @@ function pintarHistorial(){
     ul.append(li);
   });
 }
+const rs_origen = v => (v.resumen && v.resumen.origen) || null;
 async function restaurar(version, b){
   if(!b.classList.contains('confirmar')){
     b.classList.add('confirmar'); b.textContent = '¿Seguro? Tocá de nuevo';
@@ -406,8 +650,189 @@ async function restaurar(version, b){
     if(!r.ok) throw Object.assign(new Error(MOTIVOS[r.motivo] || 'No se pudo.'), { motivo: r.motivo });
     m.className = 'msg ok'; m.textContent = `Listo: la web vuelve a mostrar la versión ${version} (publicada como versión ${r.version}).`;
     await refrescar();
+    prepararRapida();
   } catch(e){ m.className = 'msg err'; m.textContent = e.motivo ? e.message : textoError(e); b.disabled = false; }
 }
+
+/* ---------------- carga rápida ---------------- */
+// Un formulario en un panel grande. Arma la fila (o las filas) nuevas, las
+// agrega a la planilla guardada (o, la primera vez, a la que elijan) y la pasa
+// por el mismo importador que una planilla subida: mismas revisiones.
+let MODO = 'evento';
+let BASE_PLANILLA = null;   // la planilla guardada de la versión publicada, si hay
+
+(function armarCats(){
+  const caja = $('r-cats');
+  Importador.CATEGORIAS.forEach(([cid, nombre]) => {
+    const l = document.createElement('label');
+    const i = document.createElement('input'); i.type = 'checkbox'; i.value = cid;
+    l.append(i, ' ' + nombre); caja.append(l);
+  });
+})();
+const catalogoWeb = () => (ACTUAL && ACTUAL.datos && ACTUAL.datos.lugares) || [];
+
+function ponerModo(modo){
+  MODO = modo;
+  document.querySelectorAll('.modos button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.modo === modo)));
+  $('campos-evento').hidden = modo !== 'evento';
+  $('campos-fecha').hidden = modo !== 'fecha';
+  $(modo === 'evento' ? 'ancla-evento' : 'ancla-fecha').after($('bloque-cuando'));
+  $('rapida-titulo').textContent = modo === 'evento' ? 'Cargar un evento nuevo' : 'Agregar una fecha a una actividad';
+  $('rapida-msg').textContent = '';
+}
+document.querySelectorAll('.modos button').forEach(b => b.addEventListener('click', () => ponerModo(b.dataset.modo)));
+['input', 'change'].forEach(t => $('rapida-form').addEventListener(t, () => { $('rapida-msg').textContent = ''; }));
+
+let focoAntes = null;
+function abrirRapida(modo){
+  ponerModo(modo);
+  $('primera-vez').hidden = !!BASE_PLANILLA;
+  focoAntes = document.activeElement;
+  $('rapida-modal').hidden = false;
+  document.body.classList.add('con-modal');
+  $('rapida-modal').querySelector('.hoja-cuerpo').scrollTop = 0;
+  setTimeout(() => (modo === 'evento' ? $('r-nombre') : $('r-act')).focus(), 50);
+}
+function cerrarRapida(){
+  $('rapida-modal').hidden = true;
+  document.body.classList.remove('con-modal');
+  if(focoAntes && focoAntes.focus) focoAntes.focus();
+}
+document.querySelectorAll('[data-abrir]').forEach(b => b.addEventListener('click', () => abrirRapida(b.dataset.abrir)));
+document.querySelectorAll('[data-cerrar]').forEach(b => b.addEventListener('click', cerrarRapida));
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && !$('rapida-modal').hidden) cerrarRapida(); });
+
+$('r-insc').addEventListener('change', () => { $('r-cupo-campo').hidden = !$('r-insc').value.startsWith('Gratis'); });
+$('r-donde').addEventListener('change', () => {
+  const L = catalogoWeb().find(x => x.id === $('r-donde').value);
+  if(!L) return;
+  $('r-dir').value = L.addr || '';
+  $('r-ubic').value = L.coords ? L.coords.join(', ') : (L.maps || '');
+});
+$('r-act').addEventListener('change', ayudaActividad);
+function ayudaActividad(){
+  const A = catalogoWeb().find(x => x.id === $('r-act').value);
+  const f = A && A.schedule && A.schedule.fechas || [];
+  $('r-act-ayuda').textContent = !A ? '' : f.length
+    ? 'Fechas que ya tiene: ' + f.slice(0, 4).map(x => x.fecha.split('-').reverse().slice(0, 2).join('/') + (x.hora ? ' ' + x.hora : '')).join(' · ') + (f.length > 4 ? '…' : '')
+    : 'No tiene fechas próximas cargadas.';
+}
+
+// "Descargar la planilla" solo se ofrece si la versión publicada la tiene guardada
+function estadoPlanilla(){
+  const hay = !!(VERSIONES[0] && VERSIONES[0].planilla);
+  $('bajar-planilla').hidden = !hay;
+  $('planilla-txt').hidden = !hay;
+  $('planilla-falta').hidden = hay;
+  $('planilla-msg').textContent = '';
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('[data-elegir]')) return;
+  $('zona').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  $('archivo').click();
+});
+
+async function prepararRapida(){
+  estadoPlanilla();
+  $('r-fecha').min = hoyPosadas();
+  BASE_PLANILLA = null;
+  try { BASE_PLANILLA = await traerPlanilla(null); } catch(e){ BASE_PLANILLA = null; }
+  $('primera-vez').hidden = !!BASE_PLANILLA;
+  // las listas salen de lo que muestra la web
+  const orden = (a, b) => a.name.localeCompare(b.name, 'es');
+  const donde = $('r-donde'), valD = donde.value;
+  while(donde.options.length > 1) donde.remove(1);
+  catalogoWeb().filter(L => L.type === 'lugar').sort(orden).forEach(L => donde.add(new Option(L.name, L.id)));
+  donde.value = valD;
+  const act = $('r-act'), valA = act.value;
+  act.textContent = '';
+  act.add(new Option('Elegir…', ''));
+  catalogoWeb().filter(L => L.type === 'evento' && !L.lugar).sort(orden).forEach(L => act.add(new Option(L.name, L.id)));
+  act.value = valA; ayudaActividad();
+}
+function limpiarRapida(){
+  $('rapida-form').reset();
+  $('r-cupo-campo').hidden = true; $('r-act-ayuda').textContent = '';
+}
+
+function idNuevo(nombre, fecha, usados){
+  const base = Importador.slug(nombre, 30) + '-' + fecha.slice(5, 7) + fecha.slice(8, 10);
+  let id = base, n = 2;
+  while(usados.has(id)) id = base + '-' + n++;
+  return id;
+}
+
+$('rapida-form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const m = $('rapida-msg'); m.textContent = '';
+  const val = id => $(id).value.trim();
+  const fecha = val('r-fecha'), hora = val('r-hora');
+  const ahora = new Date().toLocaleString('es-AR', { timeZone: CONFIG.tz, day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const marca = 'Carga rápida desde el panel, ' + ahora;
+  const fallas = [];
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) fallas.push('la fecha');
+  else if(fecha < hoyPosadas()) fallas.push('una fecha que no haya pasado');
+  const archivoElegido = $('r-planilla').files[0];
+  if(!BASE_PLANILLA && !archivoElegido) fallas.push('elegir la planilla (arriba, solo esta primera vez)');
+  let titulo, armarFilas;
+
+  if(MODO === 'evento'){
+    const nombre = val('r-nombre');
+    const cats = [...document.querySelectorAll('#r-cats input:checked')].map(i => i.value);
+    if(nombre.length < 3) fallas.unshift('el nombre del evento');
+    if(!cats.length) fallas.splice(1, 0, 'la clasificación (al menos una)');
+    const insc = $('r-insc').value, cupo = parseInt(val('r-cupo'), 10);
+    if(insc.startsWith('Gratis') && !(cupo > 0)) fallas.push('el cupo (con inscripción gratis hace falta)');
+    if(fallas.length){ m.textContent = 'Falta: ' + fallas.join(', ') + '.'; return; }
+    const ubic = val('r-ubic');
+    titulo = nombre;
+    armarFilas = usados => {
+      const id = idNuevo(nombre, fecha, usados);
+      const L = { id, publicar: 'Sí', tipo: 'Actividad', nombre, direccion: val('r-dir'),
+        coordenadas: /^https?:/i.test(ubic) ? '' : ubic, maps: /^https?:/i.test(ubic) ? ubic : '',
+        precio: val('r-precio'), inscripcion: insc, cupo: insc.startsWith('Gratis') ? cupo : '',
+        descripcion: val('r-desc'), organiza: val('r-org'), telefono: val('r-tel'),
+        whatsapp: val('r-tel') ? ($('r-wapp').checked ? 'Sí' : 'No') : '',
+        instagram: val('r-ig'), web: val('r-web'), foto: val('r-foto'), destacado: $('r-dest').checked ? 'Sí' : '',
+        observaciones: marca };
+      cats.forEach(c => { L[c] = 'X'; });
+      return { lugares: [L], agenda: [{ fecha: { fecha }, hora, id, estado: hora ? 'Confirmado' : 'A confirmar', notas: marca }] };
+    };
+  } else {
+    const A = catalogoWeb().find(x => x.id === $('r-act').value);
+    if(!A) fallas.unshift('elegir la actividad');
+    if(fallas.length){ m.textContent = 'Falta: ' + fallas.join(', ') + '.'; return; }
+    const ya = (A.schedule && A.schedule.fechas || []).find(x => x.fecha === fecha && (x.hora || '') === hora);
+    if(ya){ m.textContent = `“${A.name}” ya tiene esa fecha${hora ? ' a esa hora' : ''} cargada.`; return; }
+    const cupo = parseInt(val('r-cupo2'), 10);
+    titulo = A.name;
+    armarFilas = () => ({ agenda: [{ fecha: { fecha }, hora, id: A.id, estado: hora ? 'Confirmado' : 'A confirmar',
+      encuentro: val('r-enc'), cupo: cupo > 0 ? cupo : '', notas: marca }] });
+  }
+  const nota = `Carga rápida: ${titulo} (${fecha.split('-').reverse().slice(0, 2).join('/')})`.slice(0, 200);
+
+  const b = $('r-revisar'); b.disabled = true; b.textContent = 'Armando…';
+  try {
+    let base, archivoBase;
+    if(BASE_PLANILLA){ base = BASE_PLANILLA.buffer; archivoBase = BASE_PLANILLA.archivo; }
+    else {
+      if(!/\.xlsx$/i.test(archivoElegido.name)) throw new Error('la planilla tiene que ser un archivo .xlsx');
+      base = await archivoElegido.arrayBuffer(); archivoBase = archivoElegido.name;
+    }
+    const usados = new Set(Importador.idsUsados((await Importador.leerXlsx(base)).lugares));
+    const buffer = await Importador.agregarFilas(base, armarFilas(usados));
+    const hojas = await Importador.leerXlsx(buffer);
+    const r = Importador.armar(hojas.lugares, hojas.agenda, hoyPosadas());
+    NUEVO = { ...r, archivo: nota, archivoBase, origen: 'rapida', primeraVez: !BASE_PLANILLA,
+              planilla: buffer.byteLength <= TOPE_PLANILLA ? buffer : null };
+    $('nota').value = nota;
+    cerrarRapida();
+    mostrarRevision();
+    $('revision').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e){
+    m.textContent = 'No se pudo armar: ' + (e.message || e) + '.';
+  } finally { b.disabled = false; b.textContent = 'Revisar antes de publicar'; }
+});
 
 /* ---------------- al abrir ---------------- */
 if(CLAVE) entrar(CLAVE).catch(() => { almacen.escribir('pv-carga-clave', null); CLAVE = ''; });
