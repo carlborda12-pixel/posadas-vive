@@ -14,6 +14,11 @@
 --                                           nombre real de tu tabla)
 --   PARTE 6  Visitantes que ingresan      (visitante_ingresar / _baja)
 --            con nombre y email
+--   PARTE 7  Ajustes, resumen mensual     (topes y plazos editables,
+--            y limpieza                    limpieza_diaria para cron)
+--
+-- Se puede volver a correr entero cuantas veces haga falta: no borra datos
+-- y deja todo actualizado.
 --
 -- Las tareas programadas (avisos por email y limpieza) están en cron.sql.
 -- =====================================================================
@@ -64,6 +69,45 @@ revoke all on public.visitantes from anon, authenticated;
 
 alter table public.estadisticas_eventos
   add column if not exists visitante uuid references public.visitantes(id) on delete set null;
+
+-- AJUSTES: topes y plazos en una tabla, para cambiarlos sin tocar el código.
+-- Los valores de abajo son para el plan gratis de Supabase (500 MB). Con el
+-- plan Pro se pueden subir (ver LEEME, "Escalar"). Para cambiar uno:
+--   update public.ajustes set valor = 120 where clave = 'dias_eventos';
+create table if not exists public.ajustes (
+  clave text primary key,
+  valor numeric not null check (valor >= 0),
+  nota  text
+);
+alter table public.ajustes enable row level security;
+revoke all on public.ajustes from anon, authenticated;
+insert into public.ajustes (clave, valor, nota) values
+  ('eventos_por_minuto',     600,   'Tope de estadísticas por minuto, de toda la web (frena a quien invente visitas para llenar la base).'),
+  ('eventos_por_dia',        50000, 'Tope de estadísticas por día, de toda la web. Uso real esperado: menos de 20.000.'),
+  ('eventos_por_sesion_dia', 500,   'Tope por visita (sesión) y día.'),
+  ('dias_eventos',           62,    'Días que se guarda cada evento con detalle. Después queda solo el resumen del mes, sin datos personales.'),
+  ('dias_resumen',           730,   'Días que se guardan los resúmenes mensuales (dos años, como dice la política).'),
+  ('dias_visitantes',        730,   'Días sin usar la web tras los que se borra a quien ingresó.'),
+  ('dias_lista_espera',      7,     'Días después de la actividad en que se borra la lista de espera.'),
+  ('dias_inscripciones',     183,   'Días después de la actividad en que se borran las inscripciones (seis meses).')
+on conflict (clave) do nothing;
+
+create or replace function public.ajuste(p_clave text, p_defecto numeric)
+returns numeric
+language sql
+stable
+set search_path = public, pg_temp
+as $$ select coalesce((select valor from public.ajustes where clave = p_clave), p_defecto) $$;
+revoke all on function public.ajuste(text, numeric) from public, anon, authenticated;
+
+-- Contador de eventos por día: así el tope diario no tiene que contar
+-- toda la tabla en cada pedido (escala con mucho tráfico).
+create table if not exists public.estadisticas_contador (
+  dia     date primary key,
+  eventos integer not null default 0
+);
+alter table public.estadisticas_contador enable row level security;
+revoke all on public.estadisticas_contador from anon, authenticated;
 create index if not exists estadisticas_eventos_visitante_idx
   on public.estadisticas_eventos (visitante, creado) where visitante is not null;
 
@@ -81,6 +125,9 @@ declare
   v_hoy    int;
   v_min    int;
   v_vis    uuid;
+  v_dia    date := (now() at time zone 'America/Argentina/Buenos_Aires')::date;
+  v_ins    int := 0;
+  v_tope_s numeric := ajuste('eventos_por_sesion_dia', 500);
   v_tipos  text[] := array['visita','vista_lugar','como_llegar','inscripcion_inicio','inscripcion_ok',
                            'lista_espera','whatsapp','compartir','guardar','ruta','filtro','idioma',
                            'instalada','cancelacion','calendario','contacto','video'];
@@ -89,10 +136,13 @@ begin
   -- la app manda lotes de hasta 25; más que eso no viene de la app
   if jsonb_array_length(p_eventos) > 30 then return; end if;
 
-  -- tope general: la "sesión" la inventa el teléfono, así que alguien podría
-  -- inventar miles y llenar la base. Más de 3000 eventos por minuto no es uso real.
+  -- topes generales: la "sesión" la inventa el teléfono, así que alguien podría
+  -- inventar miles y llenar la base. Los valores están en la tabla "ajustes".
+  if coalesce((select eventos from estadisticas_contador where dia = v_dia), 0) >= ajuste('eventos_por_dia', 50000) then
+    return;
+  end if;
   select count(*) into v_min from estadisticas_eventos where creado > now() - interval '1 minute';
-  if v_min >= 3000 then return; end if;
+  if v_min >= ajuste('eventos_por_minuto', 600) then return; end if;
 
   -- quien ingresó con nombre y email: todo el lote es del mismo teléfono.
   -- Solo se acepta un id que exista (lo crea visitante_ingresar).
@@ -113,7 +163,7 @@ begin
       select count(*) into v_hoy from estadisticas_eventos
        where sesion = v_sesion and creado > now() - interval '1 day';
     end if;
-    exit when v_hoy >= 500;
+    exit when v_hoy >= v_tope_s;
 
     -- una sola "visita" por sesión
     continue when v_tipo = 'visita' and exists (
@@ -141,7 +191,13 @@ begin
       v_vis
     );
     v_hoy := v_hoy + 1;
+    v_ins := v_ins + 1;
   end loop;
+
+  if v_ins > 0 then
+    insert into estadisticas_contador (dia, eventos) values (v_dia, v_ins)
+    on conflict (dia) do update set eventos = estadisticas_contador.eventos + excluded.eventos;
+  end if;
 end;
 $$;
 
@@ -158,9 +214,9 @@ grant execute on function public.registrar_eventos(jsonb) to anon, authenticated
 --
 --   insert into public.reporte_acceso (id, clave_hash)
 --   values (1, extensions.crypt('ELEGIR-UNA-CLAVE', extensions.gen_salt('bf', 10)))
+--   on conflict (id) do update set clave_hash = excluded.clave_hash;
 --
 -- La clave: 12 caracteres o más, que no se use en otro lado.
---   on conflict (id) do update set clave_hash = excluded.clave_hash;
 -- =====================================================================
 
 create table if not exists public.reporte_acceso (
@@ -214,6 +270,40 @@ begin
     return jsonb_build_object('ok', false, 'motivo', 'rango');
   end if;
 
+  -- Meses viejos: el detalle de cada evento se borra a los "dias_eventos" días
+  -- (ver PARTE 7) y queda el resumen guardado del mes. La lista de personas
+  -- que ingresaron se calcula siempre en vivo (no se guarda en el resumen).
+  if p_desde = date_trunc('month', p_desde)::date
+     and p_hasta = (date_trunc('month', p_desde) + interval '1 month - 1 day')::date
+     and p_desde < (now() at time zone v_tz)::date - ajuste('dias_eventos', 62)::int then
+    select datos into r from reporte_mensual where mes = p_desde;
+    if r is not null then
+      return r || jsonb_build_object('visitantes_lista', resumen_periodo(p_desde, p_hasta)->'visitantes_lista',
+                                     'guardado', true);
+    end if;
+  end if;
+
+  return resumen_periodo(p_desde, p_hasta);
+end;
+$$;
+
+revoke all on function public.estadisticas_resumen(text, date, date) from public;
+grant execute on function public.estadisticas_resumen(text, date, date) to anon, authenticated;
+
+-- El cálculo del reporte. Es interno: no lo puede llamar la web (no pide clave).
+create or replace function public.resumen_periodo(p_desde date, p_hasta date)
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = public, extensions, pg_temp
+as $$
+declare
+  v_tz  constant text := 'America/Argentina/Buenos_Aires';
+  v_ini timestamptz;
+  v_fin timestamptz;
+  r     jsonb;
+begin
   -- los días son de Posadas, no de UTC
   v_ini := p_desde::timestamp at time zone v_tz;
   v_fin := (p_hasta + 1)::timestamp at time zone v_tz;
@@ -317,8 +407,7 @@ begin
 end;
 $$;
 
-revoke all on function public.estadisticas_resumen(text, date, date) from public;
-grant execute on function public.estadisticas_resumen(text, date, date) to anon, authenticated;
+revoke all on function public.resumen_periodo(date, date) from public, anon, authenticated;
 
 
 -- =====================================================================
@@ -580,4 +669,135 @@ grant execute on function public.visitante_baja(uuid) to anon, authenticated;
 -- Pedidos de acceso o borrado que lleguen por email (Ley 25.326):
 --   select * from public.visitantes where lower(email) = lower('persona@ejemplo.com');
 --   delete from public.visitantes where lower(email) = lower('persona@ejemplo.com');
+
+
+-- =====================================================================
+-- PARTE 7 · RESUMEN MENSUAL Y LIMPIEZA (para que la base no se llene)
+-- Cada evento con detalle se guarda "dias_eventos" días (62 en el plan
+-- gratis). Antes de borrarlos, se guarda el resumen de cada mes cerrado
+-- en "reporte_mensual" (solo números y lugares, sin nombres ni emails),
+-- así el reporte de meses viejos se sigue viendo igual.
+-- La tarea diaria de cron.sql llama a limpieza_diaria().
+-- =====================================================================
+
+create table if not exists public.reporte_mensual (
+  mes     date primary key check (mes = date_trunc('month', mes)::date),
+  creado  timestamptz not null default now(),
+  datos   jsonb not null
+);
+alter table public.reporte_mensual enable row level security;
+revoke all on public.reporte_mensual from anon, authenticated;
+
+-- Guarda (o actualiza) el resumen de un mes. Sin la lista de personas.
+create or replace function public.guardar_resumen_mes(p_mes date)
+returns void
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_desde date := date_trunc('month', p_mes)::date;
+  v_hasta date := (date_trunc('month', p_mes) + interval '1 month - 1 day')::date;
+begin
+  insert into reporte_mensual (mes, datos)
+  values (v_desde, resumen_periodo(v_desde, v_hasta) - 'visitantes_lista')
+  on conflict (mes) do update set datos = excluded.datos, creado = now();
+end;
+$$;
+revoke all on function public.guardar_resumen_mes(date) from public, anon, authenticated;
+
+-- Inscripciones: la política de privacidad promete borrarlas seis meses
+-- después de la actividad. La tabla "inscripciones" es anterior a este
+-- repositorio y no sabemos con certeza cómo se llama su columna de fecha,
+-- así que la función la busca. Si no encuentra ninguna, no borra nada y
+-- lo avisa (aparece en cron.job_run_details): en ese caso, agregar el
+-- nombre correcto a la lista "candidatas".
+create or replace function public.limpiar_inscripciones()
+returns integer
+language plpgsql
+set search_path = public, pg_temp
+as $$
+declare
+  candidatas text[] := array['fecha_evento', 'fecha', 'fecha_actividad', 'dia'];
+  v_col text;
+  v_n   integer := 0;
+begin
+  if to_regclass('public.inscripciones') is null then return 0; end if;
+  select c.column_name into v_col
+    from information_schema.columns c
+   where c.table_schema = 'public' and c.table_name = 'inscripciones'
+     and c.column_name = any(candidatas)
+     and c.data_type in ('date', 'timestamp with time zone', 'timestamp without time zone')
+   order by array_position(candidatas, c.column_name::text)
+   limit 1;
+  if v_col is null then
+    raise warning '48hs-limpieza: no encontré la columna de fecha de public.inscripciones; no se borró nada';
+    return 0;
+  end if;
+  execute format(
+    'delete from public.inscripciones where %I::date < (now() at time zone ''America/Argentina/Buenos_Aires'')::date - %s',
+    v_col, ajuste('dias_inscripciones', 183)::int);
+  get diagnostics v_n = row_count;
+  return v_n;
+end $$;
+revoke all on function public.limpiar_inscripciones() from public, anon, authenticated;
+
+-- Todo lo que hay que borrar cada día, con los plazos de "ajustes".
+-- Devuelve qué hizo, para verlo en cron.job_run_details o a mano:
+--   select public.limpieza_diaria();
+create or replace function public.limpieza_diaria()
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_tz    constant text := 'America/Argentina/Buenos_Aires';
+  v_hoy   date := (now() at time zone v_tz)::date;
+  v_corte timestamptz := now() - make_interval(days => ajuste('dias_eventos', 62)::int);
+  v_mes   date;
+  v_res   int := 0;
+  v_ev    int;
+  v_vis   int;
+  v_esp   int;
+  v_ins   int;
+begin
+  -- 1) resumen de cada mes cerrado que todavía tenga eventos con detalle
+  --    (se rehace mientras haya detalle, así queda completo)
+  for v_mes in
+    select distinct date_trunc('month', creado at time zone v_tz)::date
+      from estadisticas_eventos
+     where creado < date_trunc('month', v_hoy)::timestamp at time zone v_tz
+  loop
+    perform guardar_resumen_mes(v_mes);
+    v_res := v_res + 1;
+  end loop;
+
+  -- 2) borrar el detalle viejo (solo de meses que ya tienen resumen)
+  delete from estadisticas_eventos e
+   where e.creado < v_corte
+     and exists (select 1 from reporte_mensual m
+                  where m.mes = date_trunc('month', e.creado at time zone v_tz)::date);
+  get diagnostics v_ev = row_count;
+
+  delete from reporte_mensual where mes < v_hoy - ajuste('dias_resumen', 730)::int;
+  delete from estadisticas_contador where dia < v_hoy - 7;
+
+  -- 3) datos personales, con los plazos de la política de privacidad
+  delete from visitantes where ultimo < now() - make_interval(days => ajuste('dias_visitantes', 730)::int);
+  get diagnostics v_vis = row_count;
+  delete from lista_espera where fecha_evento < v_hoy - ajuste('dias_lista_espera', 7)::int;
+  get diagnostics v_esp = row_count;
+  v_ins := limpiar_inscripciones();
+  delete from reporte_intentos where creado < now() - interval '1 day';
+
+  return jsonb_build_object('meses_resumidos', v_res, 'eventos_borrados', v_ev,
+    'visitantes_borrados', v_vis, 'lista_espera_borrada', v_esp, 'inscripciones_borradas', v_ins);
+end;
+$$;
+revoke all on function public.limpieza_diaria() from public, anon, authenticated;
+
+-- Para ver cuánto ocupa la base (el plan gratis tiene 500 MB):
+--   select pg_size_pretty(pg_database_size(current_database())) as base_total,
+--          pg_size_pretty(pg_total_relation_size('public.estadisticas_eventos')) as estadisticas;
 

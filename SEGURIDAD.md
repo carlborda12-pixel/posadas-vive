@@ -1,6 +1,6 @@
 # 48 HS · seguridad
 
-Revisión del 4 de noviembre de 2026 (versión `pv-2026-11-09-1`). Se revisó todo el repositorio: la web (`index.html`, `sw.js`, `reporte.html`), la base (`supabase/*.sql`), la función de avisos, las herramientas y la configuración de Vercel.
+Revisión del 4 de noviembre de 2026 (versión `pv-2026-11-09-3`). Se revisó todo el repositorio: la web (`index.html`, `sw.js`, `reporte.html`), la base (`supabase/*.sql`), la función de avisos, las herramientas y la configuración de Vercel.
 
 ## Cómo se probó
 
@@ -43,7 +43,32 @@ Lo que sí se encontró y se corrigió:
 | 14 | Baja | La función de avisos aceptaba cualquier método y un secreto de cualquier largo. | **Solo POST** y secreto de 24 caracteres o más. Si es más corto, no corre. |
 | — | Error | Los horarios en portugués de la planilla se perdían al cargar el catálogo. | Corregido. |
 
+## Segunda revisión (9 de noviembre de 2026)
+
+Se revisó otra vez todo, con el ingreso, las recomendaciones, las consultas en Mis planes, la auditoría real de Supabase y la librería del mapa.
+
+**Claves y accesos.** No hay claves secretas en ningún archivo. Las únicas que aparecen son la dirección del proyecto de Supabase y su clave "publishable", que están hechas para ir en la web.
+
+**Lo que se encontró y se corrigió:**
+
+| # | Gravedad | Qué pasaba | Qué se hizo |
+|---|---|---|---|
+| 15 | Alta | Las vistas `panel_*` de Supabase (agenda, inscripciones, ocupación…) se podían leer con la clave pública: cualquiera podía ver nombres y emails de inscriptos. | Las vistas ahora respetan la seguridad por filas y el público no las puede leer. (Corregido en Supabase el 9/11.) |
+| 16 | Media | El público podía llamar a `depurar_datos`, `ip_hash_actual` y `sync_actividades`, y tenía permiso de escritura directa en `actividades`, `cupos`, `inscripciones` y `lugares`. Lo frenaba la seguridad por filas, pero si alguien la desactivaba quedaba todo abierto. | Se le sacaron esos permisos. La web solo usa sus funciones. (Corregido en Supabase el 9/11.) |
+| 17 | Media | Con la clave pública alguien podía mandar 3000 estadísticas falsas por minuto (más de 4 millones por día) y llenar en horas los 500 MB del plan gratis. Al llenarse, dejan de andar las inscripciones. | Topes por minuto, por día y por visita en la tabla `ajustes` (600, 50.000 y 500). El tope diario usa un contador, así no hay que contar la tabla en cada pedido. |
+| 18 | Media | Aun sin ataques, guardar cada evento con detalle durante dos años no entra en el plan gratis con tráfico real. | El detalle se guarda 62 días. Antes de borrarlo, queda el resumen de cada mes (sin nombres ni emails) y el reporte de meses viejos se ve igual. |
+| 19 | Baja | El mapa dependía de unpkg. | Leaflet se sirve desde el sitio (`libs/leaflet`), con la misma huella. unpkg queda solo de respaldo. |
+| 20 | Baja | Un dato guardado en el teléfono con la clave `__proto__` podía alterar objetos de la app. | Esas claves se descartan. |
+| 21 | Baja | Faltaba `Strict-Transport-Security`. | Agregado en `vercel.json`. |
+
+**Ataques probados sin éxito.** Datos guardados con código (nombre, email, consultas, intereses, códigos de inscripción armados) y nombres con enlaces en el ingreso. La base no deja que el público lea visitantes, ajustes ni resúmenes, ni que llame al cálculo del reporte o a la limpieza.
+
+**Riesgo aceptado.** La política de contenido permite conexiones a cualquier sitio `https:`, porque el service worker guarda en caché fotos que pueden venir de cualquier dirección cargada en la planilla. Si alguien lograra meter código en la página, podría mandar datos afuera. Por eso todo dato se escapa al mostrarse, y los ataques no ejecutaron nada.
+
 ## Lo que queda por decidir (no es código)
+
+- **Registro de usuarios de Supabase:** la web no usa cuentas, pero Supabase deja que cualquiera cree usuarios con la clave pública, y los emails de confirmación salen a nombre de tu proyecto. Desactivarlo en *Authentication → Sign In / Providers → Allow new users to sign up*.
+- **Comprobar lo que publica Vercel:** `https://mundial-mapa-posadas.vercel.app/supabase/cron.sql`, `/LEEME.md` y `/datos/` tienen que dar 404.
 
 - **WhatsApp personal:** `CONFIG.wapp` apunta a un número personal. Las consultas de turistas llegan ahí. Antes de publicar en serio, reemplazarlo por el de la Casa de Turismo.
 - **Funciones viejas de Supabase:** `reservar`, `cancelar`, `cupos_estado` y las tablas `lugares` e `inscripciones` estaban antes de este repositorio y no están en estos archivos. Hay que correr `supabase/auditoria.sql` en el SQL Editor. Revisa:

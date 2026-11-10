@@ -44,9 +44,10 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-11-09-1`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-11-09-3`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `privacidad.html` | Política de privacidad y condiciones de uso (español y portugués). **Antes de publicar, completar los datos del responsable** (ver "Privacidad y condiciones") |
+| `libs/leaflet/` | La librería del mapa (Leaflet 1.9.4), servida desde el mismo sitio. Si falta, la web usa la copia de unpkg |
 | `fuentes/` | La tipografía Be Vietnam Pro, servida desde el mismo sitio (con su licencia `OFL.txt`) |
 | `marca/` | Logos y favicon (los usa `privacidad.html`; `index.html` los lleva incrustados) |
 | `catalogo.json` | Los lugares de la planilla de la Muni (lo genera el importador) |
@@ -288,6 +289,28 @@ La app junta el catálogo con la lista que trae adentro:
 7. **Recordatorios del día anterior:**
    - Activar la PARTE 5 de `temporada.sql` con los nombres reales de tu tabla.
    - Después, en `index.html`, poner `recordatorios: true` en `CONFIG`. Así el texto de privacidad promete el aviso solo cuando de verdad se manda.
+
+## Escalar (cuando haya más tráfico o se pase a planes pagos)
+
+Los topes y plazos de la base están en la tabla `ajustes` (Supabase → Table Editor → `ajustes`, o con SQL). Se cambian sin tocar el código:
+
+| Ajuste | Plan gratis | Con Supabase Pro | Qué hace |
+|---|---|---|---|
+| `eventos_por_minuto` | 600 | 3000 | Estadísticas por minuto de toda la web |
+| `eventos_por_dia` | 50.000 | 300.000 | Estadísticas por día de toda la web |
+| `eventos_por_sesion_dia` | 500 | 500 | Por visita |
+| `dias_eventos` | 62 | 400 | Días con el detalle de cada evento (después queda el resumen del mes) |
+| `dias_resumen` | 730 | 730 | Resúmenes mensuales (lo que promete la política) |
+| `dias_visitantes`, `dias_lista_espera`, `dias_inscripciones` | 730, 7, 183 | igual | Plazos de la política de privacidad: si se cambian, cambiar también `privacidad.html` |
+
+```sql
+update public.ajustes set valor = 400 where clave = 'dias_eventos';
+```
+
+- **Cuánto ocupa la base:** el comando está al final de `temporada.sql`. Revisarlo una vez por semana en temporada.
+- **La limpieza diaria** (`limpieza_diaria()`, programada en `cron.sql`) guarda el resumen de cada mes cerrado, borra el detalle viejo y aplica los plazos de la política. A mano: `select public.limpieza_diaria();`.
+- **La web:** son archivos fijos servidos desde la red de Vercel, y el catálogo es un JSON. Aguanta mucho tráfico sin cambios. Lo que se mide en el plan gratis de Vercel es la transferencia (100 GB por mes, más de 100.000 visitas nuevas).
+- **Catálogos grandes:** el mapa ya se probó con 5000 lugares (ver "Rendimiento").
 
 ## Cargar contenido en portugués
 

@@ -49,12 +49,18 @@
     <link href="fuentes/fuentes.css" rel="stylesheet">
     <!-- Foto de la portada en alta: es lo primero que se ve -->
     <link rel="preload" href="marca/inicio-hd.webp" as="image" type="image/webp" fetchpriority="high">
-    <!-- Leaflet con "integrity": si el servidor de la librería sirviera otro archivo
-         (hackeado o cambiado), el navegador no lo usa. Son los valores oficiales de 1.9.4. -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    <!-- Leaflet 1.9.4 servido desde el mismo sitio (libs/leaflet), así el mapa no depende
+         de otro servidor. "integrity" son los valores oficiales: si el archivo cambiara, el
+         navegador no lo usa. Si no está (por ejemplo, abriendo index.html suelto desde
+         WhatsApp), se usa la copia de unpkg con la misma huella. -->
+    <link rel="stylesheet" href="libs/leaflet/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"
+          onerror="var l=document.createElement('link');l.rel='stylesheet';l.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';l.integrity='sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';l.crossOrigin='anonymous';document.head.appendChild(l)"/>
+    <script src="libs/leaflet/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+    <script>
+      if(!window.L) document.write('<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"><\/script>');
+    </script>
     <!-- Logos y fotos de la marca, dentro de la página: se ve completa aunque se abra como
          archivo suelto o falte la carpeta marca/ (las fuentes originales están ahí) -->
     <style>
@@ -2981,7 +2987,8 @@ function cargarIntereses(){
     const o = JSON.parse(almacen.leer(CLAVE_INTERESES) || 'null');
     if(!o || typeof o !== 'object') return interesesVacios();
     const limpio = m => Object.fromEntries(Object.entries(m && typeof m === 'object' ? m : {})
-      .filter(([k, v]) => /^[a-z_-]{1,30}$/.test(k) && Number.isFinite(v) && v > 0).slice(0, 60));
+      .filter(([k, v]) => /^[a-z_-]{1,30}$/.test(k) && !['__proto__', 'constructor', 'prototype'].includes(k)
+                          && Number.isFinite(v) && v > 0).slice(0, 60));
     const vistos = Object.fromEntries(Object.entries(o.v && typeof o.v === 'object' ? o.v : {})
       .filter(([k, v]) => idValido(k) && Number.isFinite(v)).slice(-60));
     return { c: limpio(o.c), s: limpio(o.s), v: vistos, t: Number(o.t) || Date.now(), n: Number(o.n) || 0 };
@@ -3627,7 +3634,7 @@ function switchView(v, opts){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-11-09-1';
+const APP_VERSION = 'pv-2026-11-09-3';
 
 function esEquipo(){
   try {

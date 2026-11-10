@@ -39,62 +39,17 @@ select cron.schedule(
   $$
 );
 
--- Inscripciones: la política de privacidad promete borrarlas seis meses
--- después de la actividad. La tabla "inscripciones" es anterior a este
--- repositorio y no sabemos con certeza cómo se llama su columna de fecha,
--- así que la función la busca. Si no encuentra ninguna, no borra nada y
--- lo avisa (aparece en cron.job_run_details): en ese caso, agregar el
--- nombre correcto a la lista "candidatas".
-create or replace function public.limpiar_inscripciones()
-returns integer
-language plpgsql
-set search_path = public
-as $$
-declare
-  candidatas text[] := array['fecha_evento', 'fecha', 'fecha_actividad', 'dia'];
-  v_col text;
-  v_n   integer := 0;
-begin
-  select c.column_name into v_col
-    from information_schema.columns c
-   where c.table_schema = 'public' and c.table_name = 'inscripciones'
-     and c.column_name = any(candidatas)
-     and c.data_type in ('date', 'timestamp with time zone', 'timestamp without time zone')
-   order by array_position(candidatas, c.column_name::text)
-   limit 1;
-  if v_col is null then
-    raise warning '48hs-limpieza: no encontré la columna de fecha de public.inscripciones; no se borró nada';
-    return 0;
-  end if;
-  execute format(
-    'delete from public.inscripciones where %I::date < (now() at time zone ''America/Argentina/Buenos_Aires'')::date - 183',
-    v_col);
-  get diagnostics v_n = row_count;
-  return v_n;
-end $$;
-revoke all on function public.limpiar_inscripciones() from public, anon, authenticated;
-
--- Limpieza diaria (3:30 de Posadas = 6:30 UTC):
---   · las inscripciones se borran seis meses después de la actividad
---   · los visitantes que ingresaron se borran tras dos años sin usar la web
---   · la lista de espera se borra una semana después de la actividad,
---     como promete el texto de privacidad
---   · las estadísticas se guardan dos años, para comparar temporadas
---   · los intentos de clave del reporte, un día
+-- Limpieza diaria (3:30 de Posadas = 6:30 UTC). Hace todo lo de
+-- public.limpieza_diaria() (está en temporada.sql, PARTE 7):
+--   · guarda el resumen de cada mes cerrado y borra el detalle viejo
+--   · borra inscripciones, lista de espera y visitantes con los plazos de
+--     la política de privacidad (se cambian en la tabla "ajustes")
+-- Esta parte NO necesita la función de avisos: se puede activar ya, solo
+-- con la extensión pg_cron.
 select cron.schedule(
   '48hs-limpieza',
   '30 6 * * *',
-  $$
-  select public.limpiar_inscripciones();
-  -- quien ingresó y no volvió a usar la web en dos años
-  delete from public.visitantes where ultimo < now() - interval '2 years';
-  delete from public.lista_espera
-   where fecha_evento < (now() at time zone 'America/Argentina/Buenos_Aires')::date - 7;
-  delete from public.estadisticas_eventos
-   where creado < now() - interval '25 months';
-  delete from public.reporte_intentos
-   where creado < now() - interval '1 day';
-  $$
+  $$ select public.limpieza_diaria(); $$
 );
 
 -- Para ver si corren:   select * from cron.job_run_details order by start_time desc limit 20;

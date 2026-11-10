@@ -10,7 +10,7 @@
    "Actualizar" se activa. Antes se activaba sola (skipWaiting en install)
    y la pagina se recargaba en medio de una inscripcion.
    =================================================================== */
-const VERSION = 'pv-2026-11-09-1';
+const VERSION = 'pv-2026-11-09-3';
 
 const CACHE_APP    = VERSION + '-app';     // la app en si
 const CACHE_MAPA   = VERSION + '-mapa';    // tiles del mapa
@@ -37,6 +37,10 @@ const OPCIONALES = [
   './marca/logo-turismo.svg',
   './marca/apextech.svg',
   './marca/inicio-hd.webp',
+  './libs/leaflet/leaflet.js',
+  './libs/leaflet/leaflet.css',
+  './libs/leaflet/images/layers.png',
+  './libs/leaflet/images/layers-2x.png',
   './marca/favicon.svg',
   './fuentes/fuentes.css',
   './fuentes/be-vietnam-pro-latin-300-normal.woff2',
@@ -169,8 +173,8 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Librería externa (Leaflet). Los íconos van dentro de index.html y la
-  // tipografía se sirve desde el mismo sitio (fuentes/).
+  // Copia de respaldo de Leaflet (la principal está en libs/leaflet). Los íconos van
+  // dentro de index.html y la tipografía se sirve desde el mismo sitio (fuentes/).
   // (nombre exacto: "includes" aceptaba también "unpkg.com.sitio-falso.net")
   if(url.hostname === 'unpkg.com'){
     e.respondWith(cacheFirst(req, CACHE_APP, true));
