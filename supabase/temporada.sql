@@ -239,6 +239,34 @@ create index if not exists reporte_intentos_idx on public.reporte_intentos (crea
 alter table public.reporte_intentos enable row level security;
 revoke all on public.reporte_intentos from anon, authenticated;
 
+-- De dónde viene un pedido, resumido (hash): sirve para contar intentos fallidos
+-- de clave sin guardar la IP. Se prefiere la dirección que informa la red de
+-- Supabase (cf-connecting-ip / x-real-ip), que quien llama no puede inventar;
+-- "x-forwarded-for" sí se puede falsear y queda solo como respaldo.
+create or replace function public.origen_pedido()
+returns text
+language plpgsql
+stable
+set search_path = public, extensions, pg_temp
+as $$
+declare
+  h  json;
+  ip text;
+begin
+  begin
+    h := nullif(current_setting('request.headers', true), '')::json;
+  exception when others then
+    h := null;
+  end;
+  ip := coalesce(nullif(btrim(h->>'cf-connecting-ip'), ''),
+                 nullif(btrim(h->>'x-real-ip'), ''),
+                 nullif(btrim(split_part(h->>'x-forwarded-for', ',', 1)), ''),
+                 'sin-ip');
+  return encode(digest(ip, 'sha256'), 'hex');
+end;
+$$;
+revoke all on function public.origen_pedido() from public, anon, authenticated;
+
 create or replace function public.estadisticas_resumen(p_clave text, p_desde date, p_hasta date)
 returns jsonb
 language plpgsql
@@ -254,8 +282,7 @@ declare
   r        jsonb;
 begin
   -- quién pregunta, resumido: el hash de la IP con la que llega el pedido
-  v_origen := encode(digest(coalesce(
-    split_part(current_setting('request.headers', true)::json->>'x-forwarded-for', ',', 1), 'sin-ip'), 'sha256'), 'hex');
+  v_origen := origen_pedido();
 
   -- 10 errores en 15 minutos desde el mismo lugar, o 200 en total: se bloquea
   if (select count(*) from reporte_intentos where origen = v_origen and creado > now() - interval '15 minutes') >= 10
@@ -857,8 +884,7 @@ declare
   v_hash   text;
   v_origen text;
 begin
-  v_origen := encode(digest(coalesce(
-    split_part(current_setting('request.headers', true)::json->>'x-forwarded-for', ',', 1), 'sin-ip'), 'sha256'), 'hex');
+  v_origen := origen_pedido();
   if (select count(*) from reporte_intentos where origen = v_origen and creado > now() - interval '15 minutes') >= 10
      or (select count(*) from reporte_intentos where rol = 'carga' and creado > now() - interval '15 minutes') >= 100 then
     return 'bloqueado';
@@ -894,10 +920,14 @@ grant execute on function public.catalogo_actual(bigint) to anon, authenticated;
 -- Publicar una planilla ya revisada por cargar.html. Acá se vuelve a
 -- controlar lo básico, por si alguien llama la función a mano.
 -- p_planilla: el .xlsx en base64 (opcional), hasta 5 MB.
+-- p_base: la versión que tenía a la vista quien publica (0 = ninguna). Si mientras
+-- tanto otra persona publicó, se rechaza con "desactualizado": si no, la segunda
+-- publicación borraría sin querer lo que cargó la primera.
 drop function if exists public.catalogo_publicar(text, jsonb, jsonb, text);
+drop function if exists public.catalogo_publicar(text, jsonb, jsonb, text, text, text);
 create or replace function public.catalogo_publicar(p_clave text, p_datos jsonb, p_resumen jsonb default null,
                                                     p_nota text default null, p_planilla text default null,
-                                                    p_archivo text default null)
+                                                    p_archivo text default null, p_base bigint default null)
 returns jsonb
 language plpgsql
 security definer
@@ -907,9 +937,18 @@ declare
   v_ok  text := carga_verificar(p_clave);
   v_n   int;
   v_ver bigint;
+  v_ult bigint;
   v_xls bytea;
 begin
   if v_ok <> 'ok' then return jsonb_build_object('ok', false, 'motivo', v_ok); end if;
+
+  -- una publicación por vez: la segunda espera a que termine la primera y recién
+  -- ahí se fija si su versión de base sigue siendo la última
+  perform pg_advisory_xact_lock(48480001);
+  v_ult := coalesce((select max(version) from catalogo_versiones), 0);
+  if p_base is not null and p_base <> v_ult then
+    return jsonb_build_object('ok', false, 'motivo', 'desactualizado', 'version', v_ult);
+  end if;
 
   if p_datos is null or jsonb_typeof(p_datos) <> 'object' or jsonb_typeof(p_datos->'lugares') <> 'array' then
     return jsonb_build_object('ok', false, 'motivo', 'formato');
@@ -956,8 +995,8 @@ begin
   return jsonb_build_object('ok', true, 'version', v_ver);
 end;
 $$;
-revoke all on function public.catalogo_publicar(text, jsonb, jsonb, text, text, text) from public;
-grant execute on function public.catalogo_publicar(text, jsonb, jsonb, text, text, text) to anon, authenticated;
+revoke all on function public.catalogo_publicar(text, jsonb, jsonb, text, text, text, bigint) from public;
+grant execute on function public.catalogo_publicar(text, jsonb, jsonb, text, text, text, bigint) to anon, authenticated;
 
 -- La planilla de una versión (la última si no se dice cuál), para descargarla
 -- o para la carga rápida. Pide la clave del panel.
@@ -1029,3 +1068,223 @@ $$;
 revoke all on function public.catalogo_restaurar(text, bigint) from public;
 grant execute on function public.catalogo_restaurar(text, bigint) to anon, authenticated;
 
+
+
+-- =====================================================================
+-- PARTE 9 · Agenda Ciudad desde el WordPress de Turismo
+--
+-- Turismo carga la agenda semanal en agenda.turismoposadas.tur.ar (WordPress
+-- con The Events Calendar). Cada 30 minutos la base pide los eventos
+-- publicados de los próximos 60 días por la API pública (sin contraseña) y
+-- guarda una copia reducida. La web lee esa copia con agenda_externa().
+--
+-- · Nadie de afuera puede cambiar qué se pide: la dirección es fija.
+-- · Si el WordPress no responde, queda la última copia buena.
+-- · Lo que se borra o despublica en WordPress desaparece en la siguiente
+--   sincronización completa.
+-- · Los pedidos los hace pg_net (se activa en supabase/cron.sql).
+-- =====================================================================
+
+create table if not exists public.agenda_externa (
+  wp_id   bigint primary key,
+  inicio  timestamptz not null,
+  fin     timestamptz,
+  datos   jsonb not null,
+  lote    uuid,
+  visto   timestamptz not null default now()
+);
+alter table public.agenda_externa add column if not exists fin timestamptz;
+create index if not exists agenda_externa_inicio_idx on public.agenda_externa (inicio);
+alter table public.agenda_externa enable row level security;
+revoke all on public.agenda_externa from anon, authenticated;
+
+create table if not exists public.agenda_externa_pedidos (
+  id      bigint primary key,           -- id del pedido en pg_net
+  lote    uuid not null,
+  pagina  int not null,
+  creado  timestamptz not null default now()
+);
+alter table public.agenda_externa_pedidos enable row level security;
+revoke all on public.agenda_externa_pedidos from anon, authenticated;
+
+create table if not exists public.agenda_externa_estado (
+  id             int primary key default 1 check (id = 1),
+  lote           uuid,
+  lote_ok        boolean not null default true,
+  total_paginas  int not null default 1,
+  paginas_pedidas int not null default 0,
+  ultimo_intento timestamptz,
+  ultimo_ok      timestamptz,
+  ultimo_error   text
+);
+alter table public.agenda_externa_estado add column if not exists paginas_pedidas int not null default 0;
+insert into public.agenda_externa_estado (id) values (1) on conflict do nothing;
+alter table public.agenda_externa_estado enable row level security;
+revoke all on public.agenda_externa_estado from anon, authenticated;
+
+-- Un evento de la API, reducido a lo que usa la web (todo con largo máximo).
+-- El texto puede traer HTML y entidades: la web lo convierte a texto plano.
+create or replace function public.agenda_externa_reducir(e jsonb)
+returns jsonb
+language sql
+immutable
+set search_path = public, pg_temp
+as $$
+  select jsonb_build_object(
+    'id',      (e->>'id')::bigint,
+    'titulo',  left(coalesce(e->>'title', ''), 300),
+    'desc',    left(coalesce(e->>'description', ''), 3000),
+    'inicio',  left(coalesce(e->>'start_date', ''), 19),
+    'fin',     left(coalesce(e->>'end_date', ''), 19),
+    'todo_el_dia', coalesce((e->>'all_day')::boolean, false),
+    'costo',   left(coalesce(e->>'cost', ''), 80),
+    'url',     left(coalesce(e->>'url', ''), 400),
+    'img',     left(coalesce(e#>>'{image,sizes,medium_large,url}', e#>>'{image,sizes,large,url}', e#>>'{image,url}', ''), 400),
+    'recinto', jsonb_build_object(
+                 'id',     case when jsonb_typeof(e->'venue') = 'object' then (e#>>'{venue,id}')::bigint end,
+                 'nombre', left(coalesce(e#>>'{venue,venue}', ''), 200),
+                 'dir',    left(coalesce(e#>>'{venue,address}', ''), 200),
+                 'ciudad', left(coalesce(e#>>'{venue,city}', ''), 80)),
+    'cats',    coalesce((select jsonb_agg(left(c->>'name', 60))
+                           from jsonb_array_elements(case when jsonb_typeof(e->'categories') = 'array' then e->'categories' else '[]'::jsonb end) c
+                          where c->>'name' is not null and c->>'name' <> 'Agenda Ciudad'), '[]'::jsonb)
+  );
+$$;
+revoke all on function public.agenda_externa_reducir(jsonb) from public, anon, authenticated;
+
+-- Lo corre pg_cron cada 30 minutos (supabase/cron.sql). Cada vez:
+--  1. procesa las respuestas que llegaron del pedido anterior;
+--  2. si ya no queda nada pendiente, hace el pedido nuevo.
+create or replace function public.agenda_externa_sync()
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  est      agenda_externa_estado%rowtype;
+  p        record;
+  r        record;
+  j        jsonb;
+  ev       jsonb;
+  v_n      int := 0;
+  v_pend   int;
+  v_lote   uuid;
+  v_paginas int;
+  v_hoy    date := (now() at time zone 'America/Argentina/Buenos_Aires')::date;
+  v_url    text;
+begin
+  select * into est from agenda_externa_estado where id = 1 for update;
+
+  -- 1. respuestas del lote en curso
+  for p in select * from agenda_externa_pedidos where lote = est.lote order by pagina loop
+    select * into r from net._http_response where id = p.id;
+    if not found then
+      -- todavía no llegó; si pasó demasiado tiempo, se da por perdida
+      if p.creado < now() - interval '20 minutes' then
+        delete from agenda_externa_pedidos where id = p.id;
+        est.lote_ok := false; est.ultimo_error := 'sin respuesta (página ' || p.pagina || ')';
+      end if;
+      continue;
+    end if;
+    delete from agenda_externa_pedidos where id = p.id;
+    if r.status_code = 200 then
+      begin
+        j := r.content::jsonb;
+      exception when others then
+        est.lote_ok := false; est.ultimo_error := 'respuesta que no es JSON (página ' || p.pagina || ')';
+        continue;
+      end;
+      if p.pagina = 1 then
+        est.total_paginas := least(greatest(coalesce((j->>'total_pages')::int, 1), 1), 10);
+      end if;
+      for ev in select * from jsonb_array_elements(case when jsonb_typeof(j->'events') = 'array' then j->'events' else '[]'::jsonb end) limit 100 loop
+        continue when coalesce(ev->>'status', 'publish') <> 'publish'
+                   or coalesce((ev->>'hide_from_listings')::boolean, false)
+                   or coalesce(ev->>'id', '') !~ '^\d{1,12}$'
+                   or coalesce(ev->>'start_date', '') !~ '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}';
+        insert into agenda_externa (wp_id, inicio, fin, datos, lote, visto)
+        values ((ev->>'id')::bigint,
+                ((ev->>'start_date')::timestamp at time zone 'America/Argentina/Buenos_Aires'),
+                case when coalesce(ev->>'end_date', '') ~ '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}'
+                     then (ev->>'end_date')::timestamp at time zone 'America/Argentina/Buenos_Aires' end,
+                agenda_externa_reducir(ev), est.lote, now())
+        on conflict (wp_id) do update set inicio = excluded.inicio, fin = excluded.fin, datos = excluded.datos, lote = excluded.lote, visto = now();
+        v_n := v_n + 1;
+      end loop;
+    elsif r.status_code = 400 and p.pagina > est.total_paginas then
+      null;   -- página de más: la API avisa que no existe, no es un error
+    else
+      est.lote_ok := false;
+      est.ultimo_error := coalesce('HTTP ' || r.status_code, r.error_msg, 'error') || ' (página ' || p.pagina || ')';
+    end if;
+  end loop;
+
+  select count(*) into v_pend from agenda_externa_pedidos where lote = est.lote;
+  if est.lote is not null and v_pend = 0 then
+    -- lote terminado: si salió todo bien, lo que no apareció ya no está en WordPress
+    -- (la API devuelve todo lo que sigue vigente desde hoy, también lo que empezó antes)
+    -- (si se pidieron menos páginas de las que hay, quedó incompleto: no se borra nada)
+    if est.paginas_pedidas < est.total_paginas then
+      est.lote_ok := false; est.ultimo_error := 'faltaron páginas (' || est.paginas_pedidas || ' de ' || est.total_paginas || '): se piden todas en la próxima';
+    end if;
+    if est.lote_ok then
+      delete from agenda_externa where lote is distinct from est.lote;
+      est.ultimo_ok := now(); est.ultimo_error := null;
+    end if;
+    delete from agenda_externa where coalesce(fin, inicio) < now() - interval '1 day';
+    est.lote := null;
+  end if;
+
+  -- 2. pedido nuevo (si no hay uno en curso)
+  if est.lote is null then
+    v_lote := gen_random_uuid();
+    v_paginas := least(est.total_paginas + 1, 10);
+    for i in 1..v_paginas loop
+      v_url := 'https://agenda.turismoposadas.tur.ar/wp-json/tribe/events/v1/events'
+            || '?status=publish&per_page=50&page=' || i
+            || '&start_date=' || to_char(v_hoy, 'YYYY-MM-DD')
+            || '&end_date=' || to_char(v_hoy + 60, 'YYYY-MM-DD');
+      begin
+        insert into agenda_externa_pedidos (id, lote, pagina)
+        values (net.http_get(url := v_url, timeout_milliseconds := 20000), v_lote, i);
+      exception when others then
+        est.ultimo_error := 'no se pudo pedir: ' || left(sqlerrm, 150);
+        exit;
+      end;
+    end loop;
+    if exists (select 1 from agenda_externa_pedidos where lote = v_lote) then
+      est.lote := v_lote; est.lote_ok := true;
+      est.paginas_pedidas := (select count(*) from agenda_externa_pedidos where lote = v_lote);
+    end if;
+    est.ultimo_intento := now();
+  end if;
+
+  update agenda_externa_estado
+     set lote = est.lote, lote_ok = est.lote_ok, total_paginas = est.total_paginas, paginas_pedidas = est.paginas_pedidas,
+         ultimo_intento = est.ultimo_intento, ultimo_ok = est.ultimo_ok, ultimo_error = est.ultimo_error
+   where id = 1;
+  return jsonb_build_object('procesados', v_n, 'pendientes', (select count(*) from agenda_externa_pedidos),
+                            'guardados', (select count(*) from agenda_externa), 'error', est.ultimo_error);
+end;
+$$;
+revoke all on function public.agenda_externa_sync() from public, anon, authenticated;
+
+-- Lo que lee la web: los eventos de hoy en adelante (hasta 60 días, 300 como máximo).
+create or replace function public.agenda_externa()
+returns jsonb
+language sql
+stable
+security definer
+set search_path = public, pg_temp
+as $$
+  select jsonb_build_object(
+    'actualizado', (select ultimo_ok from agenda_externa_estado where id = 1),
+    'eventos', coalesce((select jsonb_agg(datos order by inicio) from (
+        select datos, inicio from agenda_externa
+         where coalesce(fin, inicio) >= ((now() at time zone 'America/Argentina/Buenos_Aires')::date)::timestamp at time zone 'America/Argentina/Buenos_Aires'
+           and inicio <  now() + interval '61 days'
+         order by inicio limit 300) x), '[]'::jsonb));
+$$;
+revoke all on function public.agenda_externa() from public;
+grant execute on function public.agenda_externa() to anon, authenticated;

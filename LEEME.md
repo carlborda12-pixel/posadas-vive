@@ -25,6 +25,7 @@
 │   ├── temporada.sql
 │   ├── cron.sql
 │   ├── auditoria.sql        ← control de seguridad de la base (solo lee)
+│   ├── salud.sql            ← estado de la base: espacio, uso, intentos de clave (solo lee)
 │   └── functions/avisos/index.ts
 └── datos/
     ├── 48 HS - Carga de datos.xlsx
@@ -44,7 +45,7 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-11-10-2`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-11-10-3`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `cargar.html` | Panel de carga para Turismo (con clave): sube la planilla, carga rápida de un evento, descarga de la planilla y publicación. Ver "Panel de carga" |
 | `libs/importador.js` | El importador de la planilla para el navegador (mismas reglas que `herramientas/importar_catalogo.py`) |
@@ -160,6 +161,7 @@ La revisión completa, lo que se corrigió y las reglas para que siga seguro est
 - Librerías externas: con `integrity`.
 - Secretos: nunca en archivos.
 - Base: correr `supabase/auditoria.sql` antes de cada temporada.
+- Base: correr `supabase/salud.sql` una vez por semana en temporada (o si la web anda lenta). Cada fila dice ok, atención o revisar, y qué hacer.
 - Reporte: el enlace con clave va con `#` (`reporte.html#clave=...`), no con `?`.
 
 ## Íconos
@@ -236,7 +238,17 @@ La web se llama **48 HS** (antes PosadasVive). Por dentro quedan algunos nombres
 
    La página agrega las filas a la planilla guardada (Lugares y Agenda, con la observación "Carga rápida desde el panel") y la pasa por el mismo importador, así que tiene las mismas revisiones. Lo publicado queda en la planilla, y la próxima vez que bajen la planilla ya viene incluido. Si después suben una planilla vieja, el panel avisa que lo cargado rápido se perdería.
 
-La carga rápida y la descarga necesitan que la versión publicada tenga la planilla guardada. Las versiones publicadas antes del 10/11 no la tienen: subir la planilla completa una vez (aunque sea igual a la web, el panel deja publicarla para guardarla).
+La primera vez que se usa la carga rápida (o si la versión publicada no tiene planilla guardada), el formulario pide elegir la planilla ahí mismo; después queda guardada y no la pide más.
+
+**Dos personas a la vez:** si alguien publica mientras otra persona prepara un cambio, la segunda publicación se rechaza con un aviso y el panel trae lo nuevo. Así nadie borra sin querer lo que cargó otro.
+
+**Respaldo:** `catalogo.json` es lo que muestra la web si nunca se publicó nada desde el panel. Conviene actualizarlo cada tanto: en el panel, al pie, "copia del catálogo en JSON", y reemplazar `catalogo.json` en el repositorio.
+
+**Reservas:** las actividades gratis con cupo que se cargan desde el panel se piden por WhatsApp (la base de inscripciones todavía no las conoce). Ver SEGURIDAD.md, punto 24.
+
+**Accesos directos** (los usa la guía de Turismo): `cargar.html#evento` abre el formulario de evento nuevo, `#fecha` el de otra fecha, y `#planilla`, `#subir` e `#historial` llevan a esa parte. Si no se entró, van ahí después de poner la clave.
+
+**Al cambiar `libs/importador.js`:** cambiar el número de `?v=` en `cargar.html` (línea del `<script src="libs/importador.js?v=...">`).
 
 **Para activarlo (una vez):**
 1. Correr `supabase/temporada.sql` (PARTE 8). Si ya estaba corrido, correrlo de nuevo cuando haya cambios en la PARTE 8 (por ejemplo, la descarga de la planilla y la carga rápida, del 10/11).
@@ -249,6 +261,21 @@ La carga rápida y la descarga necesitan que la versión publicada tenga la plan
 3. Pasarle a Turismo el link (`https://…/cargar.html`), la clave (por separado) y la planilla `datos/48 HS - Carga de datos.xlsx`, que es la que tienen que usar siempre.
 
 Quien tiene la clave puede cambiar todo lo que muestra la web: dársela solo a quien carga datos y cambiarla si alguien deja el equipo. El importador de Python sigue sirviendo para regenerar `catalogo.json` (el respaldo). Si se cambia una regla de importación, cambiarla en los dos archivos.
+
+## Agenda Ciudad: los eventos del WordPress de Turismo
+
+Turismo carga la agenda semanal con su propio "Cargador Agenda Ciudad" en su WordPress (`agenda.turismoposadas.tur.ar`). La web 48h la toma de ahí sola: **no hay que cargar dos veces.**
+
+- **Cómo funciona:** cada 30 minutos la base pide a la API pública de su WordPress los eventos publicados de los próximos 60 días y guarda una copia (`temporada.sql`, PARTE 9; tarea `48hs-agenda-wp` en `cron.sql`). La web lee esa copia con `agenda_externa()`. **No usa contraseñas** y los visitantes nunca se conectan a su WordPress.
+- **Lo que se ve:** cada evento sale en la agenda con su flyer (entero si es vertical), recinto, día y hora, categoría y "Más info" a la página oficial del evento. Los eventos de varios días salen en cada día (hasta 30).
+- **Categorías:** las de su WordPress se pasan a las de la web (`CATS_WP` en `index.html`). Música, shows y folklore van a **Noche** si empiezan a las 21 o más tarde; si no, a **Cultura**. Lo que no tiene equivalente va a Cultura.
+- **Mapa:** su WordPress no tiene coordenadas de los recintos. Se toman de nuestro catálogo: los recintos de `RECINTOS_WP` (IMAX, Parque del Conocimiento, Sala Tempo, Mandové Pedrozo, Parque Paraguayo) y los que tengan el mismo nombre que un lugar nuestro. Los demás salen en la agenda pero no en el mapa. Para sumar uno: agregar `id del recinto en WordPress: 'id del lugar nuestro'` en `RECINTOS_WP`.
+- **Sin duplicados:** si un evento también está en el catálogo propio con el mismo nombre y la misma fecha, se muestra solo el propio.
+- **Si su sitio se cae:** queda la última copia buena. Lo que borran o despublican en WordPress desaparece en la próxima sincronización completa.
+- **Controlarlo:** `supabase/salud.sql` tiene la fila "Agenda Ciudad (WordPress de Turismo)" con la última actualización, la cantidad de eventos y el error, si hay. Para forzar una sincronización: `select public.agenda_externa_sync();` dos veces, con un minuto de diferencia (la primera pide, la segunda guarda).
+- **Apagarlo:** `agendaWP: false` en `CONFIG` (`index.html`) y `select cron.unschedule('48hs-agenda-wp');`.
+
+**Para activarlo:** correr `temporada.sql` entero, habilitar **pg_net** (Database → Extensions) si no está, y correr `cron.sql`.
 
 ## Cargar los datos de la Muni
 

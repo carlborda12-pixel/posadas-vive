@@ -18,11 +18,12 @@
     <meta property="og:title" content="48h Posadas · Ciudad de experiencias">
     <meta property="og:description" content="Planificá tus próximas 48 horas en Posadas y descubrí todo lo que la ciudad tiene para ofrecerte.">
     <meta property="og:locale" content="es_AR">
-    <!-- Portada propia (portada.jpg, 1200x630, en la misma carpeta que index.html).
-         PENDIENTE con el dominio definitivo: cambiar "/portada.jpg" por la dirección completa
-         (https://DOMINIO/portada.jpg) en og:image y twitter:image. Algunas apps solo aceptan
-         la dirección completa; mientras tanto queda de respaldo la imagen anterior. -->
-    <meta property="og:image" content="/portada.jpg">
+    <!-- Portada propia (portada.jpg, 1200x630, en la misma carpeta que index.html), con la
+         dirección completa: WhatsApp y otras apps no aceptan rutas cortas.
+         AL CAMBIAR DE DOMINIO: reemplazar mundial-mapa-posadas.vercel.app en og:url, og:image
+         y twitter:image (y en WEB_PUBLICA de cargar.html). -->
+    <meta property="og:url" content="https://mundial-mapa-posadas.vercel.app/">
+    <meta property="og:image" content="https://mundial-mapa-posadas.vercel.app/portada.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -31,7 +32,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="48h Posadas · Ciudad de experiencias">
     <meta name="twitter:description" content="Planificá tus próximas 48 horas en Posadas y descubrí todo lo que la ciudad tiene para ofrecerte.">
-    <meta name="twitter:image" content="/portada.jpg">
+    <meta name="twitter:image" content="https://mundial-mapa-posadas.vercel.app/portada.jpg">
 
     <!-- Favicon: el "48h" de la marca -->
     <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNCIgZmlsbD0iIzAwM0EyOCIvPjxzdmcgeD0iNi40MCIgeT0iMTguNjUiIHdpZHRoPSI1MS4yMCIgaGVpZ2h0PSIyOS4yNiIgdmlld0JveD0iMjA0IDM1NCAxNDAgODAiPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0yMzMuNTIzIDM4MS4yMTUgMjEzLjQzIDQwOC4xMmwyMC4yNjUuMjU4di0yNy4xNjRabTcuOTE4IDM5LjU5NGMtLjAyIDIuMDU4LjA0MyA0LjE0OC0uMzQgNi4wNDYgMi4yMzUtLjExNyA0LjM1Mi0uMTMyIDYuNTYtLjI1M3YzLjQ4OGgtMjEuMzc2di0yLjgwOWM3LjY4OC4yNjYgNy41NDMtNy44NjcgNy40MS0xMy42MjVIMjA3Ljgxdi00LjE3MmwzMC44MjQtNDAuMzU5aDIuODA4djM5LjQyMmw4LjYwMi4wODZ2NS4wMjNoLTguNjAyWm0wIDAiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMjczLjU0MyAzOTYuMDMxYzkuOTk2LTUuMTk5IDExLjI5Ny0yMy4zNjctMS45NTctMjMuNTg2LTE1LjkyNi42ODgtMTEuMTIxIDIxLjQwNyAxLjk1NyAyMy41ODZtLTIuNzIzIDMyLjAxNmMxOC4zNzEtLjIxMSAxMi40MzQtMjMuMDYzLTIuNDY4LTI2LjY1Mi0xMS4yNTggNi41Mi0xMy4yMTEgMjYuNDMgMi40NjggMjYuNjUybS0uMTcyIDMuNDA2Yy0yMi41NTQuMzYtMjMuODQtMjIuNDIyLTUuNTM1LTMxLjU5LTE4LjQ3Mi04LjY1Ni0xMy4zMDQtMzEuMyA2LjMwNS0zMC43MzggMTkuMTA1LS42NiAyMi4xNDQgMjEuODI4IDUuMTA1IDI4LjYxIDIwLjE5MiA5LjU5IDE4LjUyNCAzNC4yOTYtNS44NzUgMzMuNzE4Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTMxNS45NTMgNDI3Ljk1YzcuMjA3LjAzNCAzLjIyMy0xNC4wNzUgNC4yMTUtMTguNzA4IDEuNjI1LTEyLjEyLTEwLjM0OC0xNS45OTYtMTcuNDIyLTcuNzg1LS4xMzMgMy43MTEuMzQ0IDIyLjY1Ni0uMzYgMjUuOTIyIDEuNTI4LS4xMDIgMi45NzMtLjExMyA0LjUtLjIxNXYyLjkyNkgyOTIuMzJ2LTIuMTRjNC45NS4xMTMgNC4wODItNS4wNCA0LjI4NS04LjcxMi4wODItMi44NC0uMjE0LTM2LjYzNi4yMTUtMzguNDE0LTEuNzIyLjA5NC0zLjM1MS4xODgtNS4wNy4yODV2LTNjMy42ODgtLjEzMiA2LjQ2NS4wOSA4LjkyNi0xLjkzaDIuMDd2MjEuNzgyYzI1LjE1Mi0xNi41MDQgMjQuNzAzIDExLjcwNyAyMy4yNzcgMjkuNDE4IDEuNTI4LS4xMDIgMi45Ny0uMTEzIDQuNS0uMjE1djIuOTI2aC0xNC41N1ptMCAwIi8+PHBhdGggZmlsbD0iI0YyMzE3OSIgZD0ibTMzMS44NiA0MjIuNzg1LS4wMjgtNS44N2MxNy45NTMtMjkuMDE3LTE2LjI4MS02NS40NjItNDYuMzYzLTQ5LjMxM2EyMC44IDIwLjggMCAwIDAtMy45My0yLjA4NmM0MC40OC0yMi42MjUgNzUuODM2IDI4LjUzIDUwLjMyIDU3LjI3Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTM1Mi42NiA0MzAuMjY2Yy0xNC4xMTctMi4yNDYgMi42Ni0yMi43OTcgNi40ODgtOC44NGgtMS43MjJjLS4zMTctNC45NjUtNy40My0zLjAxNi04LjA1MS44OTgtMi40NDEgNS40MzQgNS4zMDkgOS4yNSA3LjQxOCAzLjQyNmgxLjczOGMtLjczOCAyLjYwMi0zLjAwOCA0LjYxNy01Ljg3IDQuNTE2bTEyLjU2OS0xMS4xNzZjLTEuNDI1LjA0Ny0xLjQxOC0yLjIxMSAwLTIuMTY0IDEuNDE1LS4wMzUgMS40MTggMi4xOTkgMCAyLjE2NG0tMy40MSAxMSAxLjk4NS05LjMxM2gxLjY4N2wtMS45ODQgOS4zMTNabTkuOTMuMTc2Yy00Ljc1LjAxNS0xLjMxMi03LjA1MS0xLjE4LTkuNDg5aDEuNjg4Yy0uMDEyIDEuMDI0LTEuOTM0IDYuNzUtMS4wOSA3LjU1OSA0LjE5MSAyLjUyMyA0LjU5OC01LjE1NiA1LjIzOC03LjU1OWgxLjY4OGwtMS45NjkgOS4zMTNoLTEuNjg3bC4yOC0xLjMzMmgtLjEwNWMtLjYzMy44NjMtMS42MTMgMS41NjYtMi44NjMgMS41MDhtMTMuOTAyLTEuNDIyYzMuNDEuMTggNS4wMzItNi42MTcgMS4wNy02LjgyLTMuNDI5LS4xODQtNS4wNDYgNi42MDUtMS4wNyA2LjgybS0uMzM2IDEuNDIyYy04LjMyNC0uODEzLS40ODQtMTQuODY4IDQuMzI1LTcuODc1aC4xMDlsMS4yMjctNS42NTdoMS42ODdsLTIuODgzIDEzLjM1NmgtMS42ODdsLjI4NS0xLjMxN2gtLjA5Yy0uNzE1Ljk4OS0xLjY4NyAxLjQ5Ny0yLjk3MyAxLjQ5M20xNS4xMTgtOC4yNDNjLTMuNDMtLjE4My01LjA0NyA2LjYwNi0xLjA3IDYuODIgMy40MDYuMTggNS4wMjctNi42MTYgMS4wNy02LjgybS0uMDg2LTEuNDIxYzEuMzUxLS4wNCAyLjU0Ny42MiAzLjAwNCAxLjc5M2guMTA1bC4zNTItMS42MThoMS42ODdsLTIuMDA0IDkuMzE3aC0xLjY4N2wuMjgtMS4zMkg0MDJjLTYuNjc2IDYuMzE2LTkuNTYyLTguMzQtMS42NTItOC4xNzJtMTIuMzU1IDguMjQyYzMuNDA2LjE4IDUuMDI3LTYuNjE3IDEuMDctNi44Mi0zLjQzLS4xODQtNS4wNDYgNi42MDUtMS4wNyA2LjgybS0uMzM2IDEuNDIyYy04LjMyNC0uODEzLS40ODQtMTQuODY0IDQuMzI0LTcuODc1aC4xMDZsMS4yMy01LjY1N2gxLjY4OGwtMi44ODMgMTMuMzU2aC0xLjY4N2wuMjgtMS4zMTdoLS4wODVjLS43MTUuOTg5LTEuNjkyIDEuNDk3LTIuOTczIDEuNDkzbTIwLjAyLTEuNDIyYzMuNDEuMTggNS4wMzEtNi42MTcgMS4wNzQtNi44Mi0zLjQzNC0uMTg0LTUuMDUgNi42MDUtMS4wNzQgNi44Mm0tLjMzMiAxLjQyMmMtOC4zMjgtLjgxMy0uNDg1LTE0Ljg2NCA0LjMyNC03Ljg3NWguMTA1bDEuMjMtNS42NTdoMS42ODhsLTIuODgyIDEzLjM1NmgtMS42ODhsLjI4MS0xLjMxN2gtLjA5Yy0uNzE0Ljk4OS0xLjY4NyAxLjQ5Ny0yLjk2OCAxLjQ5M20xMS45NjgtNS42MjFoNS4yNTRjLjQ3Ny0zLjc2Mi00Ljc0Mi0zLjAzNi01LjI1NCAwbTIuMDQgNS42MmMtNC4yMjMuMTUzLTQuODk5LTUuMjczLTIuNTg2LTcuODcgMi43NjEtMy43NSA4LjkxLTEuMTA2IDcuMTcxIDMuNTVoLTYuODdjLS4zODcgMi45ODkgMy43NzMgNC4wMjggNC44ODYgMS4zMTdoMS41ODJjLS42MjUgMS43ODktMi4xODMgMy4wNDctNC4xODMgMy4wMDRtMTYuNTg5LTUuNjIxaDUuMjU4Yy40NzMtMy43NjItNC43NDItMy4wMzYtNS4yNTggMG0yLjA0IDUuNjJjLTQuMjIuMTUzLTQuODk5LTUuMjczLTIuNTgzLTcuODcgMi43NjItMy43NSA4LjkwNy0xLjEwNiA3LjE3MiAzLjU1aC02Ljg3NWMtLjM4MyAyLjk4OSAzLjc3OCA0LjAyOCA0Ljg4NyAxLjMxN2gxLjU4MmMtLjYyNSAxLjc4OS0yLjE4IDMuMDQ3LTQuMTg0IDMuMDA0bTcuMDUxLS4xNzYgNC4yMzUtNC44ODMtMS45NS00LjQzaDEuODA5bDEuNDYgMy4zNTYgMi44ODQtMy4zNTZoMi4xNGwtNC4yNyA0Ljg0OCAyLjA0IDQuNDY1aC0xLjgwOWwtMS41MTEtMy40MS0yLjkwMyAzLjQxWm0xNS44NTItMy45MzhjMS4wOSA3LjY4OCAxMC4wNTQtMi45NDEgMy4zNzUtNC4xMjktMi4xMS0uMDItMy4zODMgMi4yMzktMy4zNzUgNC4xM20tMy40OTYgNy4zNjcgMi43NDItMTIuNzQzaDEuNjg3bC0uMjggMS4zMTdoLjA4NWMzLjA2My0zLjk1MyA4LjE4OC41MTUgNi4yNjYgNC41OS0uNyAzLjI0Ni01Ljk2MSA1LjI1My03LjYxOCAxLjc4OWgtLjEwNWwtMS4wOSA1LjA0N1ptMTYuNTM5LTguODc1aDUuMjU0Yy40NzYtMy43NjItNC43NDMtMy4wMzYtNS4yNTQgMG0yLjAzOSA1LjYyYy00LjIyMy4xNTMtNC45MDMtNS4yNzMtMi41ODYtNy44NyAyLjc2Mi0zLjc1IDguOTA2LTEuMTA2IDcuMTcyIDMuNTVoLTYuODcxYy0uMzg3IDIuOTg5IDMuNzczIDQuMDI4IDQuODg2IDEuMzE3aDEuNTgyYy0uNjI1IDEuNzg5LTIuMTgzIDMuMDQ3LTQuMTgzIDMuMDA0bTguMTIxLS4xNzYgMS45ODQtOS4zMTNoMS42ODhsLS4yNDYgMS4xNTdoLjA3Yy43ODUtMS4wNTEgMi4xMDItMS41MiAzLjQ5Ni0xLjI4MmwtLjMzMiAxLjYwMmMtNC4xMjktLjc5Ny00LjI0MiA1LjA1OC00Ljk3MyA3LjgzNlptMTIuNzA3LTExYy0xLjQyMi4wNDctMS40MTgtMi4yMTEgMC0yLjE2NCAxLjQxNC0uMDM1IDEuNDE4IDIuMTk5IDAgMi4xNjRtLTMuNDEgMTEgMS45ODQtOS4zMTNoMS42ODhsLTEuOTg1IDkuMzEzWm05LjEwNi01LjQ0NWg1LjI1M2MuNDc3LTMuNzYyLTQuNzQyLTMuMDM2LTUuMjU0IDBtMi4wNCA1LjYyYy00LjIyMy4xNTMtNC45MDMtNS4yNzMtMi41ODctNy44NyAyLjc2Mi0zLjc1IDguOTA3LTEuMTA2IDcuMTcyIDMuNTVoLTYuODdjLS4zODggMi45ODkgMy43NzMgNC4wMjggNC44ODIgMS4zMTdoMS41ODJjLS42MjEgMS43ODktMi4xOCAzLjA0Ny00LjE4IDMuMDA0bTguMTE3LS4xNzYgMS45ODktOS4zMTNoMS42ODdsLS4zIDEuMzUyaC4xMDVjMS4xNC0yLjA1NSA0Ljc3My0yLjEyNSA1LjM2My4zOTQuNTEyIDEuMjg2LTEuMDM5IDYuMjE1LTEuMTk1IDcuNTY3aC0xLjY4OGMtLjEwMS0xLjY2NCAzLjExOC04LjAzMS0uMy04LjA0Ny0zLjQ0Ni0uMDYzLTMuMTY0IDUuODMyLTMuOTczIDguMDQ3Wm0xNi44NzUuMTc2Yy0xMC4zODYtMS40MjIgMi4yMDQtMTYuNjMzIDQuODY4LTYuMzI1aC0xLjYxNGMtLjEzMi0yLjk0OS00LjM5LTIuMTEzLTUuMDkuMTMtMi4xMDUgMy40OTUgMi44NiA3LjA1IDQuNTYgMi44NTVoMS42MzZjLS41OTggMS45NTctMi4xNzYgMy40MS00LjM2IDMuMzRtMTEuMzItMTEuMTc2Yy0xLjQyNS4wNDctMS40MTctMi4yMTEgMC0yLjE2NCAxLjQxNS0uMDM1IDEuNDE5IDIuMTk5IDAgMi4xNjRtLTMuNDEgMTEgMS45ODUtOS4zMTNoMS42ODhsLTEuOTg1IDkuMzEzWm0xMi4yNS04LjA2N2MtMy40My0uMTgzLTUuMDUgNi42MDYtMS4wNzQgNi44MiAzLjQxLjE4IDUuMDMyLTYuNjE2IDEuMDc1LTYuODJtLS4wOS0xLjQyMWMxLjM1NS0uMDQgMi41NS42MiAzLjAwOCAxLjc5M2guMTA1bC4zNTItMS42MThoMS42ODdsLTIuMDA0IDkuMzE3aC0xLjY4N2wuMjgxLTEuMzJoLS4wOWMtNi42NzIgNi4zMTYtOS41NTgtOC4zNC0xLjY1Mi04LjE3Mm0xMS41MTUgOS42NjRjLTEuOTY0LjA5LTMuNDc2LTEuMDgyLTMuNTg2LTIuOTg5aDEuNjg4Yy0uMDEyIDEuOTc3IDMuNzAzIDIuMTUzIDMuODY3LjI2Ni0uNTY2LTEuOTkyLTQuNTItMS4zOS00LjI4OS00LjA3OC0uMDUtMy43MTkgNi41MDgtMy44NzEgNi42OTUtLjE1NmgtMS42MTdjLS41MTEtMi44NDQtNS42MDEtLjQyMi0yLjQyNiAxLjEyNSA0LjI4Mi43OCA0LjM3MiA1Ljg4Ni0uMzMyIDUuODMybS0yMjguNTU0LTUwLjQyMmgtOC4zOXYxNS40ODRoOC4zOWMxMC4zNzUuNTgyIDEwLjM3NS0xNi4wNjYgMC0xNS40ODRtLTExLjk2MSAzMS4xMXYtMzQuMzFjNC4yNzMuMzM2IDE0LjgwNC0xLjA1NCAxOC4zMTIgMS41OTggNi43NjYgNC4wMDQgNi43NSAxNC43IDAgMTguNjg4LTMuMTQgMi4zNzktMTAuODcgMS40MTgtMTQuNzQyIDEuNTk3djEyLjQyNlptNDcuOTg0LTIuODc2YzE2LjgyOC4yOTcgMTYuODQ4LTI4Ljg1NSAwLTI4LjU1OC0xNi45MDYtLjM0LTE2Ljg4NyAyOC45MDIgMCAyOC41NThtMCAzLjM0Yy0yMS41NjIuNjI5LTIxLjYxLTM1LjkxLjAwNC0zNS4yMzggMjEuNTc4LS42MyAyMS41MzEgMzUuODI0LS4wMDQgMzUuMjM4bTM4LjY2OCAwYy02LjU5OC4zMzItMTIuMDM1LTQuMTYtMTIuNTE1LTEwLjU3aDMuNjEzYzIuNjQgMTYuNDMzIDI5LjIxOSAxLjE1NiAxMC41Ny01LjM4LTQuMTQtMS4wMzQtOS42MDEtMS44NTUtMTIuMDUtNS42MzItNy4zMDUtMTQuNzIzIDIwLjE2Ny0xOS4zNjcgMjAuOTA2LTQuMDU5aC0zLjUyNGMtLjM2My0xMC43NzMtMjAuNzg1LTYuMzg2LTEzLjUxNSAzLjAxNiAzLjM1NSAyLjc1IDkuOTQ5IDIuNTIgMTMuNTg1IDQuOTYgOS4xNjggNS4yMjcgMi45MDcgMTguNzk0LTcuMDcgMTcuNjY1bTI4LjQyMi0xMi41NjZoMTIuNzk3bC02LjM5OS0xOC4wODJabS04LjAyIDEyLjEwMSAxMi4xOTItMzQuMzA4aDQuNDA2bDEyLjIzOCAzNC4zMDhoLTMuOGwtMy4xMDYtOC44NTVoLTE1LjAyM2wtMy4xMDYgOC44NTVabTUwLjIxMS0zMS4xMDloLTcuMDQ2djI3LjkxYzIzLjg0MyA0LjU3OCAyNi41MzUtMjYuNTA4IDcuMDQ2LTI3LjkxbS0xMC42MTcgMzEuMTF2LTM0LjMxYzEyLjkzOC0xLjI4NSAyNy4xMjEgMS4yNDMgMjYuOTggMTcuMTU3LjE1IDE1LjkwMi0xNC4wNTggMTguNDQ1LTI2Ljk4IDE3LjE1Mm00NC4xMzctMTIuMTAxaDEyLjc5N2wtNi4zOTktMTguMDgyWm0tOC4wMiAxMi4xMDEgMTIuMTkyLTM0LjMwOGg0LjQwNmwxMi4yMzggMzQuMzA4aC0zLjhsLTMuMTA2LTguODU1aC0xNS4wMjNsLTMuMTA2IDguODU1Wm01MC41ODIuNDY1Yy02LjYwMS4zMzItMTIuMDM5LTQuMTYtMTIuNTItMTAuNTdoMy42MThjMi42NCAxNi40MzMgMjkuMjE1IDEuMTU2IDEwLjU3LTUuMzgtNC4xNC0xLjAzNC05LjYwNS0xLjg1NS0xMi4wNTQtNS42MzItNy4zMDUtMTQuNzE5IDIwLjE3Mi0xOS4zNjcgMjAuOTEtNC4wNTloLTMuNTI0Yy0uMzY3LTEwLjc3My0yMC43ODUtNi4zODYtMTMuNTE1IDMuMDE2IDMuMzUxIDIuNzUgOS45NDUgMi41MiAxMy41ODYgNC45NiA5LjE2OCA1LjIyNyAyLjkwNiAxOC43OTQtNy4wNyAxNy42NjUiLz48L3N2Zz48L3N2Zz4=" type="image/svg+xml">
@@ -348,6 +349,11 @@
     #sheet.on { transform: none; }
     .sh-hero { position: relative; height: 250px; }
     .sh-hero img { width: 100%; height: 100%; object-fit: cover; }
+    /* Flyers verticales (los de la Agenda Ciudad): se ven enteros, sobre una copia desenfocada */
+    .sh-hero.vertical { height: 360px; overflow: hidden; }
+    .sh-hero.vertical::before { content: ''; position: absolute; inset: -30px; background: var(--fondo-flyer) center / cover; filter: blur(24px) brightness(0.5); }
+    .sh-hero.vertical img { position: relative; object-fit: contain; padding: 14px 0 52px; box-sizing: border-box; }
+    .sh-hero.vertical .sh-hero-grad { background: linear-gradient(to top, var(--paper-2) 0%, transparent 22%); }
     .sh-hero-grad { position: absolute; inset: 0; background: linear-gradient(to top, var(--paper-2) 2%, rgba(14,31,24,0.3) 50%, transparent 100%); }
     .sh-handle { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 44px; height: 5px; border-radius: 5px; background: rgba(255,255,255,0.6); }
     .sh-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 1px solid var(--line); }
@@ -1210,7 +1216,7 @@
 <div id="overlay" onclick="closeSheet()"></div>
 <div id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title">
     <div class="sh-hero">
-        <img id="sh-img" src="" alt="">
+        <img id="sh-img" alt="">
         <div class="sh-ph sin-foto" id="sh-ph" hidden><i class="ph-fill" id="sh-ph-ico"></i></div>
         <div class="sh-hero-grad"></div>
         <div class="sh-handle"></div>
@@ -1286,7 +1292,7 @@
 <div class="ticket-overlay" id="ticket-overlay" onclick="closeTicketModal()">
     <div class="ticket-panel" role="dialog" aria-modal="true" aria-labelledby="ticket-name" onclick="event.stopPropagation()">
         <div class="ticket-hero">
-            <img id="ticket-img" src="" alt="">
+            <img id="ticket-img" alt="">
             <div class="ticket-hero-grad"></div>
             <button class="ticket-hero-close" onclick="closeTicketModal()" data-i18n-aria="cerrar" aria-label="Cerrar"><i class="ph ph-x"></i></button>
         </div>
@@ -1413,6 +1419,10 @@ const CONFIG = {
   // catalogo_versiones en Supabase). Si no hay nada publicado o la base no
   // responde, se usa catalogo.json.
   catalogoPanel: true,
+  // Agenda Ciudad: los eventos que Turismo publica en su WordPress
+  // (agenda.turismoposadas.tur.ar). La base los copia cada 30 minutos
+  // (supabase/temporada.sql, PARTE 9) y la web los suma a la agenda.
+  agendaWP: true,
 
   // Punto de referencia para el clima del encabezado
   clima: { lat: -27.3671, lon: -55.8961 },
@@ -2675,6 +2685,7 @@ function despuesDeCargar(n, fuente){
   try { redibujarMapa(); }
   catch(e){ console.warn('[48 HS] El catálogo cargó pero el mapa no se pudo redibujar:', e.message); }
   cargarCupos();
+  paso('enlace a lugar', revisarEnlaceLugar);
   console.info('[48 HS] Catálogo cargado (' + fuente + '):', n, 'lugares.');
 }
 
@@ -2693,8 +2704,151 @@ function aplicarCatalogo(texto){
   if(!lista.length) throw new Error('catálogo vacío');
   PLACES.splice(0, PLACES.length, ...lista.map(fusionar));
   indexarLugares();
+  sumarAgendaWP();
   catalogoTexto = texto;
   return lista.length;
+}
+
+/* ===== Agenda Ciudad desde el WordPress de Turismo =====
+   La base guarda una copia de los eventos publicados en agenda.turismoposadas.tur.ar
+   y la web los lee con agenda_externa(). Todo lo que viene de ahí es un dato de
+   afuera: se pasa a texto plano, se valida y después va por limpiarLugar como
+   cualquier otro lugar. */
+const CLAVE_AGENDA_WP = 'pv-agenda-wp';
+const WP_ORIGEN = 'https://agenda.turismoposadas.tur.ar/';
+let agendaWPTexto = '';
+let AGENDA_WP = [];          // eventos tal como llegan de la base
+// Recintos de WordPress que ya están en el catálogo (para tomar sus coordenadas).
+// Los demás se buscan por nombre; si no aparecen, el evento sale en la agenda sin mapa.
+const RECINTOS_WP = { 176: 'imax-del-conocimiento', 403: 'conocimiento', 242: 'teatro-sala-tempo',
+                      200: 'centro-artistico-mandove-pedrozo', 348: 'parque' };
+// Categorías de WordPress → las de la web. Las de música y shows van a "Noche"
+// si empiezan a las 21 o más tarde; si no, a "Cultura".
+const CATS_WP = {
+  'gastronomia': ['gastronomia'], 'cerveza artesanal': ['gastronomia', 'nocturna'],
+  'dj en vivo': ['nocturna'], 'karaoke': ['nocturna'], 'casino': ['nocturna'], 'bingo': ['nocturna'],
+  'nautica': ['nautico'], 'paseo nautico': ['nautico'], 'paseos guiados': ['paseos'], 'bici': ['paseos'],
+  'titeres': ['ninos', 'cultura'], 'circo': ['ninos', 'cultura'],
+  'astronomia': ['naturaleza'], 'observatorio': ['naturaleza']
+};
+const CATS_WP_NOCHE = ['musica en vivo', 'recital', 'show', 'stand up', 'folklore', 'musical'];
+const textoPlano = h => {
+  // DOMParser arma un documento inerte: no corre scripts ni carga imágenes
+  try {
+    const doc = new DOMParser().parseFromString(String(h || ''), 'text/html');
+    doc.querySelectorAll('script, style, noscript, template, iframe, object').forEach(x => x.remove());
+    // los párrafos y saltos de línea separan palabras
+    doc.querySelectorAll('p, br, div, li, h1, h2, h3, h4').forEach(x => x.after(' '));
+    return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+  catch(e){ return String(h || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim(); }
+};
+const nombreComparable = x => sinAcentos(textoPlano(x)).replace(/[^a-z0-9]+/g, ' ').trim();
+const deWP = u => typeof u === 'string' && u.startsWith(WP_ORIGEN) && !/["'<>\s]/.test(u) ? u : '';
+
+function recintoWP(r){
+  if(!r || typeof r !== 'object') return null;
+  const fijo = RECINTOS_WP[r.id] && INDICE_LUGARES.get(RECINTOS_WP[r.id]);
+  if(fijo) return fijo;
+  const n = nombreComparable(r.nombre);
+  if(n.length < 5) return null;
+  return PLACES.find(p => !String(p.id).startsWith('wp-') && p.type === 'lugar' && coordValida(p.coords) && nombreComparable(p.name) === n) || null;
+}
+
+function eventoWP(e){
+  if(!e || typeof e !== 'object' || !Number.isInteger(e.id) || e.id <= 0) return null;
+  const ini = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/.exec(String(e.inicio || ''));
+  if(!ini) return null;
+  const fin = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/.exec(String(e.fin || ''));
+  const titulo = textoPlano(e.titulo).slice(0, 140);
+  if(titulo.length < 2) return null;
+  const hora = e.todo_el_dia === true ? null : ini[2];
+  // un día, o uno por día si dura varios (muestras, ferias), hasta 30
+  const fechas = [{ fecha: ini[1], hora, estado: 'confirmado' }];
+  if(fin && fin[1] > ini[1]){
+    const d = new Date(ini[1] + 'T12:00:00Z'), hasta = fin[1];
+    for(let i = 0; i < 30; i++){
+      d.setUTCDate(d.getUTCDate() + 1);
+      const f = d.toISOString().slice(0, 10);
+      if(f > hasta) break;
+      fechas.push({ fecha: f, hora: null, estado: 'confirmado' });
+    }
+  }
+  const r = e.recinto || {};
+  const lugar = recintoWP(r);
+  const nombreRecinto = textoPlano(r.nombre).slice(0, 120);
+  const dir = textoPlano(r.dir).slice(0, 160);
+  const ciudad = textoPlano(r.ciudad).slice(0, 60);
+  const addr = [nombreRecinto, dir && nombreComparable(dir) !== nombreComparable(nombreRecinto) ? dir : '',
+                ciudad && !/^posadas$/i.test(ciudad) ? ciudad : ''].filter(Boolean).join(' · ');
+  const cats = new Set();
+  (Array.isArray(e.cats) ? e.cats : []).forEach(c => {
+    const k = nombreComparable(c);
+    (CATS_WP[k] || []).forEach(x => cats.add(x));
+    if(CATS_WP_NOCHE.includes(k)) cats.add(hora && hora >= '21:00' ? 'nocturna' : 'cultura');
+  });
+  if(!cats.size) cats.add('cultura');
+  const story = textoPlano(e.desc).slice(0, 900);
+  return limpiarLugar({
+    id: 'wp-' + e.id, type: 'evento', name: titulo,
+    addr, coords: lugar ? lugar.coords : null,
+    cats: [...cats], img: deWP(e.img), web: deWP(e.url),
+    price: textoPlano(e.costo).slice(0, 60),
+    org: 'Agenda Ciudad · Turismo Posadas',
+    story: story && nombreComparable(story) !== nombreComparable(titulo) ? story : '',
+    schedule: { kind: 'fechas', fechas }
+  });
+}
+
+// Suma los eventos de WordPress a PLACES (y saca los anteriores). Si un evento ya
+// está en el catálogo propio con el mismo nombre y la misma fecha, no se repite.
+function sumarAgendaWP(){
+  for(let i = PLACES.length - 1; i >= 0; i--) if(String(PLACES[i].id).startsWith('wp-')) PLACES.splice(i, 1);
+  if(!AGENDA_WP.length){ indexarLugares(); return 0; }
+  const propios = new Set();
+  PLACES.forEach(p => (p.schedule && p.schedule.fechas || []).forEach(f => propios.add(nombreComparable(p.name) + '|' + f.fecha)));
+  const vistos = new Set();
+  let n = 0;
+  AGENDA_WP.forEach(e => {
+    const L = eventoWP(e);
+    if(!L) return;
+    const clave = nombreComparable(L.name) + '|' + L.schedule.fechas[0].fecha;
+    if(propios.has(clave) || vistos.has(clave)) return;
+    vistos.add(clave);
+    PLACES.push(fusionar(L)); n++;
+  });
+  indexarLugares();
+  return n;
+}
+
+function aplicarAgendaWP(texto){
+  const d = JSON.parse(texto);
+  AGENDA_WP = Array.isArray(d) ? d.slice(0, 300) : [];
+  agendaWPTexto = texto;
+  return sumarAgendaWP();
+}
+function usarAgendaWPGuardada(){
+  if(!CONFIG.agendaWP) return;
+  let t = '';
+  try { t = localStorage.getItem(CLAVE_AGENDA_WP) || ''; } catch(e){}
+  if(!t) return;
+  try { aplicarAgendaWP(t); } catch(e){ try { localStorage.removeItem(CLAVE_AGENDA_WP); } catch(_){} }
+}
+async function cargarAgendaWP(){
+  if(!CONFIG.agendaWP || !SB_ON()) return;
+  try {
+    const corte = typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? { signal: AbortSignal.timeout(8000) } : null;
+    const r = await sbRpc('agenda_externa', {}, corte);
+    if(!r || !Array.isArray(r.eventos)) return;
+    const texto = JSON.stringify(r.eventos);
+    if(texto === agendaWPTexto) return;
+    const n = aplicarAgendaWP(texto);
+    try { if(texto.length < 1500000) localStorage.setItem(CLAVE_AGENDA_WP, texto); } catch(e){}
+    despuesDeCargar(PLACES.length, 'agenda de Turismo (' + n + ' eventos de WordPress)');
+  } catch(e){
+    // sin la PARTE 9 instalada (404) o sin conexión: queda lo guardado
+    if(!noExiste(e)) console.warn('[48 HS] No se pudo leer la agenda de Turismo:', e.message);
+  }
 }
 
 // Al arrancar, antes de dibujar: la copia guardada (si hay)
@@ -2712,7 +2866,10 @@ const CLAVE_CATALOGO_VERSION = 'pv-catalogo-version';
 async function cargarCatalogoPublicado(){
   let ver = null;
   try { ver = Number(localStorage.getItem(CLAVE_CATALOGO_VERSION)) || null; } catch(e){}
-  const r = await sbRpc('catalogo_actual', { p_version: catalogoTexto ? ver : null });
+  // con tope de tiempo: si la base tarda, se sigue con lo guardado o con catalogo.json
+  const corte = typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? { signal: AbortSignal.timeout(8000) } : null;
+  const r = await sbRpc('catalogo_actual', { p_version: catalogoTexto ? ver : null }, corte);
+  ultimaRevisionCatalogo = Date.now();
   if(!r || r.vacio || !Number.isInteger(r.version)) return false;
   if(r.igual) return true;                              // ya tiene esa versión: no se baja de nuevo
   if(!r.datos || typeof r.datos !== 'object') return false;
@@ -2727,10 +2884,21 @@ async function cargarCatalogoPublicado(){
   return true;
 }
 
+let ultimaRevisionCatalogo = 0;
 async function cargarCatalogoJSON(){
   if(CONFIG.catalogoPanel && SB_ON()){
     try { if(await cargarCatalogoPublicado()) return; }
-    catch(e){ if(!noExiste(e)) console.warn('[48 HS] No se pudo leer el catálogo publicado:', e.message); }
+    catch(e){
+      if(!noExiste(e)){
+        console.warn('[48 HS] No se pudo leer el catálogo publicado:', e.message);
+        // La base no respondió (sin conexión, caída, pausada). Si este teléfono ya tiene
+        // guardado lo que publicó Turismo, se queda con eso: catalogo.json es más viejo y
+        // lo pisaría, en pantalla y en la copia guardada.
+        let guardada = null;
+        try { guardada = localStorage.getItem(CLAVE_CATALOGO_VERSION); } catch(_){}
+        if(catalogoTexto && guardada) return;
+      }
+    }
   }
   try { localStorage.removeItem(CLAVE_CATALOGO_VERSION); } catch(e){}
   try {
@@ -3229,7 +3397,7 @@ function borrarDatosLocales(){
   }
   clearTimeout(borrarTimer);
   bajaUsuario();
-  ['pv-planes-v1', 'pv-novedades', 'pv-usuario', 'pv-intereses', 'pv-ingreso', 'pv-idioma', 'pv-catalogo', 'pv-catalogo-version', 'pv-equipo'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  ['pv-planes-v1', 'pv-novedades', 'pv-usuario', 'pv-intereses', 'pv-ingreso', 'pv-invita', 'pv-idioma', 'pv-catalogo', 'pv-catalogo-version', 'pv-agenda-wp', 'pv-equipo'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
   try { sessionStorage.removeItem('pv-sesion'); } catch(e){}
   PLANES.guardados = []; PLANES.inscripciones = []; INTERESES = interesesVacios();
   actualizarBadge(); pintarBotonesGuardar(); renderPlanes();
@@ -3591,10 +3759,16 @@ function revisarEnlaceCancelacion(){
 //   ?lugar=catamaran                         abre la ficha
 //   ?lugar=casco&fecha=2026-12-05&reservar=1 abre el formulario en esa fecha
 //                                            (lo usa el aviso de lista de espera)
+let enlaceLugarResuelto = false;
 function revisarEnlaceLugar(){
+  if(enlaceLugarResuelto) return;
   const qs = new URLSearchParams(location.search);
   const id = qs.get('lugar');
-  if(!id || !idValido(id) || !byId(id)) return;
+  if(!id || !idValido(id)){ enlaceLugarResuelto = true; return; }
+  // Puede ser un lugar que todavía no bajó (primera visita): se prueba de nuevo
+  // cuando llega el catálogo (despuesDeCargar).
+  if(!byId(id)) return;
+  enlaceLugarResuelto = true;
   enterApp(true);
   const f = qs.get('fecha');
   const fecha = f && /^\d{4}-\d{2}-\d{2}$/.test(f) ? f : null;
@@ -3672,7 +3846,7 @@ function switchView(v, opts){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-11-10-2';
+const APP_VERSION = 'pv-2026-11-11-1';
 
 function esEquipo(){
   try {
@@ -3755,7 +3929,9 @@ function renderPie(){
 function heroPlace(){
   const elegido = byId(CONFIG.destacado);
   if(elegido && !elegido._vencido) return elegido;
-  const proximo = vigentes().filter(p=>p._fecha && p.group!=='hoy' && p.img).sort((a,b)=>a._orden-b._orden)[0];
+  // primero lo del catálogo propio; los de la Agenda Ciudad (afiches verticales) solo si no hay otra cosa
+  const candidatos = vigentes().filter(p=>p._fecha && p.group!=='hoy' && p.img).sort((a,b)=>a._orden-b._orden);
+  const proximo = candidatos.find(p => !String(p.id).startsWith('wp-')) || candidatos[0];
   if(proximo) return proximo;
   return vigentes().find(p => p.img) || vigentes()[0];
 }
@@ -4114,7 +4290,21 @@ function openSheet(id, refresco){
   }
   const foto = urlSegura(p.img), shImg = document.getElementById('sh-img'), ph = document.getElementById('sh-ph');
   shImg.hidden = !foto; ph.hidden = !!foto;
-  if(foto){ shImg.classList.remove('img-rota'); shImg.src = foto; shImg.alt = tx(p,'name'); }
+  const hero = shImg.parentElement;
+  hero.classList.remove('vertical');
+  // si la foto anterior no cargó, quedó oculta: cada ficha empieza de cero
+  delete shImg.dataset.rota; shImg.style.visibility = '';
+  if(foto){
+    shImg.classList.remove('img-rota'); shImg.alt = tx(p,'name');
+    // un afiche vertical recortado a lo ancho pierde el texto: se muestra entero
+    shImg.onload = () => {
+      if(shImg.src !== new URL(foto, location.href).href || shImg.classList.contains('img-rota')) return;
+      const vertical = shImg.naturalHeight > shImg.naturalWidth * 1.15;
+      hero.classList.toggle('vertical', vertical);
+      if(vertical) hero.style.setProperty('--fondo-flyer', 'url("' + urlCSS(foto) + '")');
+    };
+    shImg.src = foto;
+  }
   else {
     shImg.removeAttribute('src');
     const c = catPrincipal(p);
@@ -5377,7 +5567,9 @@ let ticketQtyNum = 1, ticketPlace = null, ticketFechas = [], ticketFecha = null;
 let ticketMax = CONFIG.maxPorPersona;
 
 // Inscripción gratuita con cupo administrado por la base
-const esReservable = p => p.ticketType !== 'paid' && !!p.cupoTotal && SB_ON();
+// (_sinReserva: la base de inscripciones respondió que no conoce esa actividad; pasa con
+//  las que se cargan desde el panel y todavía no se dieron de alta para reservar)
+const esReservable = p => p.ticketType !== 'paid' && !!p.cupoTotal && SB_ON() && !p._sinReserva;
 const pesos = n => '$' + Number(n).toLocaleString('es-AR');
 
 function modoTicket(){
@@ -5414,7 +5606,9 @@ function openTicketModal(p, fechaPedida){
   }
   document.getElementById('ticket-consent').checked = false;
   document.getElementById('ticket-qty-num').textContent = '1';
-  document.getElementById('ticket-img').src = urlSegura(p.img);
+  const tImg = document.getElementById('ticket-img');
+  delete tImg.dataset.rota; tImg.style.visibility = '';
+  if(urlSegura(p.img)) tImg.src = urlSegura(p.img); else { tImg.removeAttribute('src'); tImg.style.visibility = 'hidden'; }
 
   pintarTicket();
   document.getElementById('ticket-overlay').classList.add('on');
@@ -5673,6 +5867,22 @@ async function submitTicket(){
       p_trampa:    trampa ? trampa.value : null
     });
 
+    if(r && !r.ok && r.motivo === 'actividad_inexistente'){
+      // La actividad está publicada pero no dada de alta para reservar con cupo:
+      // el pedido sale por WhatsApp, como en las actividades sin cupo.
+      p._sinReserva = true;
+      const wappURL = 'https://wa.me/'+CONFIG.wapp+'?text='+encodeURIComponent(armarMensaje(p, name, email, phone, qty));
+      let abierto = false;
+      if(wapTab && !wapTab.closed){ try { wapTab.opener = null; } catch(e){} wapTab.location.href = wappURL; abierto = true; }
+      else { abierto = !!abrirPestana(wappURL); }
+      stat('whatsapp', p.id);
+      agregarInscripcion({ codigo: codigoLocal(), tipo: 'consulta', id: p.id, nombre: p.name,
+        fecha: fechaISO(fecha || hoyCero()), hora: fecha ? (horaDe(p, fecha) || '') : '', personas: qty, email, persona: name });
+      restaurar();
+      showTicketSuccess(p, datos, { tipo: 'wapp', wapp: wappURL, wappAbierto: abierto, fecha });
+      console.warn('[48 HS] "' + p.id + '" no está dada de alta para reservar: el pedido fue por WhatsApp.');
+      return;
+    }
     if(!r || !r.ok){
       const motivo = (r && r.motivo) || 'error';
       if(wapTab && !wapTab.closed) wapTab.close();
@@ -5874,6 +6084,7 @@ paso('conexión',    vigilarConexion);
 paso('estadísticas', iniciarEstadisticas);
 paso('ingreso', () => { if(USUARIO && !USUARIO.enBase) setTimeout(subirUsuario, 3000); });
 paso('catálogo guardado', usarCatalogoGuardado);
+paso('agenda de Turismo guardada', usarAgendaWPGuardada);
 paso('agenda',      hydrateAgenda);
 paso('emergencias', ()=>{
   const el = document.getElementById('sos-wapp');
@@ -5889,6 +6100,7 @@ paso('filtros',  () => {
 paso('listado',  renderTimeline);
 paso('planes',   () => { renderPlanes(); actualizarBadge(); });
 paso('catálogo', cargarCatalogo);
+paso('agenda de Turismo', cargarAgendaWP);
 paso('cupos',    cargarCupos);
 paso('clima',    cargarClima);
 paso('cancelación', revisarEnlaceCancelacion);
@@ -5908,6 +6120,13 @@ document.addEventListener('visibilitychange', ()=>{
   if(document.hidden) return;
   paso('agenda', ()=>{ hydrateAgenda(); renderHero(); renderDestacados(); renderTimeline(); renderPlanes(); });
   cargarCupos(); cargarClima();
+  // Un evento de último momento tiene que verse sin recargar: al volver a la pestaña se
+  // pregunta si hay una versión nueva del catálogo (la respuesta es mínima si no cambió).
+  if(Date.now() - ultimaRevisionCatalogo > 5 * 60 * 1000 && navigator.onLine !== false){
+    ultimaRevisionCatalogo = Date.now();
+    cargarCatalogo();
+    cargarAgendaWP();
+  }
 });
 </script>
 </body>

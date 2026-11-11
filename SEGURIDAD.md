@@ -1,6 +1,6 @@
 # 48 HS · seguridad
 
-Revisión del 4 de noviembre de 2026 (versión `pv-2026-11-10-2`). Se revisó todo el repositorio: la web (`index.html`, `sw.js`, `reporte.html`), la base (`supabase/*.sql`), la función de avisos, las herramientas y la configuración de Vercel.
+Revisión del 4 de noviembre de 2026 (versión actual: `pv-2026-11-10-3`). Se revisó todo el repositorio: la web (`index.html`, `sw.js`, `reporte.html`), la base (`supabase/*.sql`), la función de avisos, las herramientas y la configuración de Vercel.
 
 ## Cómo se probó
 
@@ -74,7 +74,70 @@ Se revisó otra vez todo, con el ingreso, las recomendaciones, las consultas en 
 - **Riesgo propio del modelo:** quien tenga la clave puede cambiar todo lo que muestra la web. Se puede volver atrás con el historial (últimas 30 versiones).
 - **Planilla guardada y carga rápida:** la planilla (.xlsx) de cada versión se guarda en `catalogo_versiones.planilla`, que el público no puede leer. Solo la devuelve `catalogo_planilla`, con la clave del panel. La base acepta solo un .xlsx (empieza con la firma de zip) de hasta 5 MB. La carga rápida escribe las filas en el navegador como texto (una descripción que empieza con `=` no se convierte en fórmula) y el resultado pasa por el mismo importador y las mismas revisiones que una planilla subida.
 
+## Tercera revisión (10 de noviembre de 2026, después del panel y la carga rápida)
+
+Se leyó de nuevo todo el código (web, panel, importador, base, service worker y configuración de Vercel) y se corrieron las 11 pruebas de navegador y las 4 de base. No aparecieron claves secretas en el código ni textos de la base que lleguen a la pantalla sin escapar. Sí aparecieron estos problemas, ya corregidos (cada uno con su prueba en `prueba_revision.py`, `prueba_rapida.py` o `sql4.mjs`):
+
+| # | Gravedad | Qué pasaba | Cómo quedó |
+|---|----------|-----------|------------|
+| 22 | Alta | Si Supabase no respondía (sin conexión, base pausada o caída), la web volvía a `catalogo.json` y además pisaba la copia guardada en el teléfono: desaparecía todo lo publicado desde el panel. | Si el teléfono ya tiene una versión publicada, se queda con esa. `catalogo.json` solo se usa cuando no hay nada publicado o es la primera visita. El pedido tiene un tope de 8 segundos. |
+| 23 | Alta | El navegador guardaba `libs/importador.js` una semana. Después de una actualización, el panel podía quedar con el importador viejo (sin carga rápida) y fallar. | `cargar.html` lo pide con un número de versión (`?v=`) y Vercel lo sirve sin caché larga. Al cambiar `importador.js` hay que cambiar ese número. |
+| 24 | Media | Una actividad gratis con cupo cargada desde el panel mostraba "Reservar", pero la base de inscripciones (`reservar`, anterior a este repositorio) no la conoce y respondía "ya no está tomando inscripciones". | El pedido sale por WhatsApp y queda en Mis planes como consulta. La solución de fondo (que publicar dé de alta la actividad para reservar) está en "Lo que queda por decidir". |
+| 25 | Media | Dos personas publicando a la vez: la segunda borraba sin aviso lo que cargó la primera (cada una partía de la planilla que tenía a la vista). | `catalogo_publicar` recibe la versión de base (`p_base`) y rechaza con "desactualizado" si ya no es la última. El panel avisa, trae lo nuevo y conserva el formulario. |
+| 26 | Media | El freno de intentos de clave (reporte y panel) contaba por `x-forwarded-for`, que quien llama puede inventar: cambiándolo en cada pedido se esquivaba el bloqueo por origen (quedaba solo el tope general). | `origen_pedido()` usa la dirección que informa la red de Supabase (`cf-connecting-ip` / `x-real-ip`) y deja `x-forwarded-for` como respaldo. |
+| 27 | Media | Un enlace compartido (`?lugar=...`) a algo que no está en la lista incluida en la página no abría nada en la primera visita. Afectaba a todo lo cargado desde el panel. | Se vuelve a intentar cuando termina de bajar el catálogo. |
+| 28 | Baja | Con la pestaña abierta, un evento de último momento no aparecía hasta recargar. | Al volver a la pestaña se pregunta si hay versión nueva (como mucho cada 5 minutos; si no cambió, la respuesta es mínima). |
+| 29 | Baja | La imagen para compartir (`og:image`) tenía ruta corta: WhatsApp y otras apps necesitan la dirección completa. | Dirección completa de `mundial-mapa-posadas.vercel.app`. Al cambiar de dominio hay que actualizarla (está anotado en `index.html`). |
+| 30 | Baja | Si se publicaba bien pero fallaba la actualización de la pantalla del panel, se mostraba como error de publicación. "Borrar mis datos" no borraba el aviso de invitación cerrado. | Corregidos. |
+
+**Límite conocido del bloqueo de claves:** 100 intentos fallidos en 15 minutos (panel) o 200 (reporte) bloquean a todos, también a quien tiene la clave correcta. Es a propósito: cada intento le cuesta trabajo a la base, y sin ese tope alguien podría dejarla sin recursos. La consecuencia es que un ataque sostenido puede dejar el panel sin acceso mientras dure.
+
+## Agenda Ciudad desde WordPress (11 de noviembre de 2026)
+
+La web suma los eventos que Turismo publica en `agenda.turismoposadas.tur.ar`.
+
+- **Sin credenciales:** se lee la API pública de eventos (lo mismo que ve cualquiera en su sitio). La contraseña de aplicación de su WordPress no se usa ni se guarda en ningún lado de este proyecto. **La que se compartió en `PASS_API.txt` hay que revocarla y crear otra.**
+- **Quién pide:** la base, con `pg_net`, a una dirección fija escrita en `agenda_externa_sync()`. Nadie de afuera puede cambiar a dónde se pide, ni disparar la sincronización (la función no es pública).
+- **Datos de afuera, tratados como tales:** en la base se descartan borradores, eventos ocultos, ids y fechas inválidos, y se recorta todo a un largo máximo. En la web, títulos y descripciones se pasan a texto plano con un documento inerte (sin scripts, estilos ni iframes) y después van por `limpiarLugar`, como todo el catálogo. Imágenes y links solo se aceptan si son de `https://agenda.turismoposadas.tur.ar/`. Probado con código metido en el título, una imagen `javascript:` y un link a otro sitio (`prueba_agenda_wp.py`).
+- **Disponibilidad:** si su sitio se cae o responde algo raro, queda la última copia buena; solo se borra lo que falta cuando llegaron todas las páginas bien (`sql6.mjs`).
+- **Carga sobre su servidor:** como mucho 2 a 4 pedidos cada 30 minutos, sin importar cuánta gente use la web.
+
+**Arreglo de paso (#31):** la foto de la ficha no se mostraba nunca. La etiqueta `<img src="">` vacía disparaba el aviso de "foto rota" al abrir la página y la dejaba oculta para siempre. Pasaba lo mismo en la ventana de inscripción. Corregido: cada ficha empieza de cero.
+
+## Los 20 puntos antes de lanzar (11 de noviembre de 2026)
+
+Revisión contra la lista habitual de "20 cosas antes de lanzar una app", con la prueba de cada una.
+
+| # | Punto | Estado | Cómo está |
+|---|-------|--------|-----------|
+| 1 | Ocultar las claves API | ✅ | En la web solo está la clave pública de Supabase (`sb_publishable_…`), hecha para estar a la vista. Ninguna clave secreta en el código. |
+| 2 | Sacar secretos de Git | ✅ | Escaneo con gitleaks de los 69 commits del repositorio: solo aparece la clave pública y el texto de ejemplo `AVISOS_SECRET`. Ver la nota sobre el repositorio público abajo. |
+| 3 | Clave pública de la base | ✅ | `anonKey` es la publicable; la `service_role` no se usa en ningún lado. |
+| 4 | RLS activado | ✅ | Todas las tablas con RLS y sin permisos para `anon`; se entra solo por funciones. `auditoria.sql` y `salud.sql` lo verifican. |
+| 5 | Cifrar datos sensibles | ✅ | Claves del panel y del reporte con bcrypt; IP solo como hash; la base cifra el disco (Supabase, AES-256). Nombre y email de quien ingresa quedan legibles porque el reporte los muestra. |
+| 6 | Autenticación en el servidor | ✅ | Cada función con clave la verifica en la base (`carga_verificar`, `estadisticas_resumen`); la página no decide nada. |
+| 7 | Restringir acceso a registros | ✅ | Ninguna tabla se lee directo. El que reserva no puede ver reservas de otros; el ingreso no devuelve datos aunque se escriba un email ajeno. |
+| 8 | Bloquear manipulación de campos | ⚠️ | En todo lo de este repositorio, sí (las funciones ignoran campos de más y validan cada uno). Faltan `reservar`, `cancelar`, `cupos_estado` y `sync_actividades`, que están en la base desde antes y no en el repositorio. |
+| 9 | Proteger cookies de sesión | ✅ | No hay cookies ni cuentas. Las claves del panel y del reporte quedan en `sessionStorage` (se borran al cerrar la pestaña) y la CSP impide cargar scripts de afuera. |
+| 10 | Hashear contraseñas | ✅ | bcrypt (`crypt` + `gen_salt('bf')`). |
+| 11 | Limitar intentos de inicio | ✅ | 10 intentos fallidos por conexión en 15 minutos; tope general de 100 (panel) y 200 (reporte). Cuenta por la dirección real, no por `x-forwarded-for` (punto 26). |
+| 12 | Protección contra bots | ✅ | Campo trampa en el ingreso y en las reservas; topes por minuto, por día y por sesión en estadísticas; tope por hora en publicaciones. Sin CAPTCHA (ver abajo). |
+| 13 | Monitorear la base | ✅ | Nuevo `supabase/salud.sql`: espacio, uso del día, picos, claves equivocadas, limpieza nocturna, conexiones, tablas sin RLS y las consultas más pesadas. |
+| 14 | Validar todas las entradas | ✅ | En la base (largos, formatos, rangos) y otra vez en la página. El catálogo se valida campo por campo al cargarse (`limpiarLugar`). |
+| 15 | Escapar contenido del usuario | ✅ | `esc()` / `textContent` en todo; probado con `prueba_panel_xss.py`. La vulnerabilidad de Leaflet CVE-2025-69993 (`bindPopup` sin escapar) no aplica: todo lo que va a los popups se escapa. |
+| 16 | Restringir subida de archivos | ✅ | Solo `.xlsx`, hasta 20 MB para revisar y 5 MB para guardar; la base controla que sea un zip de verdad. La planilla se lee en el navegador de quien la sube, nunca se ejecuta. |
+| 17 | Limitar respuestas de la API | ✅ | Cada función devuelve solo lo necesario y con tope (historial: 30; reporte: 15, 60 y 300 filas). Las tablas no se pueden listar. |
+| 18 | Cabeceras de seguridad | ✅ | CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, COOP (`vercel.json`). |
+| 19 | Forzar HTTPS | ✅ | Vercel redirige siempre a HTTPS y HSTS lo fija por dos años. |
+| 20 | Escanear dependencias | ✅ | No hay paquetes npm en la web. Leaflet 1.9.4 (con huella SRI): su única vulnerabilidad conocida no aplica (punto 15). Fuentes e íconos son archivos estáticos. |
+
+**Repositorio público.** `carlborda12-pixel/posadas-vive` es público. No tiene secretos, pero cualquiera puede ver la planilla (con notas internas y lugares sin publicar), la estructura de la base y este documento, que describe los riesgos que quedan. Se recomienda hacerlo privado (GitHub → Settings → General → Danger Zone → Change visibility). Vercel Hobby despliega igual desde un repositorio privado de una cuenta personal. Los commits también muestran el email del autor; para ocultarlo, activar "Keep my email addresses private" en GitHub.
+
+**CAPTCHA.** No se agregó: las protecciones de arriba alcanzan para el tráfico esperado. Si aparecen bots reales (se vería en `salud.sql`: picos por minuto o muchas reservas raras), la opción es Cloudflare Turnstile, que es gratis y no le pide nada a la gente; necesita una cuenta de Cloudflare y una función en Supabase.
+
 ## Lo que queda por decidir (no es código)
+
+- **Reservas con cupo de lo que se carga desde el panel:** hoy esos pedidos van por WhatsApp (punto 24). Para que se reserven con cupo como los paseos, hay que ver cómo están hechas `reservar`, `cupos_estado` y `sync_actividades` en la base (no están en este repositorio) y hacer que publicar las mantenga al día.
 
 - **Registro de usuarios de Supabase:** la web no usa cuentas, pero Supabase deja que cualquiera cree usuarios con la clave pública, y los emails de confirmación salen a nombre de tu proyecto. Desactivarlo en *Authentication → Sign In / Providers → Allow new users to sign up*.
 - **Comprobar lo que publica Vercel:** `https://mundial-mapa-posadas.vercel.app/supabase/cron.sql`, `/LEEME.md` y `/datos/` tienen que dar 404.

@@ -52,7 +52,7 @@
       ]
     },
     {
-      "source": "/libs/(.*)",
+      "source": "/libs/leaflet/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -83,6 +83,15 @@
         {
           "key": "Cache-Control",
           "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/libs/importador.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
         }
       ]
     }
