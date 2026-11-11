@@ -1212,8 +1212,8 @@ begin
         on conflict (wp_id) do update set inicio = excluded.inicio, fin = excluded.fin, datos = excluded.datos, lote = excluded.lote, visto = now();
         v_n := v_n + 1;
       end loop;
-    elsif r.status_code = 400 and p.pagina > est.total_paginas then
-      null;   -- página de más: la API avisa que no existe, no es un error
+    elsif r.status_code in (400, 404) and p.pagina > est.total_paginas then
+      null;   -- página de más: la API avisa que no existe (según la versión, 400 o 404), no es un error
     else
       est.lote_ok := false;
       est.ultimo_error := coalesce('HTTP ' || r.status_code, r.error_msg, 'error') || ' (página ' || p.pagina || ')';

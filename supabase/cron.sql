@@ -21,6 +21,10 @@
 -- PASO 2: correr este archivo tal cual.
 -- =====================================================================
 
+-- pg_net hace los pedidos a internet (agenda de WordPress y, más adelante, avisos).
+-- Si ya está activa, esta línea no hace nada.
+create extension if not exists pg_net;
+
 -- Avisos por email: APAGADO mientras no haya dominio propio (Resend necesita
 -- un dominio verificado). Cuando lo haya: cargar el secreto (PASO 1 de
 -- arriba), poner avisosEmail: true en index.html y correr este bloque
