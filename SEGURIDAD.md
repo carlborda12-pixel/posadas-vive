@@ -135,13 +135,13 @@ Revisión contra la lista habitual de "20 cosas antes de lanzar una app", con la
 
 **CAPTCHA.** No se agregó: las protecciones de arriba alcanzan para el tráfico esperado. Si aparecen bots reales (se vería en `salud.sql`: picos por minuto o muchas reservas raras), la opción es Cloudflare Turnstile, que es gratis y no le pide nada a la gente; necesita una cuenta de Cloudflare y una función en Supabase.
 
-## Asistente con IA "Preguntale a 48h" (12 de noviembre de 2026)
+## Asistente con IA "Preguntale a Turi" (12 de noviembre de 2026)
 
 - **La clave de Gemini nunca llega a la web ni al repositorio.** Está solo en los Secrets de la función `asistente`. La página llama a esa función con la clave pública de Supabase, que no sirve para usar Gemini.
 - **Gasto acotado en la base, no en la página:** `ia_permitir` cuenta y frena dentro de una transacción con bloqueo (sin carreras entre pedidos simultáneos): por teléfono (6/día), por IP (30/día), entre todos (300/día y 20/minuto) y con un interruptor (`ia_activa`). Peor caso con los valores de fábrica: unos USD 0,60 por día. Las funciones `ia_*` no las puede llamar el público, solo la función con la clave de servicio (`sql7.mjs`).
 - **No sirve como "Gemini gratis" para otros:** la lista de eventos la arma el servidor (no la manda la página), la pregunta se limpia y se corta a 300 caracteres, la salida a 450 tokens, y solo se aceptan pedidos con origen de la web oficial. Las instrucciones le piden que conteste solo sobre planes en Posadas y que ignore órdenes escritas dentro de los datos.
 - **La respuesta se trata como dato de afuera:** el texto va con `textContent`/`esc()` y sin enlaces; los id sugeridos se validan dos veces (en el servidor, contra la lista; en la web, con `idValido()` y contra lo vigente). Probado con HTML y un `<script>` metidos en la respuesta (`prueba_asistente_web.py`).
-- **Privacidad:** no se envían nombre, email ni ubicación. La base no guarda preguntas ni IPs: solo hashes con sal para los topes (se borran al día siguiente) y respuestas por 6 horas. Se usa Gemini con facturación activa para que Google no use las preguntas; la política lo dice (sección 2 y 5). Si se usara el plan gratis, hay que cambiar la política.
+- **Privacidad:** no se envían nombre, email ni ubicación. La base no guarda preguntas ni IPs: solo hashes con sal para los topes (se borran al día siguiente) y respuestas por 6 horas. Se usa el plan gratuito de Gemini: Google puede usar las preguntas para mejorar sus productos y pueden leerlas revisores. La política (secciones 2 y 5) y la nota del chat lo dicen, y piden no escribir datos personales. Si se activa la facturación, actualizar ambos textos. Las condiciones de Google no permiten el plan gratuito para usuarios de la Unión Europea, Reino Unido o Suiza: si la guía apuntara a ese público, habría que pasar al plan pago.
 - **Límite conocido:** el tope por teléfono se puede esquivar borrando los datos del navegador; por eso existe el tope por IP y el total del día, que son los que cuidan el gasto.
 
 ## Lo que queda por decidir (no es código)

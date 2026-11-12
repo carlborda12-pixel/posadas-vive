@@ -1303,7 +1303,7 @@ grant execute on function public.agenda_externa() to anon, authenticated;
 
 
 -- =====================================================================
--- PARTE 10 · Asistente "Preguntale a 48h" (Gemini)
+-- PARTE 10 · Asistente "Preguntale a Turi" (Gemini)
 --
 -- La web manda la pregunta a la función del servidor "asistente"
 -- (supabase/functions/asistente). Esa función tiene la clave de Gemini y,

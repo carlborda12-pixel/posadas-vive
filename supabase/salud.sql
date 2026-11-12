@@ -113,7 +113,7 @@ select indicador, valor, limite, estado, que_hacer from (
               then 'No se actualiza' || coalesce(' (' || ae.ultimo_error || ')', '') || '. Revisar que pg_net esté activo y correr supabase/cron.sql; si el error es HTTP, el sitio de Turismo puede estar caído.' else '' end
     from public.agenda_externa_estado ae where ae.id = 1
   union all
-  select 13, 'Asistente con IA hoy (Gemini)',
+  select 13, 'Asistente Turi hoy (Gemini)',
          case when public.ajuste('ia_activa', 1) <> 1 then 'apagado · '
               else '' end
            || coalesce(ic.consultas, 0) || ' preguntas · ' || coalesce(ic.respondidas, 0) || ' respondidas',

@@ -126,7 +126,7 @@
       <tr><td>Usás la web</td><td>Estadísticas anónimas: qué pantallas y lugares se ven, idioma, si la web está instalada, desde qué cartel QR entraste y un número al azar que identifica la visita (se borra al cerrar la pestaña)</td><td>Saber qué se usa y mejorar la oferta turística de la ciudad. Si ingresaste, van con tu identificación; si no, son anónimas</td><td>Dos años, para comparar temporadas</td></tr>
       <tr><td>Activás tu ubicación</td><td>Tu posición, solo mientras la web está abierta</td><td>Mostrar dónde estás y a qué distancia quedan los lugares</td><td>No se guarda ni se envía a Posadas Turismo</td></tr>
       <tr><td>Pedís “Cómo llegar”</td><td>El punto de partida y el destino</td><td>Calcular el recorrido</td><td>Lo procesa el servicio de rutas (punto 6). No se guarda en nuestra base</td></tr>
-      <tr><td>Le preguntás algo al asistente “Preguntale a 48h”</td><td>El texto de tu pregunta, el idioma y hasta tres categorías que te interesan (por ejemplo, “cultura”). No se envían tu nombre, tu email ni tu ubicación</td><td>Que una inteligencia artificial (Gemini, de Google) te sugiera eventos y lugares de la agenda</td><td>La pregunta la procesa Google (punto 5). En nuestra base queda solo la respuesta, unas horas, para no repetir la consulta, y un contador diario de preguntas hecho con un código irreversible de tu IP y de un número al azar que guarda tu teléfono (no la IP), que se borra al día siguiente</td></tr>
+      <tr><td>Le preguntás algo al asistente “Preguntale a Turi”</td><td>El texto de tu pregunta, el idioma y hasta tres categorías que te interesan (por ejemplo, “cultura”). No se envían tu nombre, tu email ni tu ubicación</td><td>Que una inteligencia artificial (Gemini, de Google) te sugiera eventos y lugares de la agenda</td><td>La pregunta la procesa Google y puede usarla para mejorar sus productos (punto 5). En nuestra base queda solo la respuesta, unas horas, para no repetir la consulta, y un contador diario de preguntas hecho con un código irreversible de tu IP y de un número al azar que guarda tu teléfono (no la IP), que se borra al día siguiente</td></tr>
     </tbody>
   </table></div>
   <p>Si no ingresaste, las estadísticas <b>no incluyen</b> tu nombre ni tu email. Nunca incluyen tu dirección IP ni tu ubicación. Si tu navegador tiene activadas las opciones “No rastrear” (Do Not Track) o “Control Global de Privacidad” (GPC), no se envía ninguna estadística, aunque hayas ingresado.</p>
@@ -157,7 +157,7 @@
   <ul>
     <li><b>Supabase</b>: base de datos donde se guardan las inscripciones, las personas que ingresan y las estadísticas.</li>
     <li><b>Vercel</b>: alojamiento de la web.</li>
-    <li><b>Google (Gemini API)</b>: solo si usás el asistente “Preguntale a 48h”. Recibe el texto de tu pregunta y la lista de eventos publicados, y devuelve la sugerencia. Se usa en su modalidad paga, en la que Google no usa las consultas para entrenar sus modelos. Por eso te pedimos que <b>no escribas datos personales</b> en la pregunta.</li>
+    <li><b>Google (Gemini API)</b>: solo si usás el asistente “Preguntale a Turi”. Recibe el texto de tu pregunta y la lista de eventos publicados, y devuelve la sugerencia. Se usa en su modalidad gratuita: según las condiciones de Google, en esa modalidad Google puede usar las preguntas y respuestas para mejorar sus productos, y pueden leerlas personas que revisan la calidad. La pregunta no lleva tu nombre, tu email ni tu ubicación, pero por eso mismo te pedimos que <b>no escribas datos personales</b> (nombre, teléfono, documento, dirección, salud) en la pregunta. Si no querés que tu pregunta llegue a Google, no uses el asistente: el resto de la guía funciona igual.</li>
   </ul>
   <p>También se pueden entregar datos a una autoridad pública cuando lo exija la ley o una orden judicial.</p>
 
@@ -214,7 +214,7 @@
 
   <h2><span class="n">2.</span>La información es orientativa</h2>
   <p>Cargamos horarios, precios, cupos, direcciones, fotos y eventos con cuidado, pero <b>pueden cambiar sin aviso o tener errores</b>. Antes de ir, confirmá con el lugar o el organizador, sobre todo en feriados, con lluvia o con el río crecido. El clima es un pronóstico de un servicio externo y puede no coincidir con lo que pase.</p>
-  <p>Las sugerencias del asistente “Preguntale a 48h” las escribe una <b>inteligencia artificial</b> a partir de la agenda cargada. Puede equivocarse o resumir mal: lo que vale es lo que dice la ficha de cada lugar o evento.</p>
+  <p>Las sugerencias del asistente “Preguntale a Turi” las escribe una <b>inteligencia artificial</b> a partir de la agenda cargada. Puede equivocarse o resumir mal: lo que vale es lo que dice la ficha de cada lugar o evento.</p>
 
   <h2><span class="n">3.</span>Lugares y servicios de terceros</h2>
   <p>Muchos lugares y servicios que aparecen (comercios, gastronomía, alojamientos, excursiones, paseos náuticos, transporte) son de terceros. Cada uno es responsable de lo que ofrece, de su precio, de su calidad, de su seguridad y de sus habilitaciones. Que un lugar aparezca en la web <b>no es una recomendación ni una garantía</b>, y no reemplaza las habilitaciones que le correspondan. Lo que contrates o compres es un acuerdo entre vos y ese tercero.</p>
@@ -291,7 +291,7 @@
       <tr><td>Você usa o site</td><td>Estatísticas anônimas: quais telas e lugares são vistos, idioma, se o site está instalado, de qual cartaz com QR você entrou e um número aleatório que identifica a visita (apagado ao fechar a aba)</td><td>Saber o que é usado e melhorar a oferta turística da cidade. Se você entrou, vão com a sua identificação; se não, são anônimas</td><td>Dois anos, para comparar temporadas</td></tr>
       <tr><td>Você ativa a localização</td><td>Sua posição, só enquanto o site está aberto</td><td>Mostrar onde você está e a que distância ficam os lugares</td><td>Não é armazenada nem enviada à Posadas Turismo</td></tr>
       <tr><td>Você pede “Como chegar”</td><td>O ponto de partida e o destino</td><td>Calcular o trajeto</td><td>Processado pelo serviço de rotas (item 6). Não fica na nossa base</td></tr>
-      <tr><td>Você pergunta algo ao assistente “Pergunte ao 48h”</td><td>O texto da pergunta, o idioma e até três categorias do seu interesse (por exemplo, “cultura”). Seu nome, e-mail e localização não são enviados</td><td>Que uma inteligência artificial (Gemini, do Google) sugira eventos e lugares da agenda</td><td>A pergunta é processada pelo Google (item 5). Na nossa base fica só a resposta, por algumas horas, para não repetir a consulta, e um contador diário de perguntas feito com um código irreversível do seu IP e de um número aleatório guardado no seu celular (não o IP), apagado no dia seguinte</td></tr>
+      <tr><td>Você pergunta algo ao assistente “Pergunte ao Turi”</td><td>O texto da pergunta, o idioma e até três categorias do seu interesse (por exemplo, “cultura”). Seu nome, e-mail e localização não são enviados</td><td>Que uma inteligência artificial (Gemini, do Google) sugira eventos e lugares da agenda</td><td>A pergunta é processada pelo Google, que pode usá-la para melhorar seus produtos (item 5). Na nossa base fica só a resposta, por algumas horas, para não repetir a consulta, e um contador diário de perguntas feito com um código irreversível do seu IP e de um número aleatório guardado no seu celular (não o IP), apagado no dia seguinte</td></tr>
     </tbody>
   </table></div>
   <p>Se você não entrou, as estatísticas <b>não incluem</b> seu nome nem seu e-mail. Nunca incluem seu endereço IP nem sua localização. Se o seu navegador tiver ativadas as opções “Não rastrear” (Do Not Track) ou “Controle Global de Privacidade” (GPC), nenhuma estatística é enviada, mesmo que você tenha entrado.</p>
@@ -322,7 +322,7 @@
   <ul>
     <li><b>Supabase</b>: banco de dados onde ficam as inscrições, as pessoas que entram e as estatísticas.</li>
     <li><b>Vercel</b>: hospedagem do site.</li>
-    <li><b>Google (Gemini API)</b>: só se você usar o assistente “Pergunte ao 48h”. Recebe o texto da pergunta e a lista de eventos publicados, e devolve a sugestão. É usado na modalidade paga, em que o Google não usa as consultas para treinar seus modelos. Por isso pedimos que você <b>não escreva dados pessoais</b> na pergunta.</li>
+    <li><b>Google (Gemini API)</b>: só se você usar o assistente “Pergunte ao Turi”. Recebe o texto da pergunta e a lista de eventos publicados, e devolve a sugestão. É usado na modalidade gratuita: segundo as condições do Google, nessa modalidade o Google pode usar as perguntas e respostas para melhorar seus produtos, e elas podem ser lidas por pessoas que revisam a qualidade. A pergunta não leva seu nome, e-mail nem localização, mas justamente por isso pedimos que você <b>não escreva dados pessoais</b> (nome, telefone, documento, endereço, saúde) na pergunta. Se não quiser que sua pergunta chegue ao Google, não use o assistente: o resto do guia funciona igual.</li>
   </ul>
   <p>Os dados também podem ser entregues a uma autoridade pública quando a lei ou uma ordem judicial exigir.</p>
 
@@ -379,7 +379,7 @@
 
   <h2><span class="n">2.</span>A informação é orientativa</h2>
   <p>Cadastramos horários, preços, vagas, endereços, fotos e eventos com cuidado, mas eles <b>podem mudar sem aviso ou conter erros</b>. Antes de ir, confirme com o lugar ou o organizador, principalmente em feriados, com chuva ou com o rio cheio. O clima é uma previsão de um serviço externo e pode não se confirmar.</p>
-  <p>As sugestões do assistente “Pergunte ao 48h” são escritas por uma <b>inteligência artificial</b> a partir da agenda cadastrada. Ela pode errar ou resumir mal: o que vale é o que diz a ficha de cada lugar ou evento.</p>
+  <p>As sugestões do assistente “Pergunte ao Turi” são escritas por uma <b>inteligência artificial</b> a partir da agenda cadastrada. Ela pode errar ou resumir mal: o que vale é o que diz a ficha de cada lugar ou evento.</p>
 
   <h2><span class="n">3.</span>Lugares e serviços de terceiros</h2>
   <p>Muitos lugares e serviços que aparecem (comércio, gastronomia, hospedagem, passeios, passeios náuticos, transporte) são de terceiros. Cada um é responsável pelo que oferece, pelo preço, pela qualidade, pela segurança e pelas suas licenças. O fato de um lugar aparecer no site <b>não é uma recomendação nem uma garantia</b> e não substitui as licenças que lhe correspondam. O que você contratar ou comprar é um acordo entre você e esse terceiro.</p>

@@ -684,7 +684,7 @@ function pintar(){
   const IA = d.asistente || {};
   if(IA.consultas > 0){
     const cache = Math.max(0, IA.consultas - (IA.respondidas || 0));
-    tiles.push(['Preguntas al asistente', num(IA.consultas),
+    tiles.push(['Preguntas a Turi (asistente)', num(IA.consultas),
       num(IA.respondidas || 0) + ' respondidas por la IA' + (cache ? ' · ' + num(cache) + ' que la IA no pudo contestar' : '')]);
   }
   const cont = document.getElementById('tiles');
