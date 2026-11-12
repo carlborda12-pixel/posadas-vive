@@ -113,6 +113,22 @@ select indicador, valor, limite, estado, que_hacer from (
               then 'No se actualiza' || coalesce(' (' || ae.ultimo_error || ')', '') || '. Revisar que pg_net esté activo y correr supabase/cron.sql; si el error es HTTP, el sitio de Turismo puede estar caído.' else '' end
     from public.agenda_externa_estado ae where ae.id = 1
   union all
+  select 13, 'Asistente con IA hoy (Gemini)',
+         case when public.ajuste('ia_activa', 1) <> 1 then 'apagado · '
+              else '' end
+           || coalesce(ic.consultas, 0) || ' preguntas · ' || coalesce(ic.respondidas, 0) || ' respondidas',
+         public.ajuste('ia_por_dia', 300)::text || ' por día',
+         case when coalesce(ic.consultas, 0) >= public.ajuste('ia_por_dia', 300) then 'atención'
+              when coalesce(ic.consultas, 0) >= 10 and ic.respondidas < ic.consultas * 0.5 then 'revisar'
+              else 'ok' end,
+         case when coalesce(ic.consultas, 0) >= public.ajuste('ia_por_dia', 300)
+                then 'Se llegó al tope del día: la web muestra sugerencias comunes hasta mañana. Si se repite, subir ia_por_dia (ojo con el gasto).'
+              when coalesce(ic.consultas, 0) >= 10 and ic.respondidas < ic.consultas * 0.5
+                then 'Gemini falla mucho: revisar en Supabase → Edge Functions → asistente → Logs (clave vencida, sin saldo o cupo de Google).'
+              else '' end
+    from (select 1) uno
+    left join public.ia_contador ic on ic.dia = (now() at time zone 'America/Argentina/Buenos_Aires')::date
+  union all
   select 11, 'Tablas abiertas al público (deberían ser 0)',
          (select count(*) from pg_tables t where t.schemaname = 'public' and not t.rowsecurity)::text, '0',
          case when exists (select 1 from pg_tables t where t.schemaname = 'public' and not t.rowsecurity) then 'revisar' else 'ok' end,

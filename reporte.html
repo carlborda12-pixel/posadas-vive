@@ -93,6 +93,7 @@
   .delta.sube { color: var(--sube); }
   .delta.baja { color: var(--baja); }
   .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .tiles > .tile:last-child:nth-child(3n+1) { grid-column: 1 / -1; }
   .tile .et { color: var(--ink-2); font-size: 0.8rem; font-weight: 600; line-height: 1.3; }
   .tile .num { font-size: 1.65rem; font-weight: 800; margin-top: 4px; letter-spacing: -0.5px; }
   .tile .sub { color: var(--muted); font-size: 0.74rem; }
@@ -152,6 +153,8 @@
   }
   @media (max-width: 520px) {
     .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tiles > .tile:last-child:nth-child(3n+1) { grid-column: auto; }
+    .tiles > .tile:last-child:nth-child(2n+1) { grid-column: 1 / -1; }
     .hero .num { font-size: 2.8rem; }
     .mes span { min-width: 120px; }
     .marca h1 { font-size: 1rem; }
@@ -498,6 +501,7 @@ function generarDemo(m){
     },
     anterior: { visitas: ant.total, personas: Math.round(personas * ant.total / total * (0.9 + r() * 0.2)) },
     por_dia: dias, por_hora, lugares, actividades, origenes,
+    asistente: (c => ({ consultas: c, respondidas: Math.round(c * 0.96) }))(Math.round(total * 0.04)),
     ...demoVisitantes(m, total, r, lugaresIds)
   };
 }
@@ -676,6 +680,13 @@ function pintar(){
     ['Visitas en portugués', pct(T.visitas_pt, T.visitas), num(T.visitas_pt) + ' visitas'],
     ['En lista de espera', num(T.lista_espera), 'cuando un paseo se llenó']
   ];
+  // Asistente con IA: aparece solo si ya se usó en el período
+  const IA = d.asistente || {};
+  if(IA.consultas > 0){
+    const cache = Math.max(0, IA.consultas - (IA.respondidas || 0));
+    tiles.push(['Preguntas al asistente', num(IA.consultas),
+      num(IA.respondidas || 0) + ' respondidas por la IA' + (cache ? ' · ' + num(cache) + ' que la IA no pudo contestar' : '')]);
+  }
   const cont = document.getElementById('tiles');
   cont.textContent = '';
   tiles.forEach(([et, v, sub]) => {

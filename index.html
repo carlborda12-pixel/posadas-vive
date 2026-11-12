@@ -917,6 +917,35 @@
     .pv-vacio b { color: var(--ink); }
     @media (min-width: 900px) { .pv-rail { margin: 0; padding: 0 0 6px; } .pv-rail .ev { flex-basis: 280px; } }
 
+    /* ---- Asistente "Preguntale a 48h" ---- */
+    .ia { margin: 4px 0 30px; padding: 16px 14px 12px; border-radius: 20px; background: linear-gradient(140deg, rgba(5,163,111,0.16), rgba(5,163,111,0.04)); border: 1px solid rgba(5,163,111,0.3); }
+    .ia-cab { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+    .ia-cab .ico { flex-shrink: 0; width: 40px; height: 40px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--gold); background: rgba(5,163,111,0.16); }
+    .ia-cab h2 { font-size: 0.98rem; font-weight: 800; color: var(--ink); margin: 1px 0 2px; }
+    .ia-cab p { font-size: 0.8rem; line-height: 1.4; color: var(--muted); margin: 0; }
+    .ia-form { display: flex; gap: 8px; }
+    .ia-form input[type=text]:not(.ia-trampa) { flex: 1; min-width: 0; min-height: 46px; padding: 0 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); color: var(--ink); font: inherit; font-size: 0.88rem; }
+    .ia-form input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+    .ia-form button { flex-shrink: 0; width: 46px; height: 46px; border-radius: 14px; background: var(--gold); color: #fff; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+    .ia-form button[disabled] { opacity: 0.55; }
+    .ia-trampa { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+    .ia-chips { display: flex; gap: 8px; overflow-x: auto; margin: 10px -14px 0; padding: 0 14px 2px; scrollbar-width: none; }
+    .ia-chips::-webkit-scrollbar { display: none; }
+    .ia-chips button { flex-shrink: 0; padding: 7px 12px; border-radius: 20px; border: 1px solid rgba(5,163,111,0.35); color: var(--ink); font-size: 0.74rem; font-weight: 600; white-space: nowrap; background: rgba(5,163,111,0.06); }
+    .ia-chips button[disabled] { opacity: 0.5; }
+    .ia-resp:empty { display: none; }
+    .ia-resp { margin-top: 14px; }
+    .ia-texto { font-size: 0.86rem; line-height: 1.5; color: var(--ink); margin: 0 0 12px; white-space: pre-line; }
+    .ia-texto.aviso { color: var(--muted); }
+    .ia-pregunta { font-size: 0.74rem; color: var(--muted); margin: 0 0 6px; font-style: italic; }
+    .ia-pensando { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.82rem; }
+    .ia-pensando i { animation: ia-gira 1s linear infinite; }
+    @keyframes ia-gira { to { transform: rotate(360deg); } }
+    .ia-quedan { font-size: 0.7rem; color: var(--muted); margin: 8px 0 0; }
+    .ia-nota { font-size: 0.68rem; line-height: 1.4; color: var(--muted); margin: 10px 0 0; }
+    .ia .pv-rail { margin: 0 -14px; padding: 0 14px 6px; }
+    @media (min-width: 900px) { .ia .pv-rail { margin: 0; padding: 0 0 6px; } }
+
     .plan-consulta { color: var(--gold); font-weight: 600; }
     .plan-acts button.peligro.confirmar { background: var(--sunset-deep); color: #fff; border-color: var(--sunset); }
 
@@ -1179,6 +1208,30 @@
             </div>
 
             <div id="para-vos"></div>
+
+            <!-- Asistente con IA (Gemini). La pregunta va a la función "asistente"
+                 de Supabase, que tiene la clave y los límites; acá no hay clave. -->
+            <section class="ia" id="asistente" hidden aria-labelledby="ia-titulo">
+                <div class="ia-cab">
+                    <span class="ico" aria-hidden="true"><i class="ph-fill ph-sparkle"></i></span>
+                    <div><h2 id="ia-titulo" data-i18n="ia.titulo">Preguntale a 48h</h2>
+                        <p data-i18n="ia.sub">Contanos qué tenés ganas de hacer y te sugerimos planes de la agenda.</p></div>
+                </div>
+                <form class="ia-form" id="ia-form" onsubmit="preguntarAsistente(event)" autocomplete="off">
+                    <input type="text" id="ia-pregunta" maxlength="300" enterkeyhint="send" data-i18n-ph="ia.ph" data-i18n-aria="ia.ph">
+                    <input type="text" id="ia-trampa" class="ia-trampa" tabindex="-1" aria-hidden="true" autocomplete="off">
+                    <button type="submit" id="ia-enviar" data-i18n-aria="ia.enviar" aria-label="Preguntar"><i class="ph ph-arrow-up" aria-hidden="true"></i></button>
+                </form>
+                <div class="ia-chips">
+                    <button type="button" data-i18n="ia.c1" onclick="chipAsistente(this)">¿Qué hago hoy a la noche?</button>
+                    <button type="button" data-i18n="ia.c2" onclick="chipAsistente(this)">Algo para ir con chicos</button>
+                    <button type="button" data-i18n="ia.c3" onclick="chipAsistente(this)">Plan gratis este finde</button>
+                    <button type="button" data-i18n="ia.c4" onclick="chipAsistente(this)">¿Dónde como algo típico?</button>
+                </div>
+                <div class="ia-resp" id="ia-resp" aria-live="polite"></div>
+                <p class="ia-nota" data-i18n="ia.nota"></p>
+            </section>
+
             <div id="timeline"></div>
             <div id="directorio"></div>
 
@@ -1423,6 +1476,12 @@ const CONFIG = {
   // (agenda.turismoposadas.tur.ar). La base los copia cada 30 minutos
   // (supabase/temporada.sql, PARTE 9) y la web los suma a la agenda.
   agendaWP: true,
+
+  // Asistente "Preguntale a 48h" (Gemini). Necesita la función "asistente"
+  // de Supabase con su clave cargada (ver LEEME, "Asistente con IA").
+  // Los límites (por persona, por día, por minuto) se cambian en la tabla
+  // ajustes de la base, sin tocar la web. false = no se muestra.
+  asistente: true,
 
   // Punto de referencia para el clima del encabezado
   clima: { lat: -27.3671, lon: -55.8961 },
@@ -1867,6 +1926,16 @@ const TEXTOS = {
     'pv.motivo':'Te interesa {c}', 'pv.vacio':'<b>Acá van a aparecer tus recomendaciones.</b> Mirá lugares y eventos, guardá los que te gusten y te vamos sugiriendo planes.',
     'pv.invitaT':'Planes recomendados para vos', 'pv.invitaD':'Ingresá con tu nombre y email y te sugerimos eventos según lo que te gusta.',
     'pv.invitaBtn':'Ingresar', 'pv.cerrar':'Cerrar',
+    'ia.titulo':'Preguntale a 48h', 'ia.sub':'Contanos qué tenés ganas de hacer y te sugerimos planes de la agenda.',
+    'ia.ph':'Ej.: algo tranqui para hoy a la tarde', 'ia.enviar':'Preguntar',
+    'ia.c1':'¿Qué hago hoy a la noche?', 'ia.c2':'Algo para ir con chicos', 'ia.c3':'Plan gratis este finde', 'ia.c4':'¿Dónde como algo típico?',
+    'ia.pensando':'Buscando en la agenda…', 'ia.quedan':'Te quedan {n} preguntas hoy.', 'ia.queda1':'Te queda 1 pregunta hoy.',
+    'ia.ultima':'Era tu última pregunta de hoy. Mañana podés seguir preguntando.',
+    'ia.limite':'Ya usaste tus preguntas de hoy. Mañana podés seguir; mientras tanto, esto puede gustarte:',
+    'ia.ocupado':'El asistente está con mucha demanda. Probá en un rato; mientras tanto, esto puede gustarte:',
+    'ia.apagado':'El asistente no está disponible ahora. Esto puede gustarte:',
+    'ia.corta':'Contanos un poco más qué buscás.', 'ia.nada':'No encontramos algo que coincida. Probá con otras palabras o mirá la agenda de hoy.',
+    'ia.nota':'Responde una IA (Gemini, de Google) usando solo los eventos y lugares cargados. Puede equivocarse: confirmá horarios en la ficha. No escribas datos personales.',
     'usr.como':'Ingresaste como', 'usr.salir':'Salir y borrar', 'usr.confirmar':'Tocá de nuevo',
     'usr.noT':'No ingresaste', 'usr.noD':'Ingresá y te recomendamos planes.', 'usr.ingresar':'Ingresar',
     'usr.chau':'Listo: saliste y se borraron tus datos de ingreso.',
@@ -2061,6 +2130,16 @@ const TEXTOS = {
     'pv.motivo':'Você curte {c}', 'pv.vacio':'<b>Aqui vão aparecer suas recomendações.</b> Veja lugares e eventos, salve os que gostar e vamos sugerindo passeios.',
     'pv.invitaT':'Passeios recomendados para você', 'pv.invitaD':'Entre com seu nome e e-mail e sugerimos eventos conforme o que você gosta.',
     'pv.invitaBtn':'Entrar', 'pv.cerrar':'Fechar',
+    'ia.titulo':'Pergunte ao 48h', 'ia.sub':'Conte o que você está a fim de fazer e sugerimos programas da agenda.',
+    'ia.ph':'Ex.: algo tranquilo para hoje à tarde', 'ia.enviar':'Perguntar',
+    'ia.c1':'O que fazer hoje à noite?', 'ia.c2':'Algo para ir com crianças', 'ia.c3':'Programa grátis neste fim de semana', 'ia.c4':'Onde comer algo típico?',
+    'ia.pensando':'Procurando na agenda…', 'ia.quedan':'Restam {n} perguntas hoje.', 'ia.queda1':'Resta 1 pergunta hoje.',
+    'ia.ultima':'Essa foi sua última pergunta de hoje. Amanhã você pode perguntar de novo.',
+    'ia.limite':'Você já usou suas perguntas de hoje. Amanhã pode continuar; enquanto isso, isto pode te interessar:',
+    'ia.ocupado':'O assistente está com muita demanda. Tente daqui a pouco; enquanto isso, isto pode te interessar:',
+    'ia.apagado':'O assistente não está disponível agora. Isto pode te interessar:',
+    'ia.corta':'Conte um pouco mais o que você procura.', 'ia.nada':'Não encontramos nada parecido. Tente outras palavras ou veja a agenda de hoje.',
+    'ia.nota':'Quem responde é uma IA (Gemini, do Google) usando só os eventos e lugares cadastrados. Pode errar: confirme os horários na ficha. Não escreva dados pessoais.',
     'usr.como':'Você entrou como', 'usr.salir':'Sair e apagar', 'usr.confirmar':'Toque de novo',
     'usr.noT':'Você não entrou', 'usr.noD':'Entre e recomendamos passeios.', 'usr.ingresar':'Entrar',
     'usr.chau':'Pronto: você saiu e seus dados de acesso foram apagados.',
@@ -3054,7 +3133,7 @@ function enviarEstadisticas(){
      solo recibe datos, nunca los devuelve a la web.
    =================================================================== */
 const CLAVE_USUARIO = 'pv-usuario', CLAVE_INTERESES = 'pv-intereses', CLAVE_INGRESO = 'pv-ingreso';
-const POLITICA_VERSION = '2026-11-08';
+const POLITICA_VERSION = '2026-11-12';
 let USUARIO = cargarUsuario();
 
 function cargarUsuario(){
@@ -3297,6 +3376,142 @@ function cerrarInvitacion(){
 }
 
 /* ===================================================================
+   ASISTENTE "PREGUNTALE A 48h" (Gemini)
+   La web manda solo la pregunta, el idioma y hasta 3 intereses. La
+   función del servidor arma la lista de eventos, aplica los límites y
+   devuelve un texto y los id sugeridos. Los id se vuelven a validar
+   acá: solo se muestran lugares que existen y no vencieron.
+   Si no hay respuesta (límite, demanda, apagado), se sugiere con lo
+   que ya sabe el teléfono, sin gastar nada.
+   =================================================================== */
+const IA = { estado: null, pregunta: '', texto: '', ids: [], quedan: null, ocupada: false };
+const CLAVE_IA = 'pv-ia';
+const iaHoy = () => fechaISO(ahora());
+function iaCupoLocal(){
+  try {
+    const o = JSON.parse(localStorage.getItem(CLAVE_IA) || 'null');
+    return o && o.dia === iaHoy() && Number.isInteger(o.quedan) ? o.quedan : null;
+  } catch(e){ return null; }
+}
+function iaGuardarCupo(n){
+  if(!Number.isInteger(n)) return;
+  try { localStorage.setItem(CLAVE_IA, JSON.stringify({ dia: iaHoy(), quedan: Math.max(0, n) })); } catch(e){}
+}
+const iaActivo = () => !!(CONFIG.asistente && SB_ON());
+// Número al azar de este teléfono: el tope por persona no castiga a todos los
+// que comparten la IP (hotel, datos móviles). No identifica a nadie.
+function iaDispositivo(){
+  try {
+    let id = localStorage.getItem('pv-ia-id');
+    if(!/^[a-z0-9]{24}$/.test(id || '')){
+      const a = new Uint8Array(12); crypto.getRandomValues(a);
+      id = Array.from(a, x => x.toString(16).padStart(2, '0')).join('');
+      localStorage.setItem('pv-ia-id', id);
+    }
+    return id;
+  } catch(e){ return ''; }
+}
+
+function renderAsistente(){
+  const sec = document.getElementById('asistente');
+  if(!sec) return;
+  sec.hidden = !iaActivo() || hayFiltros();
+  if(sec.hidden) return;
+  const resp = document.getElementById('ia-resp');
+  const ocupada = IA.ocupada;
+  document.getElementById('ia-enviar').disabled = ocupada;
+  sec.querySelectorAll('.ia-chips button').forEach(b => b.disabled = ocupada);
+  if(ocupada){
+    resp.innerHTML = `<div class="ia-pensando"><i class="ph ph-circle-notch" aria-hidden="true"></i> ${esc(t('ia.pensando'))}</div>`;
+    return;
+  }
+  if(!IA.estado){ resp.innerHTML = ''; return; }
+  const vivos = new Set(vigentes().map(p => p.id));
+  const lugares = IA.ids.filter(id => vivos.has(id)).map(byId).filter(Boolean).slice(0, 4);
+  let html = IA.pregunta ? `<p class="ia-pregunta">“${esc(IA.pregunta)}”</p>` : '';
+  const aviso = IA.estado !== 'ok';
+  const texto = aviso ? t('ia.' + IA.estado) : IA.texto;
+  if(texto) html += `<p class="ia-texto${aviso ? ' aviso' : ''}">${esc(texto)}</p>`;
+  if(lugares.length) html += `<div class="pv-rail">${lugares.map((p, i) => cardHTML(p, i, '')).join('')}</div>`;
+  else if(aviso && IA.estado !== 'corta') html += `<p class="ia-texto aviso">${esc(t('ia.nada'))}</p>`;
+  if(IA.estado === 'ok' && Number.isInteger(IA.quedan)){
+    html += `<p class="ia-quedan">${esc(IA.quedan === 0 ? t('ia.ultima') : IA.quedan === 1 ? t('ia.queda1') : t('ia.quedan', { n: IA.quedan }))}</p>`;
+  }
+  resp.innerHTML = html;
+}
+
+// Sugerencias sin IA: palabras de la pregunta, después los intereses, después lo de hoy
+const IA_VACIAS = new Set('algo algun alguna para esta este estos estas donde como cuando hacer quiero queremos puedo podemos tiene tienen hay ahora unos unas sobre entre desde hasta muito para fazer onde quero posso tem agora'.split(' '));
+function sugerenciasLocales(pregunta){
+  const palabras = sinAcentos(pregunta).split(/[^a-z0-9ñ]+/).filter(w => w.length > 3 && !IA_VACIAS.has(w)).map(w => w.slice(0, 5));
+  const vivos = vigentes();
+  let lista = [];
+  if(palabras.length){
+    lista = vivos.map(p => ({ p, n: palabras.filter(w => textoBuscable(p).includes(w)).length }))
+      .filter(x => x.n).sort((a, b) => b.n - a.n || (a.p.type === 'evento' ? 0 : 1) - (b.p.type === 'evento' ? 0 : 1) || (a.p._orden || 0) - (b.p._orden || 0))
+      .map(x => x.p);
+  }
+  if(!lista.length) lista = recomendaciones(4).map(x => x.p);
+  if(!lista.length) lista = vivos.filter(p => p.type === 'evento' && p.group === 'hoy');
+  if(!lista.length) lista = vivos.filter(p => p.type === 'evento' && p.group);
+  return lista.slice(0, 4).map(p => p.id);
+}
+
+function interesesTop(){
+  const C = (INTERESES && INTERESES.c) || {};
+  return Object.keys(C).filter(c => C[c] > 0).sort((a, b) => C[b] - C[a]).slice(0, 3);
+}
+
+function chipAsistente(b){
+  const inp = document.getElementById('ia-pregunta');
+  inp.value = b.textContent.trim();
+  preguntarAsistente();
+}
+
+let iaUltima = 0;
+async function preguntarAsistente(ev){
+  if(ev) ev.preventDefault();
+  if(IA.ocupada || !iaActivo()) return;
+  const inp = document.getElementById('ia-pregunta');
+  const pregunta = inp.value.replace(/\s+/g, ' ').trim().slice(0, 300);
+  if(document.getElementById('ia-trampa').value) return;
+  if(pregunta.length < 3){ Object.assign(IA, { estado: 'corta', pregunta: '', texto: '', ids: [] }); renderAsistente(); inp.focus(); return; }
+  // un respiro entre preguntas, para no gastar con dobles toques
+  if(Date.now() - iaUltima < 3000) return;
+  iaUltima = Date.now();
+  IA.pregunta = pregunta;
+  const sinIA = motivo => { Object.assign(IA, { estado: motivo, texto: '', ids: sugerenciasLocales(pregunta) }); };
+  // si este teléfono ya sabe que no le quedan, ni pregunta
+  if(iaCupoLocal() === 0){ sinIA('limite'); renderAsistente(); return; }
+  IA.ocupada = true; renderAsistente();
+  try {
+    const r = await fetch(CONFIG.supabase.url + '/functions/v1/asistente', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': CONFIG.supabase.anonKey },
+      body: JSON.stringify({ pregunta, idioma: LANG, intereses: interesesTop(), dispositivo: iaDispositivo(), trampa: '' }),
+      signal: AbortSignal.timeout ? AbortSignal.timeout(20000) : undefined
+    });
+    let j = null;
+    try { j = await r.json(); } catch(e){}
+    if(j && j.ok && typeof j.texto === 'string'){
+      Object.assign(IA, { estado: 'ok', texto: j.texto.slice(0, 600), ids: Array.isArray(j.ids) ? j.ids.filter(idValido).slice(0, 4) : [],
+                          quedan: Number.isInteger(j.quedan) ? j.quedan : null });
+      iaGuardarCupo(IA.quedan);
+    } else {
+      const m = j && j.motivo;
+      if(m === 'limite_persona'){ iaGuardarCupo(0); sinIA('limite'); }
+      else if(m === 'limite_dia' || m === 'ocupado') sinIA('ocupado');
+      else if(m === 'pregunta') sinIA('corta');
+      else sinIA('apagado');
+    }
+  } catch(e){
+    sinIA(navigator.onLine === false ? 'apagado' : 'ocupado');
+  }
+  IA.ocupada = false;
+  renderAsistente();
+}
+
+/* ===================================================================
    MIS PLANES (guardados e inscripciones, en este teléfono)
    =================================================================== */
 const CLAVE_PLANES = 'pv-planes-v1';
@@ -3397,7 +3612,7 @@ function borrarDatosLocales(){
   }
   clearTimeout(borrarTimer);
   bajaUsuario();
-  ['pv-planes-v1', 'pv-novedades', 'pv-usuario', 'pv-intereses', 'pv-ingreso', 'pv-invita', 'pv-idioma', 'pv-catalogo', 'pv-catalogo-version', 'pv-agenda-wp', 'pv-equipo'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  ['pv-planes-v1', 'pv-novedades', 'pv-usuario', 'pv-intereses', 'pv-ingreso', 'pv-invita', 'pv-idioma', 'pv-catalogo', 'pv-catalogo-version', 'pv-agenda-wp', 'pv-equipo', 'pv-ia', 'pv-ia-id'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
   try { sessionStorage.removeItem('pv-sesion'); } catch(e){}
   PLANES.guardados = []; PLANES.inscripciones = []; INTERESES = interesesVacios();
   actualizarBadge(); pintarBotonesGuardar(); renderPlanes();
@@ -3846,7 +4061,7 @@ function switchView(v, opts){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-11-11-1';
+const APP_VERSION = 'pv-2026-11-12-1';
 
 function esEquipo(){
   try {
@@ -4165,6 +4380,7 @@ function renderTimeline(){
   }
   renderDirectorio(lista);
   renderParaVos();
+  renderAsistente();
 }
 
 // ============ DIRECTORIO (lugares sin fecha y excursiones) ============

@@ -429,7 +429,13 @@ begin
       from (select lugar, count(*) n from ev
              where visitante is not null and lugar is not null
                and tipo in ('vista_lugar','guardar','como_llegar','inscripcion_ok','lista_espera','calendario','contacto','whatsapp')
-             group by lugar order by 2 desc, lugar limit 60) s)
+             group by lugar order by 2 desc, lugar limit 60) s),
+
+    -- Asistente con IA (PARTE 10): cuántas preguntas se le hicieron.
+    -- "consultas" = las que pasaron los límites; "respondidas" = las que contestó Gemini.
+    'asistente', (select jsonb_build_object('consultas', coalesce(sum(consultas), 0),
+                                            'respondidas', coalesce(sum(respondidas), 0))
+                    from ia_contador where dia between p_desde and p_hasta)
   ) into r;
 
   return r;
@@ -819,6 +825,12 @@ begin
   get diagnostics v_esp = row_count;
   v_ins := limpiar_inscripciones();
   delete from reporte_intentos where creado < now() - interval '1 day';
+  -- asistente IA: el uso por conexión solo hace falta el día; la caché, unas horas
+  if to_regclass('public.ia_uso') is not null then
+    delete from ia_uso where dia < v_hoy - 1;
+    delete from ia_cache where creado < now() - interval '1 day';
+    delete from ia_contador where dia < v_hoy - 400;
+  end if;
 
   return jsonb_build_object('meses_resumidos', v_res, 'eventos_borrados', v_ev,
     'visitantes_borrados', v_vis, 'lista_espera_borrada', v_esp, 'inscripciones_borradas', v_ins);
@@ -1288,3 +1300,169 @@ as $$
 $$;
 revoke all on function public.agenda_externa() from public;
 grant execute on function public.agenda_externa() to anon, authenticated;
+
+
+-- =====================================================================
+-- PARTE 10 · Asistente "Preguntale a 48h" (Gemini)
+--
+-- La web manda la pregunta a la función del servidor "asistente"
+-- (supabase/functions/asistente). Esa función tiene la clave de Gemini y,
+-- antes de gastar, le pregunta a la base si se puede (ia_permitir).
+-- Todos los topes se cambian en la tabla ajustes, sin tocar código:
+--
+--   update public.ajustes set valor = 0 where clave = 'ia_activa';      -- apagar ya
+--   update public.ajustes set valor = 10 where clave = 'ia_por_persona_dia';
+--
+-- No se guardan las preguntas de nadie: solo cuántas hizo cada teléfono y
+-- cada conexión (como hash) y, por 6 horas, las respuestas a preguntas repetidas para
+-- no pagarlas dos veces.
+-- =====================================================================
+
+insert into public.ajustes (clave, valor, nota) values
+  ('ia_activa',          1,   'Asistente con IA: 1 = prendido, 0 = apagado (la web muestra sugerencias propias).'),
+  ('ia_por_persona_dia', 6,   'Preguntas por persona (teléfono) por día.'),
+  ('ia_por_red_dia',     30,  'Preguntas por día desde una misma conexión (IP). Más alto que por persona: en un hotel o con datos móviles muchas personas comparten la IP.'),
+  ('ia_por_dia',         300, 'Preguntas por día, entre todos. Con gemini-3.1-flash-lite cada una cuesta unos USD 0,002.'),
+  ('ia_por_minuto',      20,  'Preguntas por minuto, entre todos (frena a un bot).'),
+  ('ia_cache_horas',     6,   'Horas que se reutiliza la respuesta a una pregunta repetida.')
+on conflict (clave) do nothing;
+
+create table if not exists public.ia_uso (
+  dia       date not null,
+  origen    text not null,          -- hash de la conexión, nunca la IP
+  consultas int  not null default 0,
+  primary key (dia, origen)
+);
+alter table public.ia_uso enable row level security;
+revoke all on public.ia_uso from anon, authenticated;
+
+create table if not exists public.ia_contador (
+  dia        date primary key,
+  consultas  int not null default 0,
+  respondidas int not null default 0,   -- las que llegaron a Gemini (no de la caché)
+  minuto     timestamptz,
+  en_minuto  int not null default 0
+);
+alter table public.ia_contador enable row level security;
+revoke all on public.ia_contador from anon, authenticated;
+
+create table if not exists public.ia_cache (
+  clave     text primary key,           -- hash de la pregunta normalizada + idioma + día
+  respuesta jsonb not null,
+  creado    timestamptz not null default now()
+);
+alter table public.ia_cache enable row level security;
+revoke all on public.ia_cache from anon, authenticated;
+
+-- ¿Se puede hacer una pregunta más? Si se puede, la cuenta (todo junto, sin
+-- carreras entre pedidos simultáneos). Solo la llama la función del servidor.
+drop function if exists public.ia_permitir(text);
+create or replace function public.ia_permitir(p_origen text, p_red text default null)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_hoy  date := (now() at time zone 'America/Argentina/Buenos_Aires')::date;
+  v_min  timestamptz := date_trunc('minute', now());
+  c      ia_contador%rowtype;
+  v_mias int;
+  v_red  int;
+  v_tope_persona int := ajuste('ia_por_persona_dia', 6)::int;
+begin
+  if ajuste('ia_activa', 1) <> 1 then return jsonb_build_object('ok', false, 'motivo', 'apagado'); end if;
+  if coalesce(p_origen, '') !~ '^[0-9a-f]{64}$' then return jsonb_build_object('ok', false, 'motivo', 'origen'); end if;
+  if p_red is not null and p_red !~ '^[0-9a-f]{64}$' then return jsonb_build_object('ok', false, 'motivo', 'origen'); end if;
+  if p_red = p_origen then p_red := null; end if;
+
+  insert into ia_contador (dia) values (v_hoy) on conflict do nothing;
+  select * into c from ia_contador where dia = v_hoy for update;
+  if c.consultas >= ajuste('ia_por_dia', 300) then
+    return jsonb_build_object('ok', false, 'motivo', 'limite_dia');
+  end if;
+  if c.minuto = v_min and c.en_minuto >= ajuste('ia_por_minuto', 20) then
+    return jsonb_build_object('ok', false, 'motivo', 'ocupado');
+  end if;
+
+  -- la conexión (IP) entera: frena a quien cambia de "teléfono" para seguir preguntando
+  if p_red is not null then
+    insert into ia_uso (dia, origen) values (v_hoy, p_red) on conflict do nothing;
+    select consultas into v_red from ia_uso where dia = v_hoy and origen = p_red for update;
+    if v_red >= ajuste('ia_por_red_dia', 30) then
+      return jsonb_build_object('ok', false, 'motivo', 'limite_persona', 'quedan', 0);
+    end if;
+  end if;
+
+  insert into ia_uso (dia, origen) values (v_hoy, p_origen) on conflict do nothing;
+  select consultas into v_mias from ia_uso where dia = v_hoy and origen = p_origen for update;
+  if v_mias >= v_tope_persona then
+    return jsonb_build_object('ok', false, 'motivo', 'limite_persona', 'quedan', 0);
+  end if;
+
+  update ia_uso set consultas = consultas + 1 where dia = v_hoy and origen in (p_origen, p_red);
+  update ia_contador
+     set consultas = consultas + 1,
+         en_minuto = case when minuto = v_min then en_minuto + 1 else 1 end,
+         minuto = v_min
+   where dia = v_hoy;
+  return jsonb_build_object('ok', true, 'quedan', v_tope_persona - v_mias - 1);
+end;
+$$;
+
+-- Cuántas le quedan a una conexión hoy (sin contar una nueva)
+create or replace function public.ia_quedan(p_origen text)
+returns int
+language sql
+stable
+security definer
+set search_path = public, pg_temp
+as $$
+  select greatest(ajuste('ia_por_persona_dia', 6)::int - coalesce((select consultas from ia_uso
+           where dia = (now() at time zone 'America/Argentina/Buenos_Aires')::date and origen = p_origen), 0), 0);
+$$;
+
+-- Caché de respuestas (la función del servidor arma la clave)
+create or replace function public.ia_cache_leer(p_clave text)
+returns jsonb
+language sql
+stable
+security definer
+set search_path = public, pg_temp
+as $$
+  select respuesta from ia_cache
+   where clave = p_clave and creado > now() - make_interval(hours => ajuste('ia_cache_horas', 6)::int);
+$$;
+
+create or replace function public.ia_cache_guardar(p_clave text, p_respuesta jsonb, p_de_gemini boolean default true)
+returns void
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+begin
+  if coalesce(p_clave, '') !~ '^[0-9a-f]{64}$' or jsonb_typeof(p_respuesta) <> 'object' or octet_length(p_respuesta::text) > 8000 then
+    return;
+  end if;
+  insert into ia_cache (clave, respuesta) values (p_clave, p_respuesta)
+  on conflict (clave) do update set respuesta = excluded.respuesta, creado = now();
+  if p_de_gemini then
+    update ia_contador set respondidas = respondidas + 1
+     where dia = (now() at time zone 'America/Argentina/Buenos_Aires')::date;
+  end if;
+end;
+$$;
+
+-- Solo la función del servidor (con la clave de servicio) puede usar estas.
+revoke all on function public.ia_permitir(text, text) from public, anon, authenticated;
+revoke all on function public.ia_quedan(text) from public, anon, authenticated;
+revoke all on function public.ia_cache_leer(text) from public, anon, authenticated;
+revoke all on function public.ia_cache_guardar(text, jsonb, boolean) from public, anon, authenticated;
+do $$ begin
+  if exists (select 1 from pg_roles where rolname = 'service_role') then
+    grant execute on function public.ia_permitir(text, text) to service_role;
+    grant execute on function public.ia_quedan(text) to service_role;
+    grant execute on function public.ia_cache_leer(text) to service_role;
+    grant execute on function public.ia_cache_guardar(text, jsonb, boolean) to service_role;
+  end if;
+end $$;

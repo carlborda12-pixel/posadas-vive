@@ -162,6 +162,7 @@ La revisión completa, lo que se corrigió y las reglas para que siga seguro est
 - Secretos: nunca en archivos.
 - Base: correr `supabase/auditoria.sql` antes de cada temporada.
 - Base: correr `supabase/salud.sql` una vez por semana en temporada (o si la web anda lenta). Cada fila dice ok, atención o revisar, y qué hacer.
+- Asistente con IA: la clave de Gemini va **solo** en los secretos de Supabase (Edge Functions → Secrets).
 - Reporte: el enlace con clave va con `#` (`reporte.html#clave=...`), no con `?`.
 
 ## Íconos
@@ -276,6 +277,50 @@ Turismo carga la agenda semanal con su propio "Cargador Agenda Ciudad" en su Wor
 - **Apagarlo:** `agendaWP: false` en `CONFIG` (`index.html`) y `select cron.unschedule('48hs-agenda-wp');`.
 
 **Para activarlo:** correr `temporada.sql` entero, habilitar **pg_net** (Database → Extensions) si no está, y correr `cron.sql`.
+
+## Asistente con IA: "Preguntale a 48h" (Gemini)
+
+En la Agenda hay un cuadro donde el turista escribe qué tiene ganas de hacer ("algo para ir con chicos", "¿qué hago hoy a la noche?") y la IA le sugiere de 1 a 4 eventos o lugares **de lo que está cargado** (catálogo publicado + Agenda Ciudad de los próximos 7 días). Las sugerencias salen como tarjetas que abren la ficha.
+
+**Cómo está armado (y por qué no gasta de más):**
+- La web **no tiene la clave de Gemini**. Llama a la función `asistente` de Supabase (`supabase/functions/asistente/index.ts`), que tiene la clave como secreto, arma la lista de eventos y le pregunta a Gemini.
+- Modelo: `gemini-3.1-flash-lite` (el más barato), sin "razonamiento", respuesta de hasta 450 tokens. Cada pregunta cuesta **unos USD 0,002**.
+- **Topes** (tabla `ajustes`, se cambian sin tocar código):
+
+| Ajuste | Valor | Qué hace |
+|---|---|---|
+| `ia_activa` | 1 | 0 = apagado al instante (la web sugiere con lo que ya sabe, sin IA) |
+| `ia_por_persona_dia` | 6 | preguntas por teléfono por día |
+| `ia_por_red_dia` | 30 | preguntas por día desde una misma IP (hotel, datos móviles) |
+| `ia_por_dia` | 300 | preguntas por día entre todos: **el gasto máximo es unos USD 0,60 por día** (≈ USD 18 por mes si se llenara todos los días) |
+| `ia_por_minuto` | 20 | entre todos; frena a un bot |
+| `ia_cache_horas` | 6 | una pregunta repetida (las rápidas, por ejemplo) se responde de la memoria: gratis y no gasta cupo |
+
+  Ejemplos: `update public.ajustes set valor = 0 where clave = 'ia_activa';` (apagar) · `update public.ajustes set valor = 500 where clave = 'ia_por_dia';`
+- Cuando no hay respuesta (tope, demanda, apagado, sin conexión), la web lo dice y muestra sugerencias propias, calculadas en el teléfono.
+- Solo responde desde la web oficial (`ORIGENES`). Pedidos de otros sitios o de scripts sueltos se rechazan.
+- No se guardan preguntas ni IPs: solo contadores con hash (se borran al día siguiente) y las respuestas por 6 horas.
+- Controlarlo: `salud.sql` tiene la fila "Asistente con IA hoy", y el reporte mensual muestra "Preguntas al asistente".
+
+**Para activarlo (una sola vez, unos 15 minutos):**
+
+1. **Clave de Gemini.** Entrar a https://aistudio.google.com/apikey con la cuenta de Google de ApexTech o de Turismo → **Create API key**. Copiarla (empieza con `AIza…`). **No pegarla en ningún archivo, ni en el chat, ni en el repo.**
+2. **Activar facturación en esa clave** (en AI Studio, "Set up billing" al lado de la clave). Es importante: en el plan gratis Google puede usar las preguntas para mejorar sus productos, y la política de privacidad dice que no. Con facturación no las usa, y el gasto lo controlan nuestros topes.
+3. **Alerta de gasto en Google Cloud:** https://console.cloud.google.com/billing → Presupuestos y alertas → Crear presupuesto de USD 10 por mes, con avisos al 50, 90 y 100 %. (La alerta avisa por email; el freno real son los topes de arriba.)
+4. **Base:** correr `supabase/temporada.sql` entero (crea la PARTE 10).
+5. **Función:** Supabase → **Edge Functions** → **Deploy a new function** → **Via Editor**. Nombre: `asistente` (exacto). Borrar el ejemplo, pegar todo `supabase/functions/asistente/index.ts` y tocar **Deploy**.
+6. En la función recién creada → **Details** (o Settings): **desactivar "Enforce JWT verification" / "Verify JWT"** y guardar. Si queda activado, la web recibe error 401 y muestra "no está disponible".
+7. **Secretos:** Edge Functions → **Secrets** → agregar:
+   - `GEMINI_API_KEY` = la clave del paso 1.
+   - `IA_SAL` = un texto largo al azar. Para generarlo: SQL Editor → `select encode(gen_random_bytes(24), 'hex');` y copiar el resultado.
+   - (cuando haya dominio propio) `ORIGENES` = `https://mundial-mapa-posadas.vercel.app,https://el-dominio-nuevo` (separados por coma).
+8. Subir la web nueva (`index.html`, `sw.js`, `privacidad.html`). Entrar a la Agenda, tocar "¿Qué hago hoy a la noche?" y ver que responde.
+
+**Si algo no anda:** Supabase → Edge Functions → asistente → **Logs**. "Gemini HTTP 400/403" = clave mal copiada o sin facturación; "HTTP 429" = cupo de Google; "apagado" en la web = falta `GEMINI_API_KEY` o `ia_activa` está en 0.
+
+**Cambiar la clave** (si se filtró o cada tanto): crear una nueva en AI Studio, reemplazar el secreto `GEMINI_API_KEY` y borrar la vieja en AI Studio. No hay que tocar la web.
+
+**Apagarlo del todo:** `ia_activa = 0` en la base (inmediato) y, si es para siempre, `asistente: false` en `CONFIG` (`index.html`).
 
 ## Cargar los datos de la Muni
 
