@@ -2027,7 +2027,7 @@ const TEXTOS = {
     'ia.ocupado':'Estoy con muchas consultas ahora. Probá en un rato; mientras tanto, esto te puede gustar:',
     'ia.apagado':'Ahora no puedo responder, pero esto te puede gustar:',
     'ia.corta':'Contame un poco más qué buscás.', 'ia.nada':'No encontré algo que coincida. Probá con otras palabras o mirá la agenda de hoy.',
-    'ia.nota':'Turi es una IA (Gemini, de Google) que usa solo los eventos y lugares cargados. Puede equivocarse: confirmá horarios en la ficha. No escribas datos personales.',
+    'ia.nota':'Turi es una IA (Gemini, de Google) que usa solo los eventos y lugares cargados. Puede equivocarse: confirmá horarios en la ficha. Google puede usar las preguntas para mejorar sus productos: no escribas datos personales.',
     'usr.como':'Ingresaste como', 'usr.salir':'Salir y borrar', 'usr.confirmar':'Tocá de nuevo',
     'usr.noT':'No ingresaste', 'usr.noD':'Ingresá y te recomendamos planes.', 'usr.ingresar':'Ingresar',
     'usr.chau':'Listo: saliste y se borraron tus datos de ingreso.',
@@ -2234,7 +2234,7 @@ const TEXTOS = {
     'ia.ocupado':'Estou com muitas perguntas agora. Tente daqui a pouco; enquanto isso, isto pode te interessar:',
     'ia.apagado':'Agora não consigo responder, mas isto pode te interessar:',
     'ia.corta':'Me conte um pouco mais o que você procura.', 'ia.nada':'Não encontrei nada parecido. Tente outras palavras ou veja a agenda de hoje.',
-    'ia.nota':'O Turi é uma IA (Gemini, do Google) que usa só os eventos e lugares cadastrados. Pode errar: confirme os horários na ficha. Não escreva dados pessoais.',
+    'ia.nota':'O Turi é uma IA (Gemini, do Google) que usa só os eventos e lugares cadastrados. Pode errar: confirme os horários na ficha. O Google pode usar as perguntas para melhorar seus produtos: não escreva dados pessoais.',
     'usr.como':'Você entrou como', 'usr.salir':'Sair e apagar', 'usr.confirmar':'Toque de novo',
     'usr.noT':'Você não entrou', 'usr.noD':'Entre e recomendamos passeios.', 'usr.ingresar':'Entrar',
     'usr.chau':'Pronto: você saiu e seus dados de acesso foram apagados.',
@@ -3172,7 +3172,7 @@ function iniciarEstadisticas(){
   const qs = new URLSearchParams(location.search);
   const src = (qs.get('src') || '').toLowerCase();
   STATS.origen = /^[a-z0-9_-]{1,40}$/.test(src) ? src : null;
-  if(STATS.origen){ qs.delete('src'); const q = qs.toString(); history.replaceState({}, '', location.pathname + (q ? '?' + q : '')); }
+  if(STATS.origen){ qs.delete('src'); const q = qs.toString(); history.replaceState(history.state, '', location.pathname + (q ? '?' + q : '')); }
 
   if(nueva){
     const instalada = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
@@ -4095,7 +4095,7 @@ function abrirCancelacion(codigo){
 function cerrarCancelacion(){
   document.getElementById('cancel-overlay').classList.remove('on');
   if(location.search.includes('cancelar=')){
-    history.replaceState({}, '', location.origin + location.pathname);
+    history.replaceState(history.state, '', location.origin + location.pathname);
   }
 }
 
@@ -4185,7 +4185,7 @@ async function revisarBajaEspera(){
   if(!id) return;
   qs.delete('baja_espera');
   const q = qs.toString();
-  history.replaceState({}, '', location.pathname + (q ? '?' + q : ''));
+  history.replaceState(history.state, '', location.pathname + (q ? '?' + q : ''));
   if(!/^[0-9a-f-]{36}$/i.test(id) || !SB_ON()) return;
   enterApp(true);
   try {
@@ -4233,6 +4233,7 @@ function switchView(v, opts){
   });
   document.querySelector('.app-head').classList.toggle('over-map', v==='explore');
   turiVista();
+  pedirSincAtras();
   if(v==='planes') renderPlanes();
   if(v==='agenda' && paraVosPendiente) renderParaVos();
   if(v==='agenda') renderAsistente();
@@ -4426,7 +4427,7 @@ function callarTuri(){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-11-12-4';
+const APP_VERSION = 'pv-2026-11-12-6';
 
 function esEquipo(){
   try {
@@ -4434,7 +4435,7 @@ function esEquipo(){
     if(v !== null){
       if(v === 'turismo') localStorage.setItem('pv-equipo', '1'); else localStorage.removeItem('pv-equipo');
       q.delete('equipo'); const r = q.toString();
-      history.replaceState({}, '', location.pathname + (r ? '?' + r : ''));
+      history.replaceState(history.state, '', location.pathname + (r ? '?' + r : ''));
     }
     return localStorage.getItem('pv-equipo') === '1';
   } catch(e){ return false; }
@@ -6652,6 +6653,74 @@ document.addEventListener('keydown', e => {
   }
 });
 
+/* ===================================================================
+   BOTÓN "ATRÁS" (celular y computadora)
+   El gesto o botón de volver de Android, el deslizar de iPhone, el botón
+   Atrás del navegador, Alt+← y los botones laterales del mouse cierran lo
+   que esté abierto (de arriba hacia abajo) y después vuelven al mapa, en
+   lugar de salir de la guía. Cada cosa abierta suma una entrada en el
+   historial del navegador; al cerrarla con la X se descuenta sola.
+   =================================================================== */
+const enCapa = id => { const el = document.getElementById(id); return !!(el && el.classList.contains('on')); };
+const CAPAS = [   // de la que está más arriba a la de más abajo
+  [() => enCapa('ingreso-ov'),      () => saltarIngreso()],
+  [() => enCapa('busca-ov'),        () => cerrarBusqueda()],
+  [() => enCapa('filtros-overlay'), () => cerrarFiltros()],
+  [() => enCapa('cancel-overlay'),  () => cerrarCancelacion()],
+  [() => enCapa('ticket-overlay'),  () => closeTicketModal()],
+  [() => enCapa('sos-modal'),       () => closeSOS()],
+  [() => enCapa('sheet'),           () => closeSheet()],
+  [() => IA.abierto,                () => cerrarChat()],
+  [() => !!popupId,                 () => cerrarPopup()],
+  [() => enCapa('dir-panel'),       () => closeDirPanel()]
+];
+function nivelPantalla(){
+  const sp = document.getElementById('splash');
+  if(sp && !sp.classList.contains('hidden')) return 0;
+  return CAPAS.filter(c => c[0]()).length + (vistaActual !== 'explore' ? 1 : 0);
+}
+const ATRAS = { nivel: 0, esperando: false, listo: false, reloj: null };
+function sincronizarAtras(){
+  if(!ATRAS.listo || ATRAS.esperando) return;
+  const quiere = nivelPantalla();
+  if(quiere > ATRAS.nivel){
+    while(ATRAS.nivel < quiere){ ATRAS.nivel++; history.pushState({ pv: ATRAS.nivel }, ''); }
+  } else if(quiere < ATRAS.nivel){
+    // se cerró algo con la X (o con el código): sacar esas entradas del historial
+    const n = ATRAS.nivel - quiere;
+    ATRAS.esperando = true;
+    history.go(-n);
+    // por si el navegador no avisa (pasa en algunos casos), no quedar trabado
+    setTimeout(() => { if(ATRAS.esperando){ ATRAS.esperando = false; ATRAS.nivel = estadoAtras(); pedirSincAtras(); } }, 700);
+  }
+}
+function pedirSincAtras(){ clearTimeout(ATRAS.reloj); ATRAS.reloj = setTimeout(sincronizarAtras, 60); }
+const estadoAtras = () => (history.state && Number.isInteger(history.state.pv)) ? history.state.pv : 0;
+
+window.addEventListener('popstate', () => {
+  const destino = estadoAtras();
+  if(ATRAS.esperando){ ATRAS.esperando = false; ATRAS.nivel = destino; pedirSincAtras(); return; }
+  ATRAS.nivel = destino;
+  // la persona tocó "atrás": cerrar desde arriba hasta quedar en ese nivel
+  for(let vueltas = 0; nivelPantalla() > destino && vueltas < 12; vueltas++){
+    const capa = CAPAS.find(c => c[0]());
+    if(capa) capa[1]();
+    else if(vistaActual !== 'explore') switchView('explore');
+    else break;
+  }
+  pedirSincAtras();
+});
+
+function iniciarAtras(){
+  ATRAS.nivel = estadoAtras();
+  ATRAS.listo = true;
+  // cuando se abre o se cierra algo (ficha, chat, filtros, menús), se ajusta el historial
+  const mirar = ['sheet', 'ingreso-ov', 'busca-ov', 'filtros-overlay', 'cancel-overlay', 'ticket-overlay', 'sos-modal', 'dir-panel', 'turi-chat', 'mpop', 'splash'];
+  const obs = new MutationObserver(pedirSincAtras);
+  mirar.forEach(id => { const el = document.getElementById(id); if(el) obs.observe(el, { attributes: true, attributeFilter: ['class', 'hidden'] }); });
+  pedirSincAtras();
+}
+
 // ============ INIT ============
 function paso(nombre, fn){
   try { fn(); }
@@ -6692,6 +6761,7 @@ paso('baja de lista', revisarBajaEspera);
 setInterval(()=>{ if(!document.hidden) paso('clima', cargarClima); }, 20*60*1000);
 
 paso('encabezado sobre mapa', ()=>document.querySelector('.app-head').classList.add('over-map'));
+paso('botón atrás', iniciarAtras);
 setTimeout(()=>paso('mapa', ()=>{
   if(!map) return;
   map.invalidateSize();
