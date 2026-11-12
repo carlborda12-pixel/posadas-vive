@@ -93,6 +93,7 @@
   .delta.sube { color: var(--sube); }
   .delta.baja { color: var(--baja); }
   .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .tiles > .tile:last-child:nth-child(3n+1) { grid-column: 1 / -1; }
   .tile .et { color: var(--ink-2); font-size: 0.8rem; font-weight: 600; line-height: 1.3; }
   .tile .num { font-size: 1.65rem; font-weight: 800; margin-top: 4px; letter-spacing: -0.5px; }
   .tile .sub { color: var(--muted); font-size: 0.74rem; }
@@ -152,6 +153,8 @@
   }
   @media (max-width: 520px) {
     .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tiles > .tile:last-child:nth-child(3n+1) { grid-column: auto; }
+    .tiles > .tile:last-child:nth-child(2n+1) { grid-column: 1 / -1; }
     .hero .num { font-size: 2.8rem; }
     .mes span { min-width: 120px; }
     .marca h1 { font-size: 1rem; }
@@ -390,7 +393,7 @@ async function cargarNombres(){
     nombresCargados = true;
   } catch(e){}
 }
-const nombreLugar = id => NOMBRES[id] || id;
+const nombreLugar = id => (typeof nombreLugarConAgenda === 'function' ? nombreLugarConAgenda(id) : (NOMBRES[id] || id));
 
 // Categoría principal de cada lugar (de catalogo.json, el mismo que usa la app)
 const CATEGORIA = { casco:'paseos', jardin:'paseos', bajada:'paseos', parque:'paseos', murales:'paseos', cementerio:'paseos',
@@ -402,17 +405,34 @@ let catalogoCargado = false;
 async function cargarCatalogo(){
   if(catalogoCargado) return;
   catalogoCargado = true;
+  const sumar = lista => (Array.isArray(lista) ? lista : []).forEach(l => {
+    if(!l || typeof l.id !== 'string') return;
+    if(typeof l.name === 'string' && !NOMBRES[l.id]) NOMBRES[l.id] = l.name;
+    if(Array.isArray(l.cats) && NOMBRE_CAT[l.cats[0]] && !CATEGORIA[l.id]) CATEGORIA[l.id] = l.cats[0];
+  });
+  // 1. lo publicado desde el panel (incluye la carga rápida); 2. catalogo.json, para lo que falte
+  if(!DEMO){
+    try { const r = await rpc('catalogo_actual', { p_version: null }); if(r && r.datos) sumar(r.datos.lugares); } catch(e){}
+  }
   try {
     const r = await fetch('catalogo.json', { cache: 'no-cache' });
-    if(!r.ok) return;
-    const d = await r.json();
-    (Array.isArray(d) ? d : (d.lugares || [])).forEach(l => {
-      if(!l || typeof l.id !== 'string') return;
-      if(typeof l.name === 'string' && !NOMBRES[l.id]) NOMBRES[l.id] = l.name;
-      if(Array.isArray(l.cats) && NOMBRE_CAT[l.cats[0]]) CATEGORIA[l.id] = l.cats[0];
-    });
+    if(r.ok){ const d = await r.json(); sumar(Array.isArray(d) ? d : d.lugares); }
   } catch(e){}
+  // 3. los eventos de la Agenda Ciudad (WordPress de Turismo): llegan como "wp-<número>"
+  if(!DEMO){
+    try {
+      const r = await rpc('agenda_externa', {});
+      (r && Array.isArray(r.eventos) ? r.eventos : []).forEach(e => {
+        if(!e || !Number.isInteger(e.id)) return;
+        const t = new DOMParser().parseFromString(String(e.titulo || ''), 'text/html').body.textContent.trim();
+        if(t && !NOMBRES['wp-' + e.id]) NOMBRES['wp-' + e.id] = t.slice(0, 140);
+        if(!CATEGORIA['wp-' + e.id]) CATEGORIA['wp-' + e.id] = 'cultura';
+      });
+    } catch(e){}
+  }
 }
+// Un evento de la Agenda Ciudad que ya no está en la copia (pasó hace más de un día)
+const nombreLugarConAgenda = id => NOMBRES[id] || (/^wp-\d+$/.test(id) ? 'Evento de la Agenda Ciudad (#' + id.slice(3) + ')' : id);
 function nombreOrigen(o){
   if(!o) return 'Directo o enlace compartido';
   if(o.startsWith('qr-')) return 'Cartel QR · ' + o.slice(3).replace(/[-_]/g, ' ').replace(/^./, c => c.toUpperCase());
@@ -481,6 +501,7 @@ function generarDemo(m){
     },
     anterior: { visitas: ant.total, personas: Math.round(personas * ant.total / total * (0.9 + r() * 0.2)) },
     por_dia: dias, por_hora, lugares, actividades, origenes,
+    asistente: (c => ({ consultas: c, respondidas: Math.round(c * 0.96) }))(Math.round(total * 0.04)),
     ...demoVisitantes(m, total, r, lugaresIds)
   };
 }
@@ -659,6 +680,13 @@ function pintar(){
     ['Visitas en portugués', pct(T.visitas_pt, T.visitas), num(T.visitas_pt) + ' visitas'],
     ['En lista de espera', num(T.lista_espera), 'cuando un paseo se llenó']
   ];
+  // Asistente con IA: aparece solo si ya se usó en el período
+  const IA = d.asistente || {};
+  if(IA.consultas > 0){
+    const cache = Math.max(0, IA.consultas - (IA.respondidas || 0));
+    tiles.push(['Preguntas a Turi (asistente)', num(IA.consultas),
+      num(IA.respondidas || 0) + ' respondidas por la IA' + (cache ? ' · ' + num(cache) + ' que la IA no pudo contestar' : '')]);
+  }
   const cont = document.getElementById('tiles');
   cont.textContent = '';
   tiles.forEach(([et, v, sub]) => {

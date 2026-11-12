@@ -18,11 +18,12 @@
     <meta property="og:title" content="48h Posadas · Ciudad de experiencias">
     <meta property="og:description" content="Planificá tus próximas 48 horas en Posadas y descubrí todo lo que la ciudad tiene para ofrecerte.">
     <meta property="og:locale" content="es_AR">
-    <!-- Portada propia (portada.jpg, 1200x630, en la misma carpeta que index.html).
-         PENDIENTE con el dominio definitivo: cambiar "/portada.jpg" por la dirección completa
-         (https://DOMINIO/portada.jpg) en og:image y twitter:image. Algunas apps solo aceptan
-         la dirección completa; mientras tanto queda de respaldo la imagen anterior. -->
-    <meta property="og:image" content="/portada.jpg">
+    <!-- Portada propia (portada.jpg, 1200x630, en la misma carpeta que index.html), con la
+         dirección completa: WhatsApp y otras apps no aceptan rutas cortas.
+         AL CAMBIAR DE DOMINIO: reemplazar mundial-mapa-posadas.vercel.app en og:url, og:image
+         y twitter:image (y en WEB_PUBLICA de cargar.html). -->
+    <meta property="og:url" content="https://mundial-mapa-posadas.vercel.app/">
+    <meta property="og:image" content="https://mundial-mapa-posadas.vercel.app/portada.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -31,7 +32,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="48h Posadas · Ciudad de experiencias">
     <meta name="twitter:description" content="Planificá tus próximas 48 horas en Posadas y descubrí todo lo que la ciudad tiene para ofrecerte.">
-    <meta name="twitter:image" content="/portada.jpg">
+    <meta name="twitter:image" content="https://mundial-mapa-posadas.vercel.app/portada.jpg">
 
     <!-- Favicon: el "48h" de la marca -->
     <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNCIgZmlsbD0iIzAwM0EyOCIvPjxzdmcgeD0iNi40MCIgeT0iMTguNjUiIHdpZHRoPSI1MS4yMCIgaGVpZ2h0PSIyOS4yNiIgdmlld0JveD0iMjA0IDM1NCAxNDAgODAiPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0yMzMuNTIzIDM4MS4yMTUgMjEzLjQzIDQwOC4xMmwyMC4yNjUuMjU4di0yNy4xNjRabTcuOTE4IDM5LjU5NGMtLjAyIDIuMDU4LjA0MyA0LjE0OC0uMzQgNi4wNDYgMi4yMzUtLjExNyA0LjM1Mi0uMTMyIDYuNTYtLjI1M3YzLjQ4OGgtMjEuMzc2di0yLjgwOWM3LjY4OC4yNjYgNy41NDMtNy44NjcgNy40MS0xMy42MjVIMjA3Ljgxdi00LjE3MmwzMC44MjQtNDAuMzU5aDIuODA4djM5LjQyMmw4LjYwMi4wODZ2NS4wMjNoLTguNjAyWm0wIDAiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMjczLjU0MyAzOTYuMDMxYzkuOTk2LTUuMTk5IDExLjI5Ny0yMy4zNjctMS45NTctMjMuNTg2LTE1LjkyNi42ODgtMTEuMTIxIDIxLjQwNyAxLjk1NyAyMy41ODZtLTIuNzIzIDMyLjAxNmMxOC4zNzEtLjIxMSAxMi40MzQtMjMuMDYzLTIuNDY4LTI2LjY1Mi0xMS4yNTggNi41Mi0xMy4yMTEgMjYuNDMgMi40NjggMjYuNjUybS0uMTcyIDMuNDA2Yy0yMi41NTQuMzYtMjMuODQtMjIuNDIyLTUuNTM1LTMxLjU5LTE4LjQ3Mi04LjY1Ni0xMy4zMDQtMzEuMyA2LjMwNS0zMC43MzggMTkuMTA1LS42NiAyMi4xNDQgMjEuODI4IDUuMTA1IDI4LjYxIDIwLjE5MiA5LjU5IDE4LjUyNCAzNC4yOTYtNS44NzUgMzMuNzE4Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTMxNS45NTMgNDI3Ljk1YzcuMjA3LjAzNCAzLjIyMy0xNC4wNzUgNC4yMTUtMTguNzA4IDEuNjI1LTEyLjEyLTEwLjM0OC0xNS45OTYtMTcuNDIyLTcuNzg1LS4xMzMgMy43MTEuMzQ0IDIyLjY1Ni0uMzYgMjUuOTIyIDEuNTI4LS4xMDIgMi45NzMtLjExMyA0LjUtLjIxNXYyLjkyNkgyOTIuMzJ2LTIuMTRjNC45NS4xMTMgNC4wODItNS4wNCA0LjI4NS04LjcxMi4wODItMi44NC0uMjE0LTM2LjYzNi4yMTUtMzguNDE0LTEuNzIyLjA5NC0zLjM1MS4xODgtNS4wNy4yODV2LTNjMy42ODgtLjEzMiA2LjQ2NS4wOSA4LjkyNi0xLjkzaDIuMDd2MjEuNzgyYzI1LjE1Mi0xNi41MDQgMjQuNzAzIDExLjcwNyAyMy4yNzcgMjkuNDE4IDEuNTI4LS4xMDIgMi45Ny0uMTEzIDQuNS0uMjE1djIuOTI2aC0xNC41N1ptMCAwIi8+PHBhdGggZmlsbD0iI0YyMzE3OSIgZD0ibTMzMS44NiA0MjIuNzg1LS4wMjgtNS44N2MxNy45NTMtMjkuMDE3LTE2LjI4MS02NS40NjItNDYuMzYzLTQ5LjMxM2EyMC44IDIwLjggMCAwIDAtMy45My0yLjA4NmM0MC40OC0yMi42MjUgNzUuODM2IDI4LjUzIDUwLjMyIDU3LjI3Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTM1Mi42NiA0MzAuMjY2Yy0xNC4xMTctMi4yNDYgMi42Ni0yMi43OTcgNi40ODgtOC44NGgtMS43MjJjLS4zMTctNC45NjUtNy40My0zLjAxNi04LjA1MS44OTgtMi40NDEgNS40MzQgNS4zMDkgOS4yNSA3LjQxOCAzLjQyNmgxLjczOGMtLjczOCAyLjYwMi0zLjAwOCA0LjYxNy01Ljg3IDQuNTE2bTEyLjU2OS0xMS4xNzZjLTEuNDI1LjA0Ny0xLjQxOC0yLjIxMSAwLTIuMTY0IDEuNDE1LS4wMzUgMS40MTggMi4xOTkgMCAyLjE2NG0tMy40MSAxMSAxLjk4NS05LjMxM2gxLjY4N2wtMS45ODQgOS4zMTNabTkuOTMuMTc2Yy00Ljc1LjAxNS0xLjMxMi03LjA1MS0xLjE4LTkuNDg5aDEuNjg4Yy0uMDEyIDEuMDI0LTEuOTM0IDYuNzUtMS4wOSA3LjU1OSA0LjE5MSAyLjUyMyA0LjU5OC01LjE1NiA1LjIzOC03LjU1OWgxLjY4OGwtMS45NjkgOS4zMTNoLTEuNjg3bC4yOC0xLjMzMmgtLjEwNWMtLjYzMy44NjMtMS42MTMgMS41NjYtMi44NjMgMS41MDhtMTMuOTAyLTEuNDIyYzMuNDEuMTggNS4wMzItNi42MTcgMS4wNy02LjgyLTMuNDI5LS4xODQtNS4wNDYgNi42MDUtMS4wNyA2LjgybS0uMzM2IDEuNDIyYy04LjMyNC0uODEzLS40ODQtMTQuODY4IDQuMzI1LTcuODc1aC4xMDlsMS4yMjctNS42NTdoMS42ODdsLTIuODgzIDEzLjM1NmgtMS42ODdsLjI4NS0xLjMxN2gtLjA5Yy0uNzE1Ljk4OS0xLjY4NyAxLjQ5Ny0yLjk3MyAxLjQ5M20xNS4xMTgtOC4yNDNjLTMuNDMtLjE4My01LjA0NyA2LjYwNi0xLjA3IDYuODIgMy40MDYuMTggNS4wMjctNi42MTYgMS4wNy02LjgybS0uMDg2LTEuNDIxYzEuMzUxLS4wNCAyLjU0Ny42MiAzLjAwNCAxLjc5M2guMTA1bC4zNTItMS42MThoMS42ODdsLTIuMDA0IDkuMzE3aC0xLjY4N2wuMjgtMS4zMkg0MDJjLTYuNjc2IDYuMzE2LTkuNTYyLTguMzQtMS42NTItOC4xNzJtMTIuMzU1IDguMjQyYzMuNDA2LjE4IDUuMDI3LTYuNjE3IDEuMDctNi44Mi0zLjQzLS4xODQtNS4wNDYgNi42MDUtMS4wNyA2LjgybS0uMzM2IDEuNDIyYy04LjMyNC0uODEzLS40ODQtMTQuODY0IDQuMzI0LTcuODc1aC4xMDZsMS4yMy01LjY1N2gxLjY4OGwtMi44ODMgMTMuMzU2aC0xLjY4N2wuMjgtMS4zMTdoLS4wODVjLS43MTUuOTg5LTEuNjkyIDEuNDk3LTIuOTczIDEuNDkzbTIwLjAyLTEuNDIyYzMuNDEuMTggNS4wMzEtNi42MTcgMS4wNzQtNi44Mi0zLjQzNC0uMTg0LTUuMDUgNi42MDUtMS4wNzQgNi44Mm0tLjMzMiAxLjQyMmMtOC4zMjgtLjgxMy0uNDg1LTE0Ljg2NCA0LjMyNC03Ljg3NWguMTA1bDEuMjMtNS42NTdoMS42ODhsLTIuODgyIDEzLjM1NmgtMS42ODhsLjI4MS0xLjMxN2gtLjA5Yy0uNzE0Ljk4OS0xLjY4NyAxLjQ5Ny0yLjk2OCAxLjQ5M20xMS45NjgtNS42MjFoNS4yNTRjLjQ3Ny0zLjc2Mi00Ljc0Mi0zLjAzNi01LjI1NCAwbTIuMDQgNS42MmMtNC4yMjMuMTUzLTQuODk5LTUuMjczLTIuNTg2LTcuODcgMi43NjEtMy43NSA4LjkxLTEuMTA2IDcuMTcxIDMuNTVoLTYuODdjLS4zODcgMi45ODkgMy43NzMgNC4wMjggNC44ODYgMS4zMTdoMS41ODJjLS42MjUgMS43ODktMi4xODMgMy4wNDctNC4xODMgMy4wMDRtMTYuNTg5LTUuNjIxaDUuMjU4Yy40NzMtMy43NjItNC43NDItMy4wMzYtNS4yNTggMG0yLjA0IDUuNjJjLTQuMjIuMTUzLTQuODk5LTUuMjczLTIuNTgzLTcuODcgMi43NjItMy43NSA4LjkwNy0xLjEwNiA3LjE3MiAzLjU1aC02Ljg3NWMtLjM4MyAyLjk4OSAzLjc3OCA0LjAyOCA0Ljg4NyAxLjMxN2gxLjU4MmMtLjYyNSAxLjc4OS0yLjE4IDMuMDQ3LTQuMTg0IDMuMDA0bTcuMDUxLS4xNzYgNC4yMzUtNC44ODMtMS45NS00LjQzaDEuODA5bDEuNDYgMy4zNTYgMi44ODQtMy4zNTZoMi4xNGwtNC4yNyA0Ljg0OCAyLjA0IDQuNDY1aC0xLjgwOWwtMS41MTEtMy40MS0yLjkwMyAzLjQxWm0xNS44NTItMy45MzhjMS4wOSA3LjY4OCAxMC4wNTQtMi45NDEgMy4zNzUtNC4xMjktMi4xMS0uMDItMy4zODMgMi4yMzktMy4zNzUgNC4xM20tMy40OTYgNy4zNjcgMi43NDItMTIuNzQzaDEuNjg3bC0uMjggMS4zMTdoLjA4NWMzLjA2My0zLjk1MyA4LjE4OC41MTUgNi4yNjYgNC41OS0uNyAzLjI0Ni01Ljk2MSA1LjI1My03LjYxOCAxLjc4OWgtLjEwNWwtMS4wOSA1LjA0N1ptMTYuNTM5LTguODc1aDUuMjU0Yy40NzYtMy43NjItNC43NDMtMy4wMzYtNS4yNTQgMG0yLjAzOSA1LjYyYy00LjIyMy4xNTMtNC45MDMtNS4yNzMtMi41ODYtNy44NyAyLjc2Mi0zLjc1IDguOTA2LTEuMTA2IDcuMTcyIDMuNTVoLTYuODcxYy0uMzg3IDIuOTg5IDMuNzczIDQuMDI4IDQuODg2IDEuMzE3aDEuNTgyYy0uNjI1IDEuNzg5LTIuMTgzIDMuMDQ3LTQuMTgzIDMuMDA0bTguMTIxLS4xNzYgMS45ODQtOS4zMTNoMS42ODhsLS4yNDYgMS4xNTdoLjA3Yy43ODUtMS4wNTEgMi4xMDItMS41MiAzLjQ5Ni0xLjI4MmwtLjMzMiAxLjYwMmMtNC4xMjktLjc5Ny00LjI0MiA1LjA1OC00Ljk3MyA3LjgzNlptMTIuNzA3LTExYy0xLjQyMi4wNDctMS40MTgtMi4yMTEgMC0yLjE2NCAxLjQxNC0uMDM1IDEuNDE4IDIuMTk5IDAgMi4xNjRtLTMuNDEgMTEgMS45ODQtOS4zMTNoMS42ODhsLTEuOTg1IDkuMzEzWm05LjEwNi01LjQ0NWg1LjI1M2MuNDc3LTMuNzYyLTQuNzQyLTMuMDM2LTUuMjU0IDBtMi4wNCA1LjYyYy00LjIyMy4xNTMtNC45MDMtNS4yNzMtMi41ODctNy44NyAyLjc2Mi0zLjc1IDguOTA3LTEuMTA2IDcuMTcyIDMuNTVoLTYuODdjLS4zODggMi45ODkgMy43NzMgNC4wMjggNC44ODIgMS4zMTdoMS41ODJjLS42MjEgMS43ODktMi4xOCAzLjA0Ny00LjE4IDMuMDA0bTguMTE3LS4xNzYgMS45ODktOS4zMTNoMS42ODdsLS4zIDEuMzUyaC4xMDVjMS4xNC0yLjA1NSA0Ljc3My0yLjEyNSA1LjM2My4zOTQuNTEyIDEuMjg2LTEuMDM5IDYuMjE1LTEuMTk1IDcuNTY3aC0xLjY4OGMtLjEwMS0xLjY2NCAzLjExOC04LjAzMS0uMy04LjA0Ny0zLjQ0Ni0uMDYzLTMuMTY0IDUuODMyLTMuOTczIDguMDQ3Wm0xNi44NzUuMTc2Yy0xMC4zODYtMS40MjIgMi4yMDQtMTYuNjMzIDQuODY4LTYuMzI1aC0xLjYxNGMtLjEzMi0yLjk0OS00LjM5LTIuMTEzLTUuMDkuMTMtMi4xMDUgMy40OTUgMi44NiA3LjA1IDQuNTYgMi44NTVoMS42MzZjLS41OTggMS45NTctMi4xNzYgMy40MS00LjM2IDMuMzRtMTEuMzItMTEuMTc2Yy0xLjQyNS4wNDctMS40MTctMi4yMTEgMC0yLjE2NCAxLjQxNS0uMDM1IDEuNDE5IDIuMTk5IDAgMi4xNjRtLTMuNDEgMTEgMS45ODUtOS4zMTNoMS42ODhsLTEuOTg1IDkuMzEzWm0xMi4yNS04LjA2N2MtMy40My0uMTgzLTUuMDUgNi42MDYtMS4wNzQgNi44MiAzLjQxLjE4IDUuMDMyLTYuNjE2IDEuMDc1LTYuODJtLS4wOS0xLjQyMWMxLjM1NS0uMDQgMi41NS42MiAzLjAwOCAxLjc5M2guMTA1bC4zNTItMS42MThoMS42ODdsLTIuMDA0IDkuMzE3aC0xLjY4N2wuMjgxLTEuMzJoLS4wOWMtNi42NzIgNi4zMTYtOS41NTgtOC4zNC0xLjY1Mi04LjE3Mm0xMS41MTUgOS42NjRjLTEuOTY0LjA5LTMuNDc2LTEuMDgyLTMuNTg2LTIuOTg5aDEuNjg4Yy0uMDEyIDEuOTc3IDMuNzAzIDIuMTUzIDMuODY3LjI2Ni0uNTY2LTEuOTkyLTQuNTItMS4zOS00LjI4OS00LjA3OC0uMDUtMy43MTkgNi41MDgtMy44NzEgNi42OTUtLjE1NmgtMS42MTdjLS41MTEtMi44NDQtNS42MDEtLjQyMi0yLjQyNiAxLjEyNSA0LjI4Mi43OCA0LjM3MiA1Ljg4Ni0uMzMyIDUuODMybS0yMjguNTU0LTUwLjQyMmgtOC4zOXYxNS40ODRoOC4zOWMxMC4zNzUuNTgyIDEwLjM3NS0xNi4wNjYgMC0xNS40ODRtLTExLjk2MSAzMS4xMXYtMzQuMzFjNC4yNzMuMzM2IDE0LjgwNC0xLjA1NCAxOC4zMTIgMS41OTggNi43NjYgNC4wMDQgNi43NSAxNC43IDAgMTguNjg4LTMuMTQgMi4zNzktMTAuODcgMS40MTgtMTQuNzQyIDEuNTk3djEyLjQyNlptNDcuOTg0LTIuODc2YzE2LjgyOC4yOTcgMTYuODQ4LTI4Ljg1NSAwLTI4LjU1OC0xNi45MDYtLjM0LTE2Ljg4NyAyOC45MDIgMCAyOC41NThtMCAzLjM0Yy0yMS41NjIuNjI5LTIxLjYxLTM1LjkxLjAwNC0zNS4yMzggMjEuNTc4LS42MyAyMS41MzEgMzUuODI0LS4wMDQgMzUuMjM4bTM4LjY2OCAwYy02LjU5OC4zMzItMTIuMDM1LTQuMTYtMTIuNTE1LTEwLjU3aDMuNjEzYzIuNjQgMTYuNDMzIDI5LjIxOSAxLjE1NiAxMC41Ny01LjM4LTQuMTQtMS4wMzQtOS42MDEtMS44NTUtMTIuMDUtNS42MzItNy4zMDUtMTQuNzIzIDIwLjE2Ny0xOS4zNjcgMjAuOTA2LTQuMDU5aC0zLjUyNGMtLjM2My0xMC43NzMtMjAuNzg1LTYuMzg2LTEzLjUxNSAzLjAxNiAzLjM1NSAyLjc1IDkuOTQ5IDIuNTIgMTMuNTg1IDQuOTYgOS4xNjggNS4yMjcgMi45MDcgMTguNzk0LTcuMDcgMTcuNjY1bTI4LjQyMi0xMi41NjZoMTIuNzk3bC02LjM5OS0xOC4wODJabS04LjAyIDEyLjEwMSAxMi4xOTItMzQuMzA4aDQuNDA2bDEyLjIzOCAzNC4zMDhoLTMuOGwtMy4xMDYtOC44NTVoLTE1LjAyM2wtMy4xMDYgOC44NTVabTUwLjIxMS0zMS4xMDloLTcuMDQ2djI3LjkxYzIzLjg0MyA0LjU3OCAyNi41MzUtMjYuNTA4IDcuMDQ2LTI3LjkxbS0xMC42MTcgMzEuMTF2LTM0LjMxYzEyLjkzOC0xLjI4NSAyNy4xMjEgMS4yNDMgMjYuOTggMTcuMTU3LjE1IDE1LjkwMi0xNC4wNTggMTguNDQ1LTI2Ljk4IDE3LjE1Mm00NC4xMzctMTIuMTAxaDEyLjc5N2wtNi4zOTktMTguMDgyWm0tOC4wMiAxMi4xMDEgMTIuMTkyLTM0LjMwOGg0LjQwNmwxMi4yMzggMzQuMzA4aC0zLjhsLTMuMTA2LTguODU1aC0xNS4wMjNsLTMuMTA2IDguODU1Wm01MC41ODIuNDY1Yy02LjYwMS4zMzItMTIuMDM5LTQuMTYtMTIuNTItMTAuNTdoMy42MThjMi42NCAxNi40MzMgMjkuMjE1IDEuMTU2IDEwLjU3LTUuMzgtNC4xNC0xLjAzNC05LjYwNS0xLjg1NS0xMi4wNTQtNS42MzItNy4zMDUtMTQuNzE5IDIwLjE3Mi0xOS4zNjcgMjAuOTEtNC4wNTloLTMuNTI0Yy0uMzY3LTEwLjc3My0yMC43ODUtNi4zODYtMTMuNTE1IDMuMDE2IDMuMzUxIDIuNzUgOS45NDUgMi41MiAxMy41ODYgNC45NiA5LjE2OCA1LjIyNyAyLjkwNiAxOC43OTQtNy4wNyAxNy42NjUiLz48L3N2Zz48L3N2Zz4=" type="image/svg+xml">
@@ -334,6 +335,27 @@
     .logo-apex { display: block; background: var(--img-apextech) center / contain no-repeat; }
     .firma-apex { position: fixed; left: calc(12px + env(safe-area-inset-left)); bottom: calc(29px + env(safe-area-inset-bottom)); z-index: 1190; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(13,30,23,0.9); border: 1px solid var(--line); box-shadow: var(--shadow); -webkit-tap-highlight-color: transparent; transition: transform 0.2s var(--ease), border-color 0.2s; }
     .firma-apex .logo-apex { width: 19px; height: 19px; }
+    /* ---- Turi en el mapa ---- */
+    .turi { position: fixed; right: calc(12px + env(safe-area-inset-right)); bottom: calc(25px + env(safe-area-inset-bottom)); z-index: 1190; width: 48px; height: 48px; padding: 0; border-radius: 50%; background: none; box-shadow: 0 6px 16px rgba(0,0,0,0.45); -webkit-tap-highlight-color: transparent; transform-origin: 50% 100%; }
+    .turi img { display: block; width: 100%; height: 100%; border-radius: 50%; }
+    .turi:active { transform: scale(0.92); }
+    .turi.salta { animation: turi-salta 0.9s var(--ease, ease) both; }
+    @keyframes turi-salta {
+      0%   { transform: translateY(0) scale(1, 1); }
+      15%  { transform: translateY(0) scale(1.08, 0.9); }
+      40%  { transform: translateY(-16px) scale(0.95, 1.06); }
+      60%  { transform: translateY(0) scale(1.06, 0.94); }
+      75%  { transform: translateY(-5px) scale(1, 1); }
+      100% { transform: translateY(0) scale(1, 1); }
+    }
+    .turi-globo { position: fixed; right: calc(12px + env(safe-area-inset-right)); bottom: calc(100px + env(safe-area-inset-bottom)); z-index: 1191; display: flex; align-items: flex-start; gap: 2px; max-width: min(270px, calc(100vw - 80px)); padding: 10px 6px 10px 13px; border-radius: 16px 16px 4px 16px; background: #f4fbf7; color: #0b1f17; box-shadow: 0 10px 28px rgba(0,0,0,0.45); transform-origin: 90% 100%; animation: turi-globo 0.35s var(--ease, ease) both; }
+    .turi-globo::after { content: ''; position: absolute; right: 17px; bottom: -7px; border: 7px solid transparent; border-top-color: #f4fbf7; border-bottom: 0; }
+    .turi-globo[hidden] { display: none; }
+    @keyframes turi-globo { from { opacity: 0; transform: translateY(8px) scale(0.9); } }
+    .turi-txt { flex: 1; text-align: left; font: inherit; font-size: 0.84rem; line-height: 1.4; color: inherit; background: none; padding: 0; }
+    .turi-txt .mas { display: block; margin-top: 4px; font-size: 0.74rem; font-weight: 700; color: #037a52; }
+    .turi-x { flex-shrink: 0; width: 26px; height: 26px; margin: -4px 0 0; border-radius: 50%; color: #4d6159; display: grid; place-items: center; font-size: 0.85rem; background: none; }
+    @media (prefers-reduced-motion: reduce) { .turi.salta, .turi-globo { animation: none; } }
     .firma-apex:active { transform: scale(0.92); }
     .firma-apex:hover, .firma-apex:focus-visible { border-color: rgba(43,227,139,0.6); }
     .tabbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 1200; display: flex; gap: 4px; background: rgba(13,30,23,0.9); border: 1px solid var(--line); border-radius: 22px; padding: 6px; box-shadow: var(--shadow); }
@@ -348,6 +370,11 @@
     #sheet.on { transform: none; }
     .sh-hero { position: relative; height: 250px; }
     .sh-hero img { width: 100%; height: 100%; object-fit: cover; }
+    /* Flyers verticales (los de la Agenda Ciudad): se ven enteros, sobre una copia desenfocada */
+    .sh-hero.vertical { height: 360px; overflow: hidden; }
+    .sh-hero.vertical::before { content: ''; position: absolute; inset: -30px; background: var(--fondo-flyer) center / cover; filter: blur(24px) brightness(0.5); }
+    .sh-hero.vertical img { position: relative; object-fit: contain; padding: 14px 0 52px; box-sizing: border-box; }
+    .sh-hero.vertical .sh-hero-grad { background: linear-gradient(to top, var(--paper-2) 0%, transparent 22%); }
     .sh-hero-grad { position: absolute; inset: 0; background: linear-gradient(to top, var(--paper-2) 2%, rgba(14,31,24,0.3) 50%, transparent 100%); }
     .sh-handle { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 44px; height: 5px; border-radius: 5px; background: rgba(255,255,255,0.6); }
     .sh-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 1px solid var(--line); }
@@ -679,7 +706,7 @@
 
     /* Print */
     @media print {
-        #splash, .tabbar, .firma-apex, .map-carousel, .dir-panel, .modal, .ticket-overlay { display: none !important; }
+        #splash, .tabbar, .firma-apex, .turi, .turi-globo, .map-carousel, .dir-panel, .modal, .ticket-overlay { display: none !important; }
         .view { display: block !important; }
         body { background: #fff; color: #000; }
     }
@@ -910,6 +937,44 @@
     .pv-vacio { padding: 14px 16px; margin: 4px 0 28px; border-radius: 16px; border: 1px dashed rgba(5,163,111,0.35); color: var(--muted); font-size: 0.8rem; line-height: 1.45; }
     .pv-vacio b { color: var(--ink); }
     @media (min-width: 900px) { .pv-rail { margin: 0; padding: 0 0 6px; } .pv-rail .ev { flex-basis: 280px; } }
+
+    /* ---- Asistente "Preguntale a Turi" ---- */
+    .ia { margin: 4px 0 30px; padding: 16px 14px 12px; border-radius: 20px; background: linear-gradient(140deg, rgba(5,163,111,0.16), rgba(5,163,111,0.04)); border: 1px solid rgba(5,163,111,0.3); }
+    .ia-cab { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+    .ia-avatar { flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 4px 14px rgba(0,0,0,0.35); }
+    .ia-cab { align-items: center; }
+    .ia-dice { display: flex; gap: 8px; align-items: flex-end; margin: 0 0 12px; }
+    .ia-mini { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; }
+    .ia-burbuja { background: var(--card); border: 1px solid var(--line); border-radius: 16px 16px 16px 4px; padding: 10px 12px; }
+    .ia-burbuja .ia-texto { margin: 0; }
+    .ia-burbuja .ia-texto + .ia-texto { margin-top: 6px; }
+    .ia-pensando .ia-mini { animation: ia-salta 0.9s ease-in-out infinite; }
+    @keyframes ia-salta { 50% { transform: translateY(-4px); } }
+    @media (prefers-reduced-motion: reduce) { .ia-pensando .ia-mini, .ia-pensando i { animation: none; } }
+    .ia-cab h2 { font-size: 0.98rem; font-weight: 800; color: var(--ink); margin: 1px 0 2px; }
+    .ia-cab p { font-size: 0.8rem; line-height: 1.4; color: var(--muted); margin: 0; }
+    .ia-form { display: flex; gap: 8px; }
+    .ia-form input[type=text]:not(.ia-trampa) { flex: 1; min-width: 0; min-height: 46px; padding: 0 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); color: var(--ink); font: inherit; font-size: 0.88rem; }
+    .ia-form input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+    .ia-form button { flex-shrink: 0; width: 46px; height: 46px; border-radius: 14px; background: var(--gold); color: #fff; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+    .ia-form button[disabled] { opacity: 0.55; }
+    .ia-trampa { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+    .ia-chips { display: flex; gap: 8px; overflow-x: auto; margin: 10px -14px 0; padding: 0 14px 2px; scrollbar-width: none; }
+    .ia-chips::-webkit-scrollbar { display: none; }
+    .ia-chips button { flex-shrink: 0; padding: 7px 12px; border-radius: 20px; border: 1px solid rgba(5,163,111,0.35); color: var(--ink); font-size: 0.74rem; font-weight: 600; white-space: nowrap; background: rgba(5,163,111,0.06); }
+    .ia-chips button[disabled] { opacity: 0.5; }
+    .ia-resp:empty { display: none; }
+    .ia-resp { margin-top: 14px; }
+    .ia-texto { font-size: 0.86rem; line-height: 1.5; color: var(--ink); margin: 0 0 12px; white-space: pre-line; }
+    .ia-texto.aviso { color: var(--muted); }
+    .ia-pregunta { width: fit-content; max-width: 85%; margin: 0 0 10px auto; padding: 8px 12px; border-radius: 16px 16px 4px 16px; background: rgba(5,163,111,0.22); color: var(--ink); font-size: 0.8rem; line-height: 1.4; }
+    .ia-pensando { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.82rem; }
+    .ia-pensando i { animation: ia-gira 1s linear infinite; }
+    @keyframes ia-gira { to { transform: rotate(360deg); } }
+    .ia-quedan { font-size: 0.7rem; color: var(--muted); margin: 8px 0 0; }
+    .ia-nota { font-size: 0.68rem; line-height: 1.4; color: var(--muted); margin: 10px 0 0; }
+    .ia .pv-rail { margin: 0 -14px; padding: 0 14px 6px; }
+    @media (min-width: 900px) { .ia .pv-rail { margin: 0; padding: 0 0 6px; } }
 
     .plan-consulta { color: var(--gold); font-weight: 600; }
     .plan-acts button.peligro.confirmar { background: var(--sunset-deep); color: #fff; border-color: var(--sunset); }
@@ -1173,6 +1238,30 @@
             </div>
 
             <div id="para-vos"></div>
+
+            <!-- Asistente con IA (Gemini). La pregunta va a la función "asistente"
+                 de Supabase, que tiene la clave y los límites; acá no hay clave. -->
+            <section class="ia" id="asistente" hidden aria-labelledby="ia-titulo">
+                <div class="ia-cab">
+                    <img class="ia-avatar" src="marca/turi.svg" alt="" width="56" height="56">
+                    <div><h2 id="ia-titulo" data-i18n="ia.titulo">Preguntale a Turi</h2>
+                        <p data-i18n="ia.sub">Soy Turi, tu guía en Posadas. Contame qué tenés ganas de hacer y te sugiero planes de la agenda.</p></div>
+                </div>
+                <form class="ia-form" id="ia-form" onsubmit="preguntarAsistente(event)" autocomplete="off">
+                    <input type="text" id="ia-pregunta" maxlength="300" enterkeyhint="send" data-i18n-ph="ia.ph" data-i18n-aria="ia.ph">
+                    <input type="text" id="ia-trampa" class="ia-trampa" tabindex="-1" aria-hidden="true" autocomplete="off">
+                    <button type="submit" id="ia-enviar" data-i18n-aria="ia.enviar" aria-label="Preguntar"><i class="ph ph-arrow-up" aria-hidden="true"></i></button>
+                </form>
+                <div class="ia-chips">
+                    <button type="button" data-i18n="ia.c1" onclick="chipAsistente(this)">¿Qué hago hoy a la noche?</button>
+                    <button type="button" data-i18n="ia.c2" onclick="chipAsistente(this)">Algo para ir con chicos</button>
+                    <button type="button" data-i18n="ia.c3" onclick="chipAsistente(this)">Plan gratis este finde</button>
+                    <button type="button" data-i18n="ia.c4" onclick="chipAsistente(this)">¿Dónde como algo típico?</button>
+                </div>
+                <div class="ia-resp" id="ia-resp" aria-live="polite"></div>
+                <p class="ia-nota" data-i18n="ia.nota"></p>
+            </section>
+
             <div id="timeline"></div>
             <div id="directorio"></div>
 
@@ -1198,6 +1287,12 @@
     </div>
 
     <!-- ============ TABBAR ============ -->
+    <!-- Turi, el tucán guía: vive en el mapa, salta y a veces comenta algo (frases fijas, sin IA) -->
+    <button class="turi" id="turi" type="button" onclick="tocarTuri()" hidden data-i18n-aria="turi.aria" aria-label="Turi, tu guía: tocame para pedir ideas"><img src="marca/turi.svg" alt="" width="48" height="48"></button>
+    <div class="turi-globo" id="turi-globo" role="status" aria-live="polite" hidden>
+        <button type="button" class="turi-txt" id="turi-txt" onclick="tocarGlobo()"></button>
+        <button type="button" class="turi-x" onclick="callarTuri()" data-i18n-aria="cerrar" aria-label="Cerrar"><i class="ph ph-x" aria-hidden="true"></i></button>
+    </div>
     <a class="firma-apex" href="https://www.instagram.com/apex_sec/" target="_blank" rel="noopener" title="Desarrollado por ApexTech · @apex_sec" aria-label="Desarrollado por ApexTech, Instagram @apex_sec"><span class="logo-apex" aria-hidden="true"></span></a>
     <div class="tabbar" role="tablist">
         <button class="tab active" data-v="explore" onclick="switchView('explore')"><i class="ph-fill ph-map-trifold"></i> <span data-i18n="tab.explorar">Explorar</span></button>
@@ -1210,7 +1305,7 @@
 <div id="overlay" onclick="closeSheet()"></div>
 <div id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title">
     <div class="sh-hero">
-        <img id="sh-img" src="" alt="">
+        <img id="sh-img" alt="">
         <div class="sh-ph sin-foto" id="sh-ph" hidden><i class="ph-fill" id="sh-ph-ico"></i></div>
         <div class="sh-hero-grad"></div>
         <div class="sh-handle"></div>
@@ -1286,7 +1381,7 @@
 <div class="ticket-overlay" id="ticket-overlay" onclick="closeTicketModal()">
     <div class="ticket-panel" role="dialog" aria-modal="true" aria-labelledby="ticket-name" onclick="event.stopPropagation()">
         <div class="ticket-hero">
-            <img id="ticket-img" src="" alt="">
+            <img id="ticket-img" alt="">
             <div class="ticket-hero-grad"></div>
             <button class="ticket-hero-close" onclick="closeTicketModal()" data-i18n-aria="cerrar" aria-label="Cerrar"><i class="ph ph-x"></i></button>
         </div>
@@ -1413,6 +1508,21 @@ const CONFIG = {
   // catalogo_versiones en Supabase). Si no hay nada publicado o la base no
   // responde, se usa catalogo.json.
   catalogoPanel: true,
+  // Agenda Ciudad: los eventos que Turismo publica en su WordPress
+  // (agenda.turismoposadas.tur.ar). La base los copia cada 30 minutos
+  // (supabase/temporada.sql, PARTE 9) y la web los suma a la agenda.
+  agendaWP: true,
+
+  // Asistente "Preguntale a Turi" (Gemini). Necesita la función "asistente"
+  // de Supabase con su clave cargada (ver LEEME, "Asistente con IA").
+  // Los límites (por persona, por día, por minuto) se cambian en la tabla
+  // ajustes de la base, sin tocar la web. false = no se muestra.
+  asistente: true,
+
+  // Turi en el mapa: comentarios fijos (no usan IA ni gastan nada).
+  // segundos hasta el primero, cada cuánto como mínimo, y máximo por visita.
+  // false en lugar del objeto = Turi no aparece en el mapa.
+  turi: { primero: 12, cada: 100, maximo: 5 },
 
   // Punto de referencia para el clima del encabezado
   clima: { lat: -27.3671, lon: -55.8961 },
@@ -1857,6 +1967,17 @@ const TEXTOS = {
     'pv.motivo':'Te interesa {c}', 'pv.vacio':'<b>Acá van a aparecer tus recomendaciones.</b> Mirá lugares y eventos, guardá los que te gusten y te vamos sugiriendo planes.',
     'pv.invitaT':'Planes recomendados para vos', 'pv.invitaD':'Ingresá con tu nombre y email y te sugerimos eventos según lo que te gusta.',
     'pv.invitaBtn':'Ingresar', 'pv.cerrar':'Cerrar',
+    'turi.aria':'Turi, tu guía: tocame para pedir ideas', 'turi.ir_ia':'Tocá para preguntarme', 'turi.ir_agenda':'Ver la agenda de hoy', 'turi.ir_filtros':'Abrir Filtros',
+    'ia.titulo':'Preguntale a Turi', 'ia.sub':'Soy Turi, tu guía en Posadas. Contame qué tenés ganas de hacer y te sugiero planes de la agenda.',
+    'ia.ph':'Ej.: algo tranqui para hoy a la tarde', 'ia.enviar':'Preguntar',
+    'ia.c1':'¿Qué hago hoy a la noche?', 'ia.c2':'Algo para ir con chicos', 'ia.c3':'Plan gratis este finde', 'ia.c4':'¿Dónde como algo típico?',
+    'ia.pensando':'Turi está buscando en la agenda…', 'ia.quedan':'Te quedan {n} preguntas hoy.', 'ia.queda1':'Te queda 1 pregunta hoy.',
+    'ia.ultima':'Era tu última pregunta de hoy. ¡Mañana seguimos charlando!',
+    'ia.limite':'Por hoy ya usaste tus preguntas. Mañana seguimos; mientras tanto, esto te puede gustar:',
+    'ia.ocupado':'Estoy con muchas consultas ahora. Probá en un rato; mientras tanto, esto te puede gustar:',
+    'ia.apagado':'Ahora no puedo responder, pero esto te puede gustar:',
+    'ia.corta':'Contame un poco más qué buscás.', 'ia.nada':'No encontré algo que coincida. Probá con otras palabras o mirá la agenda de hoy.',
+    'ia.nota':'Turi es una IA (Gemini, de Google) que usa solo los eventos y lugares cargados. Puede equivocarse: confirmá horarios en la ficha. No escribas datos personales.',
     'usr.como':'Ingresaste como', 'usr.salir':'Salir y borrar', 'usr.confirmar':'Tocá de nuevo',
     'usr.noT':'No ingresaste', 'usr.noD':'Ingresá y te recomendamos planes.', 'usr.ingresar':'Ingresar',
     'usr.chau':'Listo: saliste y se borraron tus datos de ingreso.',
@@ -2051,6 +2172,17 @@ const TEXTOS = {
     'pv.motivo':'Você curte {c}', 'pv.vacio':'<b>Aqui vão aparecer suas recomendações.</b> Veja lugares e eventos, salve os que gostar e vamos sugerindo passeios.',
     'pv.invitaT':'Passeios recomendados para você', 'pv.invitaD':'Entre com seu nome e e-mail e sugerimos eventos conforme o que você gosta.',
     'pv.invitaBtn':'Entrar', 'pv.cerrar':'Fechar',
+    'turi.aria':'Turi, seu guia: toque para pedir ideias', 'turi.ir_ia':'Toque para me perguntar', 'turi.ir_agenda':'Ver a agenda de hoje', 'turi.ir_filtros':'Abrir Filtros',
+    'ia.titulo':'Pergunte ao Turi', 'ia.sub':'Sou o Turi, seu guia em Posadas. Me conte o que você está a fim de fazer e eu sugiro programas da agenda.',
+    'ia.ph':'Ex.: algo tranquilo para hoje à tarde', 'ia.enviar':'Perguntar',
+    'ia.c1':'O que fazer hoje à noite?', 'ia.c2':'Algo para ir com crianças', 'ia.c3':'Programa grátis neste fim de semana', 'ia.c4':'Onde comer algo típico?',
+    'ia.pensando':'O Turi está procurando na agenda…', 'ia.quedan':'Restam {n} perguntas hoje.', 'ia.queda1':'Resta 1 pergunta hoje.',
+    'ia.ultima':'Essa foi sua última pergunta de hoje. Amanhã a gente continua!',
+    'ia.limite':'Por hoje você já usou suas perguntas. Amanhã a gente continua; enquanto isso, isto pode te interessar:',
+    'ia.ocupado':'Estou com muitas perguntas agora. Tente daqui a pouco; enquanto isso, isto pode te interessar:',
+    'ia.apagado':'Agora não consigo responder, mas isto pode te interessar:',
+    'ia.corta':'Me conte um pouco mais o que você procura.', 'ia.nada':'Não encontrei nada parecido. Tente outras palavras ou veja a agenda de hoje.',
+    'ia.nota':'O Turi é uma IA (Gemini, do Google) que usa só os eventos e lugares cadastrados. Pode errar: confirme os horários na ficha. Não escreva dados pessoais.',
     'usr.como':'Você entrou como', 'usr.salir':'Sair e apagar', 'usr.confirmar':'Toque de novo',
     'usr.noT':'Você não entrou', 'usr.noD':'Entre e recomendamos passeios.', 'usr.ingresar':'Entrar',
     'usr.chau':'Pronto: você saiu e seus dados de acesso foram apagados.',
@@ -2675,6 +2807,7 @@ function despuesDeCargar(n, fuente){
   try { redibujarMapa(); }
   catch(e){ console.warn('[48 HS] El catálogo cargó pero el mapa no se pudo redibujar:', e.message); }
   cargarCupos();
+  paso('enlace a lugar', revisarEnlaceLugar);
   console.info('[48 HS] Catálogo cargado (' + fuente + '):', n, 'lugares.');
 }
 
@@ -2693,8 +2826,151 @@ function aplicarCatalogo(texto){
   if(!lista.length) throw new Error('catálogo vacío');
   PLACES.splice(0, PLACES.length, ...lista.map(fusionar));
   indexarLugares();
+  sumarAgendaWP();
   catalogoTexto = texto;
   return lista.length;
+}
+
+/* ===== Agenda Ciudad desde el WordPress de Turismo =====
+   La base guarda una copia de los eventos publicados en agenda.turismoposadas.tur.ar
+   y la web los lee con agenda_externa(). Todo lo que viene de ahí es un dato de
+   afuera: se pasa a texto plano, se valida y después va por limpiarLugar como
+   cualquier otro lugar. */
+const CLAVE_AGENDA_WP = 'pv-agenda-wp';
+const WP_ORIGEN = 'https://agenda.turismoposadas.tur.ar/';
+let agendaWPTexto = '';
+let AGENDA_WP = [];          // eventos tal como llegan de la base
+// Recintos de WordPress que ya están en el catálogo (para tomar sus coordenadas).
+// Los demás se buscan por nombre; si no aparecen, el evento sale en la agenda sin mapa.
+const RECINTOS_WP = { 176: 'imax-del-conocimiento', 403: 'conocimiento', 242: 'teatro-sala-tempo',
+                      200: 'centro-artistico-mandove-pedrozo', 348: 'parque' };
+// Categorías de WordPress → las de la web. Las de música y shows van a "Noche"
+// si empiezan a las 21 o más tarde; si no, a "Cultura".
+const CATS_WP = {
+  'gastronomia': ['gastronomia'], 'cerveza artesanal': ['gastronomia', 'nocturna'],
+  'dj en vivo': ['nocturna'], 'karaoke': ['nocturna'], 'casino': ['nocturna'], 'bingo': ['nocturna'],
+  'nautica': ['nautico'], 'paseo nautico': ['nautico'], 'paseos guiados': ['paseos'], 'bici': ['paseos'],
+  'titeres': ['ninos', 'cultura'], 'circo': ['ninos', 'cultura'],
+  'astronomia': ['naturaleza'], 'observatorio': ['naturaleza']
+};
+const CATS_WP_NOCHE = ['musica en vivo', 'recital', 'show', 'stand up', 'folklore', 'musical'];
+const textoPlano = h => {
+  // DOMParser arma un documento inerte: no corre scripts ni carga imágenes
+  try {
+    const doc = new DOMParser().parseFromString(String(h || ''), 'text/html');
+    doc.querySelectorAll('script, style, noscript, template, iframe, object').forEach(x => x.remove());
+    // los párrafos y saltos de línea separan palabras
+    doc.querySelectorAll('p, br, div, li, h1, h2, h3, h4').forEach(x => x.after(' '));
+    return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+  catch(e){ return String(h || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim(); }
+};
+const nombreComparable = x => sinAcentos(textoPlano(x)).replace(/[^a-z0-9]+/g, ' ').trim();
+const deWP = u => typeof u === 'string' && u.startsWith(WP_ORIGEN) && !/["'<>\s]/.test(u) ? u : '';
+
+function recintoWP(r){
+  if(!r || typeof r !== 'object') return null;
+  const fijo = RECINTOS_WP[r.id] && INDICE_LUGARES.get(RECINTOS_WP[r.id]);
+  if(fijo) return fijo;
+  const n = nombreComparable(r.nombre);
+  if(n.length < 5) return null;
+  return PLACES.find(p => !String(p.id).startsWith('wp-') && p.type === 'lugar' && coordValida(p.coords) && nombreComparable(p.name) === n) || null;
+}
+
+function eventoWP(e){
+  if(!e || typeof e !== 'object' || !Number.isInteger(e.id) || e.id <= 0) return null;
+  const ini = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/.exec(String(e.inicio || ''));
+  if(!ini) return null;
+  const fin = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/.exec(String(e.fin || ''));
+  const titulo = textoPlano(e.titulo).slice(0, 140);
+  if(titulo.length < 2) return null;
+  const hora = e.todo_el_dia === true ? null : ini[2];
+  // un día, o uno por día si dura varios (muestras, ferias), hasta 30
+  const fechas = [{ fecha: ini[1], hora, estado: 'confirmado' }];
+  if(fin && fin[1] > ini[1]){
+    const d = new Date(ini[1] + 'T12:00:00Z'), hasta = fin[1];
+    for(let i = 0; i < 30; i++){
+      d.setUTCDate(d.getUTCDate() + 1);
+      const f = d.toISOString().slice(0, 10);
+      if(f > hasta) break;
+      fechas.push({ fecha: f, hora: null, estado: 'confirmado' });
+    }
+  }
+  const r = e.recinto || {};
+  const lugar = recintoWP(r);
+  const nombreRecinto = textoPlano(r.nombre).slice(0, 120);
+  const dir = textoPlano(r.dir).slice(0, 160);
+  const ciudad = textoPlano(r.ciudad).slice(0, 60);
+  const addr = [nombreRecinto, dir && nombreComparable(dir) !== nombreComparable(nombreRecinto) ? dir : '',
+                ciudad && !/^posadas$/i.test(ciudad) ? ciudad : ''].filter(Boolean).join(' · ');
+  const cats = new Set();
+  (Array.isArray(e.cats) ? e.cats : []).forEach(c => {
+    const k = nombreComparable(c);
+    (CATS_WP[k] || []).forEach(x => cats.add(x));
+    if(CATS_WP_NOCHE.includes(k)) cats.add(hora && hora >= '21:00' ? 'nocturna' : 'cultura');
+  });
+  if(!cats.size) cats.add('cultura');
+  const story = textoPlano(e.desc).slice(0, 900);
+  return limpiarLugar({
+    id: 'wp-' + e.id, type: 'evento', name: titulo,
+    addr, coords: lugar ? lugar.coords : null,
+    cats: [...cats], img: deWP(e.img), web: deWP(e.url),
+    price: textoPlano(e.costo).slice(0, 60),
+    org: 'Agenda Ciudad · Turismo Posadas',
+    story: story && nombreComparable(story) !== nombreComparable(titulo) ? story : '',
+    schedule: { kind: 'fechas', fechas }
+  });
+}
+
+// Suma los eventos de WordPress a PLACES (y saca los anteriores). Si un evento ya
+// está en el catálogo propio con el mismo nombre y la misma fecha, no se repite.
+function sumarAgendaWP(){
+  for(let i = PLACES.length - 1; i >= 0; i--) if(String(PLACES[i].id).startsWith('wp-')) PLACES.splice(i, 1);
+  if(!AGENDA_WP.length){ indexarLugares(); return 0; }
+  const propios = new Set();
+  PLACES.forEach(p => (p.schedule && p.schedule.fechas || []).forEach(f => propios.add(nombreComparable(p.name) + '|' + f.fecha)));
+  const vistos = new Set();
+  let n = 0;
+  AGENDA_WP.forEach(e => {
+    const L = eventoWP(e);
+    if(!L) return;
+    const clave = nombreComparable(L.name) + '|' + L.schedule.fechas[0].fecha;
+    if(propios.has(clave) || vistos.has(clave)) return;
+    vistos.add(clave);
+    PLACES.push(fusionar(L)); n++;
+  });
+  indexarLugares();
+  return n;
+}
+
+function aplicarAgendaWP(texto){
+  const d = JSON.parse(texto);
+  AGENDA_WP = Array.isArray(d) ? d.slice(0, 300) : [];
+  agendaWPTexto = texto;
+  return sumarAgendaWP();
+}
+function usarAgendaWPGuardada(){
+  if(!CONFIG.agendaWP) return;
+  let t = '';
+  try { t = localStorage.getItem(CLAVE_AGENDA_WP) || ''; } catch(e){}
+  if(!t) return;
+  try { aplicarAgendaWP(t); } catch(e){ try { localStorage.removeItem(CLAVE_AGENDA_WP); } catch(_){} }
+}
+async function cargarAgendaWP(){
+  if(!CONFIG.agendaWP || !SB_ON()) return;
+  try {
+    const corte = typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? { signal: AbortSignal.timeout(8000) } : null;
+    const r = await sbRpc('agenda_externa', {}, corte);
+    if(!r || !Array.isArray(r.eventos)) return;
+    const texto = JSON.stringify(r.eventos);
+    if(texto === agendaWPTexto) return;
+    const n = aplicarAgendaWP(texto);
+    try { if(texto.length < 1500000) localStorage.setItem(CLAVE_AGENDA_WP, texto); } catch(e){}
+    despuesDeCargar(PLACES.length, 'agenda de Turismo (' + n + ' eventos de WordPress)');
+  } catch(e){
+    // sin la PARTE 9 instalada (404) o sin conexión: queda lo guardado
+    if(!noExiste(e)) console.warn('[48 HS] No se pudo leer la agenda de Turismo:', e.message);
+  }
 }
 
 // Al arrancar, antes de dibujar: la copia guardada (si hay)
@@ -2712,7 +2988,10 @@ const CLAVE_CATALOGO_VERSION = 'pv-catalogo-version';
 async function cargarCatalogoPublicado(){
   let ver = null;
   try { ver = Number(localStorage.getItem(CLAVE_CATALOGO_VERSION)) || null; } catch(e){}
-  const r = await sbRpc('catalogo_actual', { p_version: catalogoTexto ? ver : null });
+  // con tope de tiempo: si la base tarda, se sigue con lo guardado o con catalogo.json
+  const corte = typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? { signal: AbortSignal.timeout(8000) } : null;
+  const r = await sbRpc('catalogo_actual', { p_version: catalogoTexto ? ver : null }, corte);
+  ultimaRevisionCatalogo = Date.now();
   if(!r || r.vacio || !Number.isInteger(r.version)) return false;
   if(r.igual) return true;                              // ya tiene esa versión: no se baja de nuevo
   if(!r.datos || typeof r.datos !== 'object') return false;
@@ -2727,10 +3006,21 @@ async function cargarCatalogoPublicado(){
   return true;
 }
 
+let ultimaRevisionCatalogo = 0;
 async function cargarCatalogoJSON(){
   if(CONFIG.catalogoPanel && SB_ON()){
     try { if(await cargarCatalogoPublicado()) return; }
-    catch(e){ if(!noExiste(e)) console.warn('[48 HS] No se pudo leer el catálogo publicado:', e.message); }
+    catch(e){
+      if(!noExiste(e)){
+        console.warn('[48 HS] No se pudo leer el catálogo publicado:', e.message);
+        // La base no respondió (sin conexión, caída, pausada). Si este teléfono ya tiene
+        // guardado lo que publicó Turismo, se queda con eso: catalogo.json es más viejo y
+        // lo pisaría, en pantalla y en la copia guardada.
+        let guardada = null;
+        try { guardada = localStorage.getItem(CLAVE_CATALOGO_VERSION); } catch(_){}
+        if(catalogoTexto && guardada) return;
+      }
+    }
   }
   try { localStorage.removeItem(CLAVE_CATALOGO_VERSION); } catch(e){}
   try {
@@ -2886,7 +3176,7 @@ function enviarEstadisticas(){
      solo recibe datos, nunca los devuelve a la web.
    =================================================================== */
 const CLAVE_USUARIO = 'pv-usuario', CLAVE_INTERESES = 'pv-intereses', CLAVE_INGRESO = 'pv-ingreso';
-const POLITICA_VERSION = '2026-11-08';
+const POLITICA_VERSION = '2026-11-12';
 let USUARIO = cargarUsuario();
 
 function cargarUsuario(){
@@ -3129,6 +3419,144 @@ function cerrarInvitacion(){
 }
 
 /* ===================================================================
+   ASISTENTE "PREGUNTALE A 48h" (Gemini)
+   La web manda solo la pregunta, el idioma y hasta 3 intereses. La
+   función del servidor arma la lista de eventos, aplica los límites y
+   devuelve un texto y los id sugeridos. Los id se vuelven a validar
+   acá: solo se muestran lugares que existen y no vencieron.
+   Si no hay respuesta (límite, demanda, apagado), se sugiere con lo
+   que ya sabe el teléfono, sin gastar nada.
+   =================================================================== */
+const IA = { estado: null, pregunta: '', texto: '', ids: [], quedan: null, ocupada: false };
+const CLAVE_IA = 'pv-ia';
+const iaHoy = () => fechaISO(ahora());
+function iaCupoLocal(){
+  try {
+    const o = JSON.parse(localStorage.getItem(CLAVE_IA) || 'null');
+    return o && o.dia === iaHoy() && Number.isInteger(o.quedan) ? o.quedan : null;
+  } catch(e){ return null; }
+}
+function iaGuardarCupo(n){
+  if(!Number.isInteger(n)) return;
+  try { localStorage.setItem(CLAVE_IA, JSON.stringify({ dia: iaHoy(), quedan: Math.max(0, n) })); } catch(e){}
+}
+const iaActivo = () => !!(CONFIG.asistente && SB_ON());
+// Número al azar de este teléfono: el tope por persona no castiga a todos los
+// que comparten la IP (hotel, datos móviles). No identifica a nadie.
+function iaDispositivo(){
+  try {
+    let id = localStorage.getItem('pv-ia-id');
+    if(!/^[a-z0-9]{24}$/.test(id || '')){
+      const a = new Uint8Array(12); crypto.getRandomValues(a);
+      id = Array.from(a, x => x.toString(16).padStart(2, '0')).join('');
+      localStorage.setItem('pv-ia-id', id);
+    }
+    return id;
+  } catch(e){ return ''; }
+}
+
+function renderAsistente(){
+  const sec = document.getElementById('asistente');
+  if(!sec) return;
+  sec.hidden = !iaActivo() || hayFiltros();
+  if(sec.hidden) return;
+  const resp = document.getElementById('ia-resp');
+  const ocupada = IA.ocupada;
+  document.getElementById('ia-enviar').disabled = ocupada;
+  sec.querySelectorAll('.ia-chips button').forEach(b => b.disabled = ocupada);
+  if(ocupada){
+    resp.innerHTML = (IA.pregunta ? `<p class="ia-pregunta">${esc(IA.pregunta)}</p>` : '')
+      + `<div class="ia-pensando"><img class="ia-mini" src="marca/turi.svg" alt=""> ${esc(t('ia.pensando'))}</div>`;
+    return;
+  }
+  if(!IA.estado){ resp.innerHTML = ''; return; }
+  const vivos = new Set(vigentes().map(p => p.id));
+  const lugares = IA.ids.filter(id => vivos.has(id)).map(byId).filter(Boolean).slice(0, 4);
+  let html = IA.pregunta ? `<p class="ia-pregunta">${esc(IA.pregunta)}</p>` : '';
+  const aviso = IA.estado !== 'ok';
+  const texto = aviso ? t('ia.' + IA.estado) : IA.texto;
+  let dice = texto ? `<p class="ia-texto${aviso ? ' aviso' : ''}">${esc(texto)}</p>` : '';
+  if(!lugares.length && aviso && IA.estado !== 'corta') dice += `<p class="ia-texto aviso">${esc(t('ia.nada'))}</p>`;
+  if(dice) html += `<div class="ia-dice"><img class="ia-mini" src="marca/turi.svg" alt=""><div class="ia-burbuja">${dice}</div></div>`;
+  if(lugares.length) html += `<div class="pv-rail">${lugares.map((p, i) => cardHTML(p, i, '')).join('')}</div>`;
+  if(IA.estado === 'ok' && Number.isInteger(IA.quedan)){
+    html += `<p class="ia-quedan">${esc(IA.quedan === 0 ? t('ia.ultima') : IA.quedan === 1 ? t('ia.queda1') : t('ia.quedan', { n: IA.quedan }))}</p>`;
+  }
+  resp.innerHTML = html;
+}
+
+// Sugerencias sin IA: palabras de la pregunta, después los intereses, después lo de hoy
+const IA_VACIAS = new Set('algo algun alguna para esta este estos estas donde como cuando hacer quiero queremos puedo podemos tiene tienen hay ahora unos unas sobre entre desde hasta muito para fazer onde quero posso tem agora'.split(' '));
+function sugerenciasLocales(pregunta){
+  const palabras = sinAcentos(pregunta).split(/[^a-z0-9ñ]+/).filter(w => w.length > 3 && !IA_VACIAS.has(w)).map(w => w.slice(0, 5));
+  const vivos = vigentes();
+  let lista = [];
+  if(palabras.length){
+    lista = vivos.map(p => ({ p, n: palabras.filter(w => textoBuscable(p).includes(w)).length }))
+      .filter(x => x.n).sort((a, b) => b.n - a.n || (a.p.type === 'evento' ? 0 : 1) - (b.p.type === 'evento' ? 0 : 1) || (a.p._orden || 0) - (b.p._orden || 0))
+      .map(x => x.p);
+  }
+  if(!lista.length) lista = recomendaciones(4).map(x => x.p);
+  if(!lista.length) lista = vivos.filter(p => p.type === 'evento' && p.group === 'hoy');
+  if(!lista.length) lista = vivos.filter(p => p.type === 'evento' && p.group);
+  return lista.slice(0, 4).map(p => p.id);
+}
+
+function interesesTop(){
+  const C = (INTERESES && INTERESES.c) || {};
+  return Object.keys(C).filter(c => C[c] > 0).sort((a, b) => C[b] - C[a]).slice(0, 3);
+}
+
+function chipAsistente(b){
+  const inp = document.getElementById('ia-pregunta');
+  inp.value = b.textContent.trim();
+  preguntarAsistente();
+}
+
+let iaUltima = 0;
+async function preguntarAsistente(ev){
+  if(ev) ev.preventDefault();
+  if(IA.ocupada || !iaActivo()) return;
+  const inp = document.getElementById('ia-pregunta');
+  const pregunta = inp.value.replace(/\s+/g, ' ').trim().slice(0, 300);
+  if(document.getElementById('ia-trampa').value) return;
+  if(pregunta.length < 3){ Object.assign(IA, { estado: 'corta', pregunta: '', texto: '', ids: [] }); renderAsistente(); inp.focus(); return; }
+  // un respiro entre preguntas, para no gastar con dobles toques
+  if(Date.now() - iaUltima < 3000) return;
+  iaUltima = Date.now();
+  IA.pregunta = pregunta;
+  const sinIA = motivo => { Object.assign(IA, { estado: motivo, texto: '', ids: sugerenciasLocales(pregunta) }); };
+  // si este teléfono ya sabe que no le quedan, ni pregunta
+  if(iaCupoLocal() === 0){ sinIA('limite'); renderAsistente(); return; }
+  IA.ocupada = true; renderAsistente();
+  try {
+    const r = await fetch(CONFIG.supabase.url + '/functions/v1/asistente', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': CONFIG.supabase.anonKey },
+      body: JSON.stringify({ pregunta, idioma: LANG, intereses: interesesTop(), dispositivo: iaDispositivo(), trampa: '' }),
+      signal: AbortSignal.timeout ? AbortSignal.timeout(20000) : undefined
+    });
+    let j = null;
+    try { j = await r.json(); } catch(e){}
+    if(j && j.ok && typeof j.texto === 'string'){
+      Object.assign(IA, { estado: 'ok', texto: j.texto.slice(0, 600), ids: Array.isArray(j.ids) ? j.ids.filter(idValido).slice(0, 4) : [],
+                          quedan: Number.isInteger(j.quedan) ? j.quedan : null });
+      iaGuardarCupo(IA.quedan);
+    } else {
+      const m = j && j.motivo;
+      if(m === 'limite_persona'){ iaGuardarCupo(0); sinIA('limite'); }
+      else if(m === 'limite_dia' || m === 'ocupado') sinIA('ocupado');
+      else if(m === 'pregunta') sinIA('corta');
+      else sinIA('apagado');
+    }
+  } catch(e){
+    sinIA(navigator.onLine === false ? 'apagado' : 'ocupado');
+  }
+  IA.ocupada = false;
+  renderAsistente();
+}
+
+/* ===================================================================
    MIS PLANES (guardados e inscripciones, en este teléfono)
    =================================================================== */
 const CLAVE_PLANES = 'pv-planes-v1';
@@ -3229,7 +3657,7 @@ function borrarDatosLocales(){
   }
   clearTimeout(borrarTimer);
   bajaUsuario();
-  ['pv-planes-v1', 'pv-novedades', 'pv-usuario', 'pv-intereses', 'pv-ingreso', 'pv-idioma', 'pv-catalogo', 'pv-catalogo-version', 'pv-equipo'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  ['pv-planes-v1', 'pv-novedades', 'pv-usuario', 'pv-intereses', 'pv-ingreso', 'pv-invita', 'pv-idioma', 'pv-catalogo', 'pv-catalogo-version', 'pv-agenda-wp', 'pv-equipo', 'pv-ia', 'pv-ia-id', 'pv-turi'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
   try { sessionStorage.removeItem('pv-sesion'); } catch(e){}
   PLANES.guardados = []; PLANES.inscripciones = []; INTERESES = interesesVacios();
   actualizarBadge(); pintarBotonesGuardar(); renderPlanes();
@@ -3591,10 +4019,16 @@ function revisarEnlaceCancelacion(){
 //   ?lugar=catamaran                         abre la ficha
 //   ?lugar=casco&fecha=2026-12-05&reservar=1 abre el formulario en esa fecha
 //                                            (lo usa el aviso de lista de espera)
+let enlaceLugarResuelto = false;
 function revisarEnlaceLugar(){
+  if(enlaceLugarResuelto) return;
   const qs = new URLSearchParams(location.search);
   const id = qs.get('lugar');
-  if(!id || !idValido(id) || !byId(id)) return;
+  if(!id || !idValido(id)){ enlaceLugarResuelto = true; return; }
+  // Puede ser un lugar que todavía no bajó (primera visita): se prueba de nuevo
+  // cuando llega el catálogo (despuesDeCargar).
+  if(!byId(id)) return;
+  enlaceLugarResuelto = true;
   enterApp(true);
   const f = qs.get('fecha');
   const fecha = f && /^\d{4}-\d{2}-\d{2}$/.test(f) ? f : null;
@@ -3659,6 +4093,7 @@ function switchView(v, opts){
     tb.setAttribute('aria-selected', tb.dataset.v===v);
   });
   document.querySelector('.app-head').classList.toggle('over-map', v==='explore');
+  turiVista();
   if(v==='planes') renderPlanes();
   if(v==='agenda' && paraVosPendiente) renderParaVos();
   if(v==='explore' && map){
@@ -3670,9 +4105,193 @@ function switchView(v, opts){
   }
 }
 
+// ============ TURI EN EL MAPA ============
+// Frases fijas (no es IA): elige según la hora, el clima y lo que hay hoy.
+// "si" decide si aplica ahora; "ir" es qué pasa al tocar el globo.
+const TURI_FRASES = [
+  { id: 'hola',     si: c => c.primeraVez, ir: 'ia',
+    es: '¡Hola! Soy Turi, el tucán de 48h. Tocame cuando quieras ideas para salir.',
+    pt: 'Oi! Sou o Turi, o tucano do 48h. Toque em mim quando quiser ideias para sair.' },
+  { id: 'hoy',      si: c => c.eventosHoy > 1, ir: 'agenda',
+    es: 'Hoy hay {n} eventos en la agenda. ¿Los vemos?',
+    pt: 'Hoje tem {n} eventos na agenda. Vamos ver?' },
+  { id: 'hoy1',     si: c => c.eventosHoy === 1, ir: 'agenda',
+    es: 'Hoy hay un evento en la agenda. ¿Te lo muestro?',
+    pt: 'Hoje tem um evento na agenda. Quer ver?' },
+  { id: 'manana',   si: c => c.hora >= 6 && c.hora < 11,
+    es: '¡Buen día! ¿Unos mates mirando el Paraná? La Costanera está linda a esta hora.',
+    pt: 'Bom dia! Que tal um chimarrão olhando o rio Paraná? A Costanera fica linda a essa hora.' },
+  { id: 'almuerzo', si: c => c.hora >= 12 && c.hora < 15, ir: 'ia',
+    es: '¿Hambre? Preguntame dónde comer algo típico.',
+    pt: 'Com fome? Me pergunte onde comer algo típico.' },
+  { id: 'siesta',   si: c => c.hora >= 14 && c.hora < 17,
+    es: 'En Misiones la siesta es sagrada… pero el mapa no duerme.',
+    pt: 'Em Misiones a sesta é sagrada… mas o mapa não dorme.' },
+  { id: 'atardecer', si: c => c.hora >= 18 && c.hora < 20 && !c.lluvia,
+    es: 'Se viene el atardecer sobre el Paraná: la Costanera es el mejor palco.',
+    pt: 'O pôr do sol sobre o Paraná está chegando: a Costanera é o melhor lugar para ver.' },
+  { id: 'noche',    si: c => c.hora >= 20 || c.hora < 2, ir: 'ia',
+    es: '¿Salimos esta noche? Tocame y te cuento qué hay.',
+    pt: 'Vamos sair hoje à noite? Toque em mim e eu conto o que tem.' },
+  { id: 'trasnoche', si: c => c.hora >= 2 && c.hora < 6,
+    es: '¿Todavía despierto? Yo también. Mañana te espera la agenda.',
+    pt: 'Ainda acordado? Eu também. Amanhã a agenda te espera.' },
+  { id: 'calor',    si: c => c.temp !== null && c.temp >= 30,
+    es: '¡Qué calor! Tomá agua y buscá la sombra.',
+    pt: 'Que calor! Beba água e procure uma sombra.' },
+  { id: 'fresco',   si: c => c.temp !== null && c.temp <= 12, ir: 'ia',
+    es: 'Hace fresco: buen momento para un museo o un café.',
+    pt: 'Está fresquinho: bom momento para um museu ou um café.' },
+  { id: 'lluvia',   si: c => c.lluvia, ir: 'ia',
+    es: 'Parece que llueve. Los museos y los cafés son un buen plan.',
+    pt: 'Parece que está chovendo. Museus e cafés são um bom programa.' },
+  { id: 'puntos',   si: () => true,
+    es: 'Tocá cualquier círculo del mapa y te cuento qué es.',
+    pt: 'Toque em qualquer círculo do mapa e eu conto o que é.' },
+  { id: 'planes',   si: () => true,
+    es: 'Lo que te guste lo podés guardar en "Mis planes" para no perderlo.',
+    pt: 'O que você gostar pode salvar em "Mis planes" para não perder.' },
+  { id: 'filtros',  si: () => true, ir: 'filtros',
+    es: 'Con "Filtros" te muestro solo lo que te interesa.',
+    pt: 'Com "Filtros" eu mostro só o que te interessa.' },
+  { id: 'encarna',  si: () => true,
+    es: 'Desde la Costanera se ve Encarnación, en Paraguay, del otro lado del río.',
+    pt: 'Da Costanera dá para ver Encarnación, no Paraguai, do outro lado do rio.' },
+  { id: 'guarani',  si: () => true,
+    es: '¡Mba\'éichapa! Así se pregunta "¿cómo estás?" en guaraní.',
+    pt: 'Mba\'éichapa! É assim que se pergunta "tudo bem?" em guarani.' },
+  { id: 'chipa',    si: () => true, ir: 'ia',
+    es: '¿Probaste el chipá? Es tan de acá como yo.',
+    pt: 'Já provou chipá? É tão daqui quanto eu.' },
+  { id: 'pico',     si: () => true,
+    es: 'Dato de tucán: mi pico parece pesado, pero es liviano y hueco por dentro.',
+    pt: 'Curiosidade de tucano: meu bico parece pesado, mas é leve e oco por dentro.' }
+];
+const TURI_CONTEXTO = new Set(['hola', 'hoy', 'hoy1', 'manana', 'almuerzo', 'siesta', 'atardecer', 'noche', 'trasnoche', 'calor', 'fresco', 'lluvia']);
+const TURI = { dichas: 0, ultima: 0, entrada: 0, globoHasta: 0, frase: null, reloj: null };
+
+function turiEstado(){
+  try {
+    const o = JSON.parse(localStorage.getItem('pv-turi') || 'null') || {};
+    if(o.dia !== iaHoy()) return { dia: iaHoy(), cerradas: 0, vistas: o.vistas || [], conocido: !!o.conocido };
+    return { dia: o.dia, cerradas: o.cerradas || 0, vistas: o.vistas || [], conocido: !!o.conocido };
+  } catch(e){ return { dia: iaHoy(), cerradas: 0, vistas: [], conocido: false }; }
+}
+function turiGuardar(o){ try { localStorage.setItem('pv-turi', JSON.stringify(o)); } catch(e){} }
+
+function turiOcupado(){
+  if(document.hidden || vistaActual !== 'explore') return true;
+  if(document.querySelector('#splash:not(.hidden), #overlay.on, #sheet.on, #busca-ov.on, #cancel-overlay.on, #filtros-overlay.on, #ingreso-ov.on, #sos-modal.on, #ticket-overlay.on, #dir-panel.on, .modal.on')) return true;
+  const pop = document.getElementById('mpop');
+  return !!(pop && !pop.hidden);
+}
+
+function turiVista(){
+  const b = document.getElementById('turi');
+  if(!b) return;
+  const ver = !!CONFIG.turi && vistaActual === 'explore';
+  b.hidden = !ver;
+  if(!ver){ ocultarGlobo(); return; }
+  if(!TURI.entrada) TURI.entrada = Date.now();
+  if(!TURI.reloj) TURI.reloj = setInterval(turiTic, 2000);
+}
+
+function saltarTuri(){
+  const b = document.getElementById('turi');
+  if(!b || b.hidden) return;
+  b.classList.remove('salta'); void b.offsetWidth; b.classList.add('salta');
+}
+
+function turiContexto(est){
+  const hora = ahora().getHours();
+  const c = climaUlt;
+  const lluvia = !!(c && [51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99].includes(c.code));
+  let eventosHoy = 0;
+  try { eventosHoy = vigentes().filter(p => p.type === 'evento' && p.group === 'hoy' && p._fecha).length; } catch(e){}
+  return { hora, temp: c ? c.temp : null, lluvia, eventosHoy, primeraVez: !est.conocido };
+}
+
+function elegirFrase(){
+  const est = turiEstado(), ctx = turiContexto(est);
+  const recientes = new Set(est.vistas);
+  const libres = TURI_FRASES.filter(f => f.si(ctx) && !recientes.has(f.id) && !(f.ir === 'ia' && !iaActivo() && f.id !== 'hola'));
+  if(!libres.length) return null;
+  // primero lo que tiene que ver con este momento; si no, un dato o consejo al azar
+  const ahoraMismo = libres.filter(f => TURI_CONTEXTO.has(f.id));
+  const lista = ahoraMismo.length ? ahoraMismo : libres;
+  const f = lista[ahoraMismo.length ? 0 : Math.floor(Math.random() * lista.length)];
+  est.vistas = [f.id, ...est.vistas.filter(x => x !== f.id)].slice(0, 12);
+  est.conocido = true;
+  turiGuardar(est);
+  return { f, n: ctx.eventosHoy };
+}
+
+function decirTuri(forzar){
+  const elegida = elegirFrase();
+  if(!elegida){ if(forzar) saltarTuri(); return; }
+  const { f, n } = elegida;
+  TURI.frase = f; TURI.dichas++; TURI.ultima = Date.now(); TURI.globoHasta = Date.now() + 9000;
+  const txt = document.getElementById('turi-txt');
+  txt.textContent = (f[LANG] || f.es).replace('{n}', n);
+  if(f.ir){ const m = document.createElement('span'); m.className = 'mas'; m.textContent = t('turi.ir_' + (f.ir === 'ia' && !iaActivo() ? 'agenda' : f.ir)); txt.appendChild(m); }
+  document.getElementById('turi-globo').hidden = false;
+  saltarTuri();
+}
+
+function ocultarGlobo(){
+  const g = document.getElementById('turi-globo');
+  if(g) g.hidden = true;
+  TURI.globoHasta = 0;
+}
+
+function turiTic(){
+  if(!CONFIG.turi) return;
+  const g = document.getElementById('turi-globo');
+  if(turiOcupado()){ if(g && !g.hidden) ocultarGlobo(); return; }
+  const ya = Date.now();
+  if(g && !g.hidden){ if(ya > TURI.globoHasta) ocultarGlobo(); return; }
+  const est = turiEstado();
+  const callado = est.cerradas >= 2 || TURI.dichas >= (CONFIG.turi.maximo || 5);
+  const espera = TURI.dichas ? (CONFIG.turi.cada || 100) * 1000 : (CONFIG.turi.primero || 12) * 1000;
+  const desde = TURI.dichas ? TURI.ultima : TURI.entrada;
+  if(!callado && ya - desde >= espera){ decirTuri(); return; }
+  // de vez en cuando, un saltito para que se note que está vivo
+  if(ya - (TURI.ultimoSalto || TURI.entrada) > 25000 && Math.random() < 0.15){ TURI.ultimoSalto = ya; saltarTuri(); }
+}
+
+function irDesdeTuri(destino){
+  ocultarGlobo();
+  if(destino === 'filtros'){ abrirFiltros(); return; }
+  switchView('agenda');
+  if(destino === 'ia' && iaActivo()){
+    setTimeout(() => {
+      const sec = document.getElementById('asistente');
+      if(!sec || sec.hidden) return;
+      sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => { const i = document.getElementById('ia-pregunta'); if(i) i.focus({ preventScroll: true }); }, 450);
+    }, 250);
+  }
+}
+
+// Tocar a Turi: con asistente, lleva a preguntarle; si no, dice algo
+function tocarTuri(){
+  if(iaActivo()){ irDesdeTuri('ia'); return; }
+  const g = document.getElementById('turi-globo');
+  if(g && !g.hidden) ocultarGlobo(); else decirTuri(true);
+}
+function tocarGlobo(){
+  const f = TURI.frase;
+  if(f && f.ir) irDesdeTuri(f.ir); else ocultarGlobo();
+}
+// Cerrar el globo: si lo cierra dos veces en el día, Turi no habla más hasta mañana (pero sigue ahí)
+function callarTuri(){
+  ocultarGlobo();
+  const est = turiEstado(); est.cerradas++; turiGuardar(est);
+}
+
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-11-10-2';
+const APP_VERSION = 'pv-2026-11-12-3';
 
 function esEquipo(){
   try {
@@ -3755,7 +4374,9 @@ function renderPie(){
 function heroPlace(){
   const elegido = byId(CONFIG.destacado);
   if(elegido && !elegido._vencido) return elegido;
-  const proximo = vigentes().filter(p=>p._fecha && p.group!=='hoy' && p.img).sort((a,b)=>a._orden-b._orden)[0];
+  // primero lo del catálogo propio; los de la Agenda Ciudad (afiches verticales) solo si no hay otra cosa
+  const candidatos = vigentes().filter(p=>p._fecha && p.group!=='hoy' && p.img).sort((a,b)=>a._orden-b._orden);
+  const proximo = candidatos.find(p => !String(p.id).startsWith('wp-')) || candidatos[0];
   if(proximo) return proximo;
   return vigentes().find(p => p.img) || vigentes()[0];
 }
@@ -3989,6 +4610,7 @@ function renderTimeline(){
   }
   renderDirectorio(lista);
   renderParaVos();
+  renderAsistente();
 }
 
 // ============ DIRECTORIO (lugares sin fecha y excursiones) ============
@@ -4114,7 +4736,21 @@ function openSheet(id, refresco){
   }
   const foto = urlSegura(p.img), shImg = document.getElementById('sh-img'), ph = document.getElementById('sh-ph');
   shImg.hidden = !foto; ph.hidden = !!foto;
-  if(foto){ shImg.classList.remove('img-rota'); shImg.src = foto; shImg.alt = tx(p,'name'); }
+  const hero = shImg.parentElement;
+  hero.classList.remove('vertical');
+  // si la foto anterior no cargó, quedó oculta: cada ficha empieza de cero
+  delete shImg.dataset.rota; shImg.style.visibility = '';
+  if(foto){
+    shImg.classList.remove('img-rota'); shImg.alt = tx(p,'name');
+    // un afiche vertical recortado a lo ancho pierde el texto: se muestra entero
+    shImg.onload = () => {
+      if(shImg.src !== new URL(foto, location.href).href || shImg.classList.contains('img-rota')) return;
+      const vertical = shImg.naturalHeight > shImg.naturalWidth * 1.15;
+      hero.classList.toggle('vertical', vertical);
+      if(vertical) hero.style.setProperty('--fondo-flyer', 'url("' + urlCSS(foto) + '")');
+    };
+    shImg.src = foto;
+  }
   else {
     shImg.removeAttribute('src');
     const c = catPrincipal(p);
@@ -5377,7 +6013,9 @@ let ticketQtyNum = 1, ticketPlace = null, ticketFechas = [], ticketFecha = null;
 let ticketMax = CONFIG.maxPorPersona;
 
 // Inscripción gratuita con cupo administrado por la base
-const esReservable = p => p.ticketType !== 'paid' && !!p.cupoTotal && SB_ON();
+// (_sinReserva: la base de inscripciones respondió que no conoce esa actividad; pasa con
+//  las que se cargan desde el panel y todavía no se dieron de alta para reservar)
+const esReservable = p => p.ticketType !== 'paid' && !!p.cupoTotal && SB_ON() && !p._sinReserva;
 const pesos = n => '$' + Number(n).toLocaleString('es-AR');
 
 function modoTicket(){
@@ -5414,7 +6052,9 @@ function openTicketModal(p, fechaPedida){
   }
   document.getElementById('ticket-consent').checked = false;
   document.getElementById('ticket-qty-num').textContent = '1';
-  document.getElementById('ticket-img').src = urlSegura(p.img);
+  const tImg = document.getElementById('ticket-img');
+  delete tImg.dataset.rota; tImg.style.visibility = '';
+  if(urlSegura(p.img)) tImg.src = urlSegura(p.img); else { tImg.removeAttribute('src'); tImg.style.visibility = 'hidden'; }
 
   pintarTicket();
   document.getElementById('ticket-overlay').classList.add('on');
@@ -5673,6 +6313,22 @@ async function submitTicket(){
       p_trampa:    trampa ? trampa.value : null
     });
 
+    if(r && !r.ok && r.motivo === 'actividad_inexistente'){
+      // La actividad está publicada pero no dada de alta para reservar con cupo:
+      // el pedido sale por WhatsApp, como en las actividades sin cupo.
+      p._sinReserva = true;
+      const wappURL = 'https://wa.me/'+CONFIG.wapp+'?text='+encodeURIComponent(armarMensaje(p, name, email, phone, qty));
+      let abierto = false;
+      if(wapTab && !wapTab.closed){ try { wapTab.opener = null; } catch(e){} wapTab.location.href = wappURL; abierto = true; }
+      else { abierto = !!abrirPestana(wappURL); }
+      stat('whatsapp', p.id);
+      agregarInscripcion({ codigo: codigoLocal(), tipo: 'consulta', id: p.id, nombre: p.name,
+        fecha: fechaISO(fecha || hoyCero()), hora: fecha ? (horaDe(p, fecha) || '') : '', personas: qty, email, persona: name });
+      restaurar();
+      showTicketSuccess(p, datos, { tipo: 'wapp', wapp: wappURL, wappAbierto: abierto, fecha });
+      console.warn('[48 HS] "' + p.id + '" no está dada de alta para reservar: el pedido fue por WhatsApp.');
+      return;
+    }
     if(!r || !r.ok){
       const motivo = (r && r.motivo) || 'error';
       if(wapTab && !wapTab.closed) wapTab.close();
@@ -5874,6 +6530,7 @@ paso('conexión',    vigilarConexion);
 paso('estadísticas', iniciarEstadisticas);
 paso('ingreso', () => { if(USUARIO && !USUARIO.enBase) setTimeout(subirUsuario, 3000); });
 paso('catálogo guardado', usarCatalogoGuardado);
+paso('agenda de Turismo guardada', usarAgendaWPGuardada);
 paso('agenda',      hydrateAgenda);
 paso('emergencias', ()=>{
   const el = document.getElementById('sos-wapp');
@@ -5889,6 +6546,7 @@ paso('filtros',  () => {
 paso('listado',  renderTimeline);
 paso('planes',   () => { renderPlanes(); actualizarBadge(); });
 paso('catálogo', cargarCatalogo);
+paso('agenda de Turismo', cargarAgendaWP);
 paso('cupos',    cargarCupos);
 paso('clima',    cargarClima);
 paso('cancelación', revisarEnlaceCancelacion);
@@ -5908,6 +6566,13 @@ document.addEventListener('visibilitychange', ()=>{
   if(document.hidden) return;
   paso('agenda', ()=>{ hydrateAgenda(); renderHero(); renderDestacados(); renderTimeline(); renderPlanes(); });
   cargarCupos(); cargarClima();
+  // Un evento de último momento tiene que verse sin recargar: al volver a la pestaña se
+  // pregunta si hay una versión nueva del catálogo (la respuesta es mínima si no cambió).
+  if(Date.now() - ultimaRevisionCatalogo > 5 * 60 * 1000 && navigator.onLine !== false){
+    ultimaRevisionCatalogo = Date.now();
+    cargarCatalogo();
+    cargarAgendaWP();
+  }
 });
 </script>
 </body>

@@ -69,6 +69,7 @@
   [hidden] { display: none !important; }
   .guia { font-size: 0.86rem; color: var(--muted); }
   .guia ol { padding-left: 18px; margin: 6px 0 0; }
+  .tarjeta { scroll-margin-top: 90px; }
   .btn-chico { padding: 6px 12px; font-size: 0.8rem; border-radius: 10px; }
   .tag { font-size: 0.7rem; border-radius: 10px; padding: 2px 8px; font-weight: 700; background: rgba(255,209,102,0.16); color: #ffe3a3; margin-left: 6px; }
   .nota-aviso { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.4); color: #ffe3a3; border-radius: 12px; padding: 10px 14px; font-size: 0.86rem; margin: 10px 0; }
@@ -146,7 +147,7 @@
     <h1>Actualizar la web</h1>
     <p class="bajada">Subí la planilla (o cargá un evento rápido), revisá lo que cambia y publicá. Si algo sale mal, podés volver a la versión anterior.</p>
 
-    <div class="tarjeta">
+    <div class="tarjeta" id="web-ahora">
       <h2>Lo que muestra la web ahora</h2>
       <div id="actual-txt" class="guia">Cargando…</div>
       <div class="fila" style="margin-top:12px">
@@ -316,7 +317,9 @@
   </div>
 
 
-<script src="libs/importador.js"></script>
+<!-- "?v=": al cambiar importador.js hay que cambiar este número, así ningún navegador
+     se queda con la copia vieja guardada -->
+<script src="libs/importador.js?v=2026-11-10-3"></script>
 <script>
 'use strict';
 // Abierto como archivo desde la compu, "./" es la carpeta: se manda a la web publicada
@@ -382,7 +385,8 @@ const MOTIVOS = {
   lugar_invalido: 'Hay un lugar con un ID o nombre no válido.',
   demasiadas: 'Se publicó demasiadas veces en la última hora. Esperá un rato.',
   no_existe: 'Esa versión ya no existe.',
-  planilla: 'La planilla no se pudo guardar (el archivo está dañado o es demasiado grande).'
+  planilla: 'La planilla no se pudo guardar (el archivo está dañado o es demasiado grande).',
+  desactualizado: 'Otra persona publicó cambios mientras preparabas esto, así que no se publicó nada. Ya actualicé el panel: revisá de nuevo lo que cambia (o volvé a hacer la carga rápida) y publicá.'
 };
 const textoError = e => e && e.status === 404 ? 'El panel todavía no está instalado en la base (falta correr temporada.sql).'
   : 'No hay conexión con la base. Probá de nuevo en un rato.';
@@ -396,8 +400,31 @@ async function entrar(clave){
   $('entrar').hidden = true; $('panel').hidden = false; $('salir').hidden = false;
   pintarHistorial();
   await cargarActual();
-  prepararRapida();
+  await prepararRapida();
+  irAlEnlace();
 }
+
+/* Accesos directos: cargar.html#evento abre el formulario de evento nuevo, #fecha el de
+   otra fecha, y #planilla, #subir y #historial llevan a esa parte. Los usa la guía de
+   Turismo. Si todavía no se entró, se va ahí después de poner la clave. */
+const ENLACES = {
+  evento: () => abrirRapida('evento'),
+  fecha: () => abrirRapida('fecha'),
+  planilla: () => ir('web-ahora'),
+  subir: () => ir('zona'),
+  historial: () => ir('historial'),
+  rapida: () => ir('rapida')
+};
+function ir(id){
+  const e = $(id);
+  if(!e) return;
+  (e.closest('.tarjeta') || e).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function irAlEnlace(){
+  const f = ENLACES[decodeURIComponent(location.hash.slice(1)).toLowerCase()];
+  if(f && !$('panel').hidden) f();
+}
+window.addEventListener('hashchange', irAlEnlace);
 $('form-clave').addEventListener('submit', async ev => {
   ev.preventDefault();
   const m = $('clave-msg'); m.textContent = '';
@@ -587,16 +614,29 @@ $('publicar').addEventListener('click', async () => {
                       origen: NUEVO.origen };
     const archivo = NUEVO.origen === 'rapida' ? (NUEVO.archivoBase || '48 HS - Carga de datos.xlsx') : NUEVO.archivo;
     const r = await rpc('catalogo_publicar', { p_clave: CLAVE, p_datos: datos, p_resumen: resumen, p_nota: $('nota').value.trim() || null,
-                                              p_planilla: NUEVO.planilla ? aBase64(NUEVO.planilla) : null, p_archivo: archivo.slice(0, 120) });
-    if(!r.ok) throw Object.assign(new Error(MOTIVOS[r.motivo] || 'No se pudo publicar.'), { motivo: r.motivo });
+                                              p_planilla: NUEVO.planilla ? aBase64(NUEVO.planilla) : null, p_archivo: archivo.slice(0, 120),
+                                              p_base: (ACTUAL && ACTUAL.version) || 0 });
+    if(!r.ok){
+      if(r.motivo === 'desactualizado'){
+        // Se trae lo que publicó la otra persona. Una carga rápida armada sobre la planilla
+        // vieja ya no sirve (le faltaría lo nuevo): hay que hacerla de nuevo. El formulario
+        // queda con los datos cargados.
+        const eraRapida = NUEVO.origen === 'rapida';
+        if(eraRapida){ NUEVO = null; $('revision').hidden = true; $('publicar-caja').hidden = true; }
+        try { await refrescar(); await prepararRapida(); } catch(_){}
+        if(eraRapida){ abrirRapida(MODO); $('rapida-msg').textContent = MOTIVOS.desactualizado; return; }
+      }
+      throw Object.assign(new Error(MOTIVOS[r.motivo] || 'No se pudo publicar.'), { motivo: r.motivo });
+    }
     m.className = 'msg ok';
     m.textContent = `Listo: se publicó la versión ${r.version}. La web la muestra al abrirla o recargarla.`;
     const eraRapida = NUEVO.origen === 'rapida';
     NUEVO = null; $('nota').value = '';
     $('revision').hidden = true; $('publicar-caja').hidden = false; b.hidden = true;
     if(eraRapida) limpiarRapida();
-    await refrescar();
-    prepararRapida();
+    // ya se publicó: si falla la actualización de la pantalla no es un error de publicación
+    try { await refrescar(); await prepararRapida(); }
+    catch(_){ m.textContent += ' (No pude actualizar esta pantalla: recargá la página.)'; }
   } catch(e){
     m.className = 'msg err'; m.textContent = e.motivo ? e.message : textoError(e);
   } finally { b.disabled = false; b.textContent = 'Publicar en la web'; }

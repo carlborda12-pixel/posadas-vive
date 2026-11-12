@@ -10,7 +10,7 @@
    "Actualizar" se activa. Antes se activaba sola (skipWaiting en install)
    y la pagina se recargaba en medio de una inscripcion.
    =================================================================== */
-const VERSION = 'pv-2026-11-10-2';
+const VERSION = 'pv-2026-11-12-3';
 
 const CACHE_APP    = VERSION + '-app';     // la app en si
 const CACHE_MAPA   = VERSION + '-mapa';    // tiles del mapa
@@ -36,6 +36,7 @@ const OPCIONALES = [
   './marca/logo-48h.svg',
   './marca/logo-turismo.svg',
   './marca/apextech.svg',
+  './marca/turi.svg',
   './marca/inicio-hd.webp',
   './libs/leaflet/leaflet.js',
   './libs/leaflet/leaflet.css',

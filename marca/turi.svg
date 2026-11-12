@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs><clipPath id="c"><circle cx="100" cy="100" r="96"/></clipPath>
+    <radialGradient id="f" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#1b7a57"/><stop offset="1" stop-color="#0c3b2b"/></radialGradient></defs>
+  <circle cx="100" cy="100" r="96" fill="url(#f)"/>
+  <g clip-path="url(#c)">
+    <path d="M-10 150 C30 120 60 140 90 128 C120 116 150 140 210 120 L210 210 L-10 210Z" fill="#05a36f" opacity=".35"/>
+    <path d="M150 30 C170 20 190 30 196 50 C176 52 160 46 150 30Z" fill="#05a36f" opacity=".5"/>
+    <path d="M20 60 C10 44 16 26 30 18 C36 36 34 50 20 60Z" fill="#05a36f" opacity=".5"/>
+    <g transform="translate(6 10) scale(.88)">
+    <!-- cuerpo -->
+    <path d="M38 210 C34 160 48 128 82 120 C112 114 134 132 140 170 C144 192 142 210 142 210Z" fill="#1c1c1c" stroke="#0a0a0a" stroke-width="1"/>
+    <!-- cabeza -->
+    <circle cx="84" cy="92" r="44" fill="#141414"/>
+    <!-- pechera -->
+    <path d="M92 104 C112 106 124 120 122 142 C120 160 104 170 88 166 C76 150 74 124 92 104Z" fill="#fff8e7"/>
+    <path d="M86 166 C98 172 112 168 120 158 C116 172 104 180 92 178Z" fill="#e53935"/>
+    <!-- pico -->
+    <path d="M108 74 C134 56 176 60 196 92 C174 88 140 90 112 100Z" fill="#ffa726"/>
+    <path d="M112 100 C140 92 172 92 196 92 C182 110 146 118 116 112Z" fill="#fb8c00"/>
+    <path d="M182 74 C190 80 195 86 196 92 C192 100 186 106 178 110 C184 98 186 86 182 74Z" fill="#141414"/>
+    <path d="M110 76 C112 84 113 94 112 104" stroke="#e53935" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M114 101 C140 95 168 94 190 94" stroke="#c75c00" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- ojo -->
+    <circle cx="90" cy="80" r="15" fill="#ffb300"/>
+    <circle cx="90" cy="80" r="10.5" fill="#29b6f6"/>
+    <circle cx="91" cy="80" r="7" fill="#fff"/>
+    <circle cx="92.5" cy="80.5" r="4.2" fill="#141414"/>
+    <circle cx="94" cy="78.6" r="1.6" fill="#fff"/>
+    </g>
+  </g>
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#05a36f" stroke-width="3"/>
+</svg>

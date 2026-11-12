@@ -25,6 +25,7 @@
 │   ├── temporada.sql
 │   ├── cron.sql
 │   ├── auditoria.sql        ← control de seguridad de la base (solo lee)
+│   ├── salud.sql            ← estado de la base: espacio, uso, intentos de clave (solo lee)
 │   └── functions/avisos/index.ts
 └── datos/
     ├── 48 HS - Carga de datos.xlsx
@@ -44,7 +45,7 @@ Con la planilla en `datos/`, el importador se corre así:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | La app |
-| `sw.js` | Modo sin conexión (versión `pv-2026-11-10-2`) |
+| `sw.js` | Modo sin conexión (versión `pv-2026-11-10-3`) |
 | `reporte.html` | Reporte de uso para la Casa de Turismo |
 | `cargar.html` | Panel de carga para Turismo (con clave): sube la planilla, carga rápida de un evento, descarga de la planilla y publicación. Ver "Panel de carga" |
 | `libs/importador.js` | El importador de la planilla para el navegador (mismas reglas que `herramientas/importar_catalogo.py`) |
@@ -160,6 +161,8 @@ La revisión completa, lo que se corrigió y las reglas para que siga seguro est
 - Librerías externas: con `integrity`.
 - Secretos: nunca en archivos.
 - Base: correr `supabase/auditoria.sql` antes de cada temporada.
+- Base: correr `supabase/salud.sql` una vez por semana en temporada (o si la web anda lenta). Cada fila dice ok, atención o revisar, y qué hacer.
+- Asistente con IA: la clave de Gemini va **solo** en los secretos de Supabase (Edge Functions → Secrets).
 - Reporte: el enlace con clave va con `#` (`reporte.html#clave=...`), no con `?`.
 
 ## Íconos
@@ -236,7 +239,17 @@ La web se llama **48 HS** (antes PosadasVive). Por dentro quedan algunos nombres
 
    La página agrega las filas a la planilla guardada (Lugares y Agenda, con la observación "Carga rápida desde el panel") y la pasa por el mismo importador, así que tiene las mismas revisiones. Lo publicado queda en la planilla, y la próxima vez que bajen la planilla ya viene incluido. Si después suben una planilla vieja, el panel avisa que lo cargado rápido se perdería.
 
-La carga rápida y la descarga necesitan que la versión publicada tenga la planilla guardada. Las versiones publicadas antes del 10/11 no la tienen: subir la planilla completa una vez (aunque sea igual a la web, el panel deja publicarla para guardarla).
+La primera vez que se usa la carga rápida (o si la versión publicada no tiene planilla guardada), el formulario pide elegir la planilla ahí mismo; después queda guardada y no la pide más.
+
+**Dos personas a la vez:** si alguien publica mientras otra persona prepara un cambio, la segunda publicación se rechaza con un aviso y el panel trae lo nuevo. Así nadie borra sin querer lo que cargó otro.
+
+**Respaldo:** `catalogo.json` es lo que muestra la web si nunca se publicó nada desde el panel. Conviene actualizarlo cada tanto: en el panel, al pie, "copia del catálogo en JSON", y reemplazar `catalogo.json` en el repositorio.
+
+**Reservas:** las actividades gratis con cupo que se cargan desde el panel se piden por WhatsApp (la base de inscripciones todavía no las conoce). Ver SEGURIDAD.md, punto 24.
+
+**Accesos directos** (los usa la guía de Turismo): `cargar.html#evento` abre el formulario de evento nuevo, `#fecha` el de otra fecha, y `#planilla`, `#subir` e `#historial` llevan a esa parte. Si no se entró, van ahí después de poner la clave.
+
+**Al cambiar `libs/importador.js`:** cambiar el número de `?v=` en `cargar.html` (línea del `<script src="libs/importador.js?v=...">`).
 
 **Para activarlo (una vez):**
 1. Correr `supabase/temporada.sql` (PARTE 8). Si ya estaba corrido, correrlo de nuevo cuando haya cambios en la PARTE 8 (por ejemplo, la descarga de la planilla y la carga rápida, del 10/11).
@@ -249,6 +262,69 @@ La carga rápida y la descarga necesitan que la versión publicada tenga la plan
 3. Pasarle a Turismo el link (`https://…/cargar.html`), la clave (por separado) y la planilla `datos/48 HS - Carga de datos.xlsx`, que es la que tienen que usar siempre.
 
 Quien tiene la clave puede cambiar todo lo que muestra la web: dársela solo a quien carga datos y cambiarla si alguien deja el equipo. El importador de Python sigue sirviendo para regenerar `catalogo.json` (el respaldo). Si se cambia una regla de importación, cambiarla en los dos archivos.
+
+## Agenda Ciudad: los eventos del WordPress de Turismo
+
+Turismo carga la agenda semanal con su propio "Cargador Agenda Ciudad" en su WordPress (`agenda.turismoposadas.tur.ar`). La web 48h la toma de ahí sola: **no hay que cargar dos veces.**
+
+- **Cómo funciona:** cada 30 minutos la base pide a la API pública de su WordPress los eventos publicados de los próximos 60 días y guarda una copia (`temporada.sql`, PARTE 9; tarea `48hs-agenda-wp` en `cron.sql`). La web lee esa copia con `agenda_externa()`. **No usa contraseñas** y los visitantes nunca se conectan a su WordPress.
+- **Lo que se ve:** cada evento sale en la agenda con su flyer (entero si es vertical), recinto, día y hora, categoría y "Más info" a la página oficial del evento. Los eventos de varios días salen en cada día (hasta 30).
+- **Categorías:** las de su WordPress se pasan a las de la web (`CATS_WP` en `index.html`). Música, shows y folklore van a **Noche** si empiezan a las 21 o más tarde; si no, a **Cultura**. Lo que no tiene equivalente va a Cultura.
+- **Mapa:** su WordPress no tiene coordenadas de los recintos. Se toman de nuestro catálogo: los recintos de `RECINTOS_WP` (IMAX, Parque del Conocimiento, Sala Tempo, Mandové Pedrozo, Parque Paraguayo) y los que tengan el mismo nombre que un lugar nuestro. Los demás salen en la agenda pero no en el mapa. Para sumar uno: agregar `id del recinto en WordPress: 'id del lugar nuestro'` en `RECINTOS_WP`.
+- **Sin duplicados:** si un evento también está en el catálogo propio con el mismo nombre y la misma fecha, se muestra solo el propio.
+- **Si su sitio se cae:** queda la última copia buena. Lo que borran o despublican en WordPress desaparece en la próxima sincronización completa.
+- **Controlarlo:** `supabase/salud.sql` tiene la fila "Agenda Ciudad (WordPress de Turismo)" con la última actualización, la cantidad de eventos y el error, si hay. Para forzar una sincronización: `select public.agenda_externa_sync();` dos veces, con un minuto de diferencia (la primera pide, la segunda guarda).
+- **Apagarlo:** `agendaWP: false` en `CONFIG` (`index.html`) y `select cron.unschedule('48hs-agenda-wp');`.
+
+**Para activarlo:** correr `temporada.sql` entero, habilitar **pg_net** (Database → Extensions) si no está, y correr `cron.sql`.
+
+## Asistente con IA: "Preguntale a Turi" (Gemini)
+
+En la Agenda hay un cuadro donde el turista escribe qué tiene ganas de hacer ("algo para ir con chicos", "¿qué hago hoy a la noche?") y la IA le sugiere de 1 a 4 eventos o lugares **de lo que está cargado** (catálogo publicado + Agenda Ciudad de los próximos 7 días). Las sugerencias salen como tarjetas que abren la ficha.
+
+**Turi** es la cara del asistente: un tucán de la selva misionera (dibujo propio, `marca/turi.svg`). Responde en primera persona y con voseo. Para cambiar el dibujo alcanza con reemplazar ese archivo por otro SVG cuadrado; para cambiar su forma de hablar, editar `INSTRUCCIONES` en `supabase/functions/asistente/index.ts` y volver a desplegar la función.
+
+**Turi en el mapa.** En la pantalla del mapa, abajo a la derecha, está Turi chiquito. Cada tanto salta y dice una frase en un globo. Esas frases **no son IA** (no gastan nada): están escritas en `TURI_FRASES` dentro de `index.html`, en español y portugués, y se eligen según la hora, el clima y si hay eventos hoy. Algunas, al tocarlas, llevan a "Preguntale a Turi", a la agenda o a Filtros. Reglas para no molestar: la primera a los 12 segundos, después como mínimo cada 100 segundos, hasta 5 por visita; no habla si hay una ficha, un panel o un menú abierto; si la persona cierra el globo dos veces, no habla más ese día. Esos números se cambian en `CONFIG.turi`; `turi: false` lo saca del mapa. Para agregar una frase, copiar una línea de `TURI_FRASES` con un `id` nuevo.
+
+**Cómo está armado (y por qué no gasta de más):**
+- La web **no tiene la clave de Gemini**. Llama a la función `asistente` de Supabase (`supabase/functions/asistente/index.ts`), que tiene la clave como secreto, arma la lista de eventos y le pregunta a Gemini.
+- Modelo: `gemini-3.1-flash-lite` (el más barato), sin "razonamiento", respuesta de hasta 450 tokens. Cada pregunta cuesta **unos USD 0,002**.
+- **Topes** (tabla `ajustes`, se cambian sin tocar código):
+
+| Ajuste | Valor | Qué hace |
+|---|---|---|
+| `ia_activa` | 1 | 0 = apagado al instante (la web sugiere con lo que ya sabe, sin IA) |
+| `ia_por_persona_dia` | 6 | preguntas por teléfono por día |
+| `ia_por_red_dia` | 30 | preguntas por día desde una misma IP (hotel, datos móviles) |
+| `ia_por_dia` | 300 | preguntas por día entre todos: **el gasto máximo es unos USD 0,60 por día** (≈ USD 18 por mes si se llenara todos los días) |
+| `ia_por_minuto` | 20 | entre todos; frena a un bot |
+| `ia_cache_horas` | 6 | una pregunta repetida (las rápidas, por ejemplo) se responde de la memoria: gratis y no gasta cupo |
+
+  Ejemplos: `update public.ajustes set valor = 0 where clave = 'ia_activa';` (apagar) · `update public.ajustes set valor = 500 where clave = 'ia_por_dia';`
+- Cuando no hay respuesta (tope, demanda, apagado, sin conexión), la web lo dice y muestra sugerencias propias, calculadas en el teléfono.
+- Solo responde desde la web oficial (`ORIGENES`). Pedidos de otros sitios o de scripts sueltos se rechazan.
+- No se guardan preguntas ni IPs: solo contadores con hash (se borran al día siguiente) y las respuestas por 6 horas.
+- Controlarlo: `salud.sql` tiene la fila "Asistente Turi hoy", y el reporte mensual muestra "Preguntas a Turi".
+
+**Para activarlo (una sola vez, unos 15 minutos):**
+
+1. **Clave de Gemini.** Entrar a https://aistudio.google.com/apikey con la cuenta de Google de ApexTech o de Turismo → **Create API key**. Copiarla (empieza con `AIza…`). **No pegarla en ningún archivo, ni en el chat, ni en el repo.**
+2. **Activar facturación en esa clave** (en AI Studio, "Set up billing" al lado de la clave). Es importante: en el plan gratis Google puede usar las preguntas para mejorar sus productos, y la política de privacidad dice que no. Con facturación no las usa, y el gasto lo controlan nuestros topes.
+3. **Alerta de gasto en Google Cloud:** https://console.cloud.google.com/billing → Presupuestos y alertas → Crear presupuesto de USD 10 por mes, con avisos al 50, 90 y 100 %. (La alerta avisa por email; el freno real son los topes de arriba.)
+4. **Base:** correr `supabase/temporada.sql` entero (crea la PARTE 10).
+5. **Función:** Supabase → **Edge Functions** → **Deploy a new function** → **Via Editor**. Nombre: `asistente` (exacto). Borrar el ejemplo, pegar todo `supabase/functions/asistente/index.ts` y tocar **Deploy**.
+6. En la función recién creada → **Details** (o Settings): **desactivar "Enforce JWT verification" / "Verify JWT"** y guardar. Si queda activado, la web recibe error 401 y muestra "no está disponible".
+7. **Secretos:** Edge Functions → **Secrets** → agregar:
+   - `GEMINI_API_KEY` = la clave del paso 1.
+   - `IA_SAL` = un texto largo al azar. Para generarlo: SQL Editor → `select encode(gen_random_bytes(24), 'hex');` y copiar el resultado.
+   - (cuando haya dominio propio) `ORIGENES` = `https://mundial-mapa-posadas.vercel.app,https://el-dominio-nuevo` (separados por coma).
+8. Subir la web nueva (`index.html`, `sw.js`, `privacidad.html`). Entrar a la Agenda, tocar "¿Qué hago hoy a la noche?" y ver que responde.
+
+**Si algo no anda:** Supabase → Edge Functions → asistente → **Logs**. "Gemini HTTP 400/403" = clave mal copiada o sin facturación; "HTTP 429" = cupo de Google; "apagado" en la web = falta `GEMINI_API_KEY` o `ia_activa` está en 0.
+
+**Cambiar la clave** (si se filtró o cada tanto): crear una nueva en AI Studio, reemplazar el secreto `GEMINI_API_KEY` y borrar la vieja en AI Studio. No hay que tocar la web.
+
+**Apagarlo del todo:** `ia_activa = 0` en la base (inmediato) y, si es para siempre, `asistente: false` en `CONFIG` (`index.html`).
 
 ## Cargar los datos de la Muni
 
