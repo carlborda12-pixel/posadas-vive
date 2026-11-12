@@ -355,7 +355,37 @@
     .turi-txt { flex: 1; text-align: left; font: inherit; font-size: 0.84rem; line-height: 1.4; color: inherit; background: none; padding: 0; }
     .turi-txt .mas { display: block; margin-top: 4px; font-size: 0.74rem; font-weight: 700; color: #037a52; }
     .turi-x { flex-shrink: 0; width: 26px; height: 26px; margin: -4px 0 0; border-radius: 50%; color: #4d6159; display: grid; place-items: center; font-size: 0.85rem; background: none; }
-    @media (prefers-reduced-motion: reduce) { .turi.salta, .turi-globo { animation: none; } }
+    .turi-chat { position: fixed; z-index: 1192; right: calc(12px + env(safe-area-inset-right)); left: calc(12px + env(safe-area-inset-left));
+      bottom: calc(max(100px + env(safe-area-inset-bottom), var(--teclado, 0px) + 10px)); max-height: min(560px, calc(100dvh - var(--teclado, 0px) - 130px));
+      display: flex; flex-direction: column; border-radius: 22px; background: #0d211a; border: 1px solid rgba(5,163,111,0.35); box-shadow: 0 18px 48px rgba(0,0,0,0.6);
+      transform-origin: 92% 100%; animation: turi-globo 0.3s var(--ease, ease) both; overflow: hidden; }
+    .turi-chat[hidden] { display: none; }
+    @media (min-width: 700px) { .turi-chat { left: auto; width: 380px; } }
+    .tc-cab { display: flex; align-items: center; gap: 10px; padding: 12px 10px 10px 14px; border-bottom: 1px solid var(--line); background: linear-gradient(140deg, rgba(5,163,111,0.22), rgba(5,163,111,0.04)); }
+    .tc-av { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
+    .tc-nom { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .tc-nom b { font-size: 0.95rem; color: var(--ink); }
+    .tc-nom span { font-size: 0.7rem; color: var(--muted); }
+    .tc-x { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: var(--ink); background: rgba(255,255,255,0.06); font-size: 1rem; }
+    .tc-msgs { flex: 1; min-height: 120px; overflow-y: auto; overscroll-behavior: contain; padding: 14px 12px 6px; }
+    .tc-msgs .ia-quedan { margin: 4px 0 8px 42px; }
+    .tc-msgs .ia-pensando { margin: 0 0 8px; }
+    .tc-sugs { display: flex; flex-direction: column; gap: 6px; margin: -4px 0 12px 42px; }
+    .tc-sug { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 10px 7px 7px; border-radius: 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--line); text-align: left; color: var(--ink); }
+    .tc-sug:active { transform: scale(0.98); }
+    .tc-sug-img { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; flex-shrink: 0; display: grid; place-items: center; font-size: 1.2rem; }
+    .tc-sug-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .tc-sug-txt b { font-size: 0.84rem; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .tc-sug-txt small { font-size: 0.7rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tc-sug > i { color: var(--gold); flex-shrink: 0; }
+    .tc-chips { margin: 0; padding: 4px 12px 8px; }
+    .tc-chips[hidden] { display: none; }
+    .tc-form { padding: 8px 12px 4px; border-top: 1px solid var(--line); }
+    .turi-chat .tc-nota { margin: 2px 14px 10px; font-size: 0.6rem; line-height: 1.35; flex-shrink: 0; }
+    .tc-cab, .tc-form, .tc-chips { flex-shrink: 0; }
+    .resaltado { animation: resalta 2.2s ease both; }
+    @keyframes resalta { 0%, 60% { box-shadow: 0 0 0 3px var(--gold), 0 0 28px rgba(5,163,111,0.55); } 100% { box-shadow: 0 0 0 0 transparent; } }
+    @media (prefers-reduced-motion: reduce) { .turi.salta, .turi-globo, .turi-chat, .resaltado { animation: none; } }
     .firma-apex:active { transform: scale(0.92); }
     .firma-apex:hover, .firma-apex:focus-visible { border-color: rgba(43,227,139,0.6); }
     .tabbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 1200; display: flex; gap: 4px; background: rgba(13,30,23,0.9); border: 1px solid var(--line); border-radius: 22px; padding: 6px; box-shadow: var(--shadow); }
@@ -706,7 +736,7 @@
 
     /* Print */
     @media print {
-        #splash, .tabbar, .firma-apex, .turi, .turi-globo, .map-carousel, .dir-panel, .modal, .ticket-overlay { display: none !important; }
+        #splash, .tabbar, .firma-apex, .turi, .turi-globo, .turi-chat, .map-carousel, .dir-panel, .modal, .ticket-overlay { display: none !important; }
         .view { display: block !important; }
         body { background: #fff; color: #000; }
     }
@@ -1247,10 +1277,9 @@
                     <div><h2 id="ia-titulo" data-i18n="ia.titulo">Preguntale a Turi</h2>
                         <p data-i18n="ia.sub">Soy Turi, tu guía en Posadas. Contame qué tenés ganas de hacer y te sugiero planes de la agenda.</p></div>
                 </div>
-                <form class="ia-form" id="ia-form" onsubmit="preguntarAsistente(event)" autocomplete="off">
-                    <input type="text" id="ia-pregunta" maxlength="300" enterkeyhint="send" data-i18n-ph="ia.ph" data-i18n-aria="ia.ph">
-                    <input type="text" id="ia-trampa" class="ia-trampa" tabindex="-1" aria-hidden="true" autocomplete="off">
-                    <button type="submit" id="ia-enviar" data-i18n-aria="ia.enviar" aria-label="Preguntar"><i class="ph ph-arrow-up" aria-hidden="true"></i></button>
+                <form class="ia-form" id="ia-form-ag" onsubmit="preguntarDesdeAgenda(event)" autocomplete="off">
+                    <input type="text" id="ia-ag" maxlength="300" enterkeyhint="send" data-i18n-ph="ia.ph" data-i18n-aria="ia.ph">
+                    <button type="submit" data-i18n-aria="ia.enviar" aria-label="Preguntar"><i class="ph ph-arrow-up" aria-hidden="true"></i></button>
                 </form>
                 <div class="ia-chips">
                     <button type="button" data-i18n="ia.c1" onclick="chipAsistente(this)">¿Qué hago hoy a la noche?</button>
@@ -1258,7 +1287,6 @@
                     <button type="button" data-i18n="ia.c3" onclick="chipAsistente(this)">Plan gratis este finde</button>
                     <button type="button" data-i18n="ia.c4" onclick="chipAsistente(this)">¿Dónde como algo típico?</button>
                 </div>
-                <div class="ia-resp" id="ia-resp" aria-live="polite"></div>
                 <p class="ia-nota" data-i18n="ia.nota"></p>
             </section>
 
@@ -1288,7 +1316,27 @@
 
     <!-- ============ TABBAR ============ -->
     <!-- Turi, el tucán guía: vive en el mapa, salta y a veces comenta algo (frases fijas, sin IA) -->
-    <button class="turi" id="turi" type="button" onclick="tocarTuri()" hidden data-i18n-aria="turi.aria" aria-label="Turi, tu guía: tocame para pedir ideas"><img src="marca/turi.svg" alt="" width="48" height="48"></button>
+    <button class="turi" id="turi" type="button" onclick="tocarTuri()" hidden aria-controls="turi-chat" aria-expanded="false" data-i18n-aria="turi.aria" aria-label="Turi, tu guía: tocame para pedir ideas"><img src="marca/turi.svg" alt="" width="48" height="48"></button>
+    <div class="turi-chat" id="turi-chat" role="dialog" aria-labelledby="tc-titulo" hidden>
+        <div class="tc-cab">
+            <img class="tc-av" src="marca/turi.svg" alt="" width="40" height="40">
+            <div class="tc-nom"><b id="tc-titulo">Turi</b><span data-i18n="tc.sub">Tu guía en Posadas · responde con IA</span></div>
+            <button type="button" class="tc-x" onclick="cerrarChat()" data-i18n-aria="cerrar" aria-label="Cerrar"><i class="ph ph-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="tc-msgs" id="tc-msgs" aria-live="polite"></div>
+        <div class="ia-chips tc-chips" id="tc-chips">
+            <button type="button" data-i18n="ia.c1" onclick="chipAsistente(this)">¿Qué hago hoy a la noche?</button>
+            <button type="button" data-i18n="ia.c2" onclick="chipAsistente(this)">Algo para ir con chicos</button>
+            <button type="button" data-i18n="ia.c3" onclick="chipAsistente(this)">Plan gratis este finde</button>
+            <button type="button" data-i18n="ia.c4" onclick="chipAsistente(this)">¿Dónde como algo típico?</button>
+        </div>
+        <form class="ia-form tc-form" id="ia-form" onsubmit="preguntarAsistente(event)" autocomplete="off">
+            <input type="text" id="ia-pregunta" maxlength="300" enterkeyhint="send" data-i18n-ph="tc.ph" data-i18n-aria="tc.ph">
+            <input type="text" id="ia-trampa" class="ia-trampa" tabindex="-1" aria-hidden="true" autocomplete="off">
+            <button type="submit" id="ia-enviar" data-i18n-aria="ia.enviar" aria-label="Preguntar"><i class="ph ph-arrow-up" aria-hidden="true"></i></button>
+        </form>
+        <p class="ia-nota tc-nota" data-i18n="ia.nota"></p>
+    </div>
     <div class="turi-globo" id="turi-globo" role="status" aria-live="polite" hidden>
         <button type="button" class="turi-txt" id="turi-txt" onclick="tocarGlobo()"></button>
         <button type="button" class="turi-x" onclick="callarTuri()" data-i18n-aria="cerrar" aria-label="Cerrar"><i class="ph ph-x" aria-hidden="true"></i></button>
@@ -1968,6 +2016,8 @@ const TEXTOS = {
     'pv.invitaT':'Planes recomendados para vos', 'pv.invitaD':'Ingresá con tu nombre y email y te sugerimos eventos según lo que te gusta.',
     'pv.invitaBtn':'Ingresar', 'pv.cerrar':'Cerrar',
     'turi.aria':'Turi, tu guía: tocame para pedir ideas', 'turi.ir_ia':'Tocá para preguntarme', 'turi.ir_agenda':'Ver la agenda de hoy', 'turi.ir_filtros':'Abrir Filtros',
+    'tc.sub':'Tu guía en Posadas · responde con IA', 'tc.ph':'Escribile a Turi…',
+    'tc.hola':'¡Hola! Soy Turi. ¿Qué tenés ganas de hacer? Te sugiero planes de la agenda.',
     'ia.titulo':'Preguntale a Turi', 'ia.sub':'Soy Turi, tu guía en Posadas. Contame qué tenés ganas de hacer y te sugiero planes de la agenda.',
     'ia.ph':'Ej.: algo tranqui para hoy a la tarde', 'ia.enviar':'Preguntar',
     'ia.c1':'¿Qué hago hoy a la noche?', 'ia.c2':'Algo para ir con chicos', 'ia.c3':'Plan gratis este finde', 'ia.c4':'¿Dónde como algo típico?',
@@ -2173,6 +2223,8 @@ const TEXTOS = {
     'pv.invitaT':'Passeios recomendados para você', 'pv.invitaD':'Entre com seu nome e e-mail e sugerimos eventos conforme o que você gosta.',
     'pv.invitaBtn':'Entrar', 'pv.cerrar':'Fechar',
     'turi.aria':'Turi, seu guia: toque para pedir ideias', 'turi.ir_ia':'Toque para me perguntar', 'turi.ir_agenda':'Ver a agenda de hoje', 'turi.ir_filtros':'Abrir Filtros',
+    'tc.sub':'Seu guia em Posadas · responde com IA', 'tc.ph':'Escreva para o Turi…',
+    'tc.hola':'Oi! Sou o Turi. O que você está a fim de fazer? Eu sugiro programas da agenda.',
     'ia.titulo':'Pergunte ao Turi', 'ia.sub':'Sou o Turi, seu guia em Posadas. Me conte o que você está a fim de fazer e eu sugiro programas da agenda.',
     'ia.ph':'Ex.: algo tranquilo para hoje à tarde', 'ia.enviar':'Perguntar',
     'ia.c1':'O que fazer hoje à noite?', 'ia.c2':'Algo para ir com crianças', 'ia.c3':'Programa grátis neste fim de semana', 'ia.c4':'Onde comer algo típico?',
@@ -3427,7 +3479,7 @@ function cerrarInvitacion(){
    Si no hay respuesta (límite, demanda, apagado), se sugiere con lo
    que ya sabe el teléfono, sin gastar nada.
    =================================================================== */
-const IA = { estado: null, pregunta: '', texto: '', ids: [], quedan: null, ocupada: false };
+const IA = { turnos: [], quedan: null, ocupada: false, abierto: false };
 const CLAVE_IA = 'pv-ia';
 const iaHoy = () => fechaISO(ahora());
 function iaCupoLocal(){
@@ -3455,34 +3507,105 @@ function iaDispositivo(){
   } catch(e){ return ''; }
 }
 
+// En la Agenda queda un acceso: escribir o tocar una pregunta abre el chat de Turi
 function renderAsistente(){
   const sec = document.getElementById('asistente');
-  if(!sec) return;
-  sec.hidden = !iaActivo() || hayFiltros();
-  if(sec.hidden) return;
-  const resp = document.getElementById('ia-resp');
-  const ocupada = IA.ocupada;
-  document.getElementById('ia-enviar').disabled = ocupada;
-  sec.querySelectorAll('.ia-chips button').forEach(b => b.disabled = ocupada);
-  if(ocupada){
-    resp.innerHTML = (IA.pregunta ? `<p class="ia-pregunta">${esc(IA.pregunta)}</p>` : '')
-      + `<div class="ia-pensando"><img class="ia-mini" src="marca/turi.svg" alt=""> ${esc(t('ia.pensando'))}</div>`;
-    return;
-  }
-  if(!IA.estado){ resp.innerHTML = ''; return; }
+  if(sec) sec.hidden = !iaActivo() || hayFiltros();
+  if(IA.abierto) renderChat();
+}
+
+/* ---- Chat de Turi (ventanita sobre el mapa o la agenda) ---- */
+function filaSugerencia(p){
+  const lugar = tx(p, 'addr');
+  return `<button type="button" class="tc-sug" onclick="irAlEvento('${p.id}')">
+    ${miniatura(p, 'tc-sug-img')}
+    <span class="tc-sug-txt"><b>${esc(tx(p, 'name'))}</b><small>${esc(p.when.label)}${lugar ? ' · ' + esc(lugar) : ''}</small></span>
+    <i class="ph ph-caret-right" aria-hidden="true"></i></button>`;
+}
+function renderChat(){
+  const caja = document.getElementById('tc-msgs');
+  if(!caja) return;
   const vivos = new Set(vigentes().map(p => p.id));
-  const lugares = IA.ids.filter(id => vivos.has(id)).map(byId).filter(Boolean).slice(0, 4);
-  let html = IA.pregunta ? `<p class="ia-pregunta">${esc(IA.pregunta)}</p>` : '';
-  const aviso = IA.estado !== 'ok';
-  const texto = aviso ? t('ia.' + IA.estado) : IA.texto;
-  let dice = texto ? `<p class="ia-texto${aviso ? ' aviso' : ''}">${esc(texto)}</p>` : '';
-  if(!lugares.length && aviso && IA.estado !== 'corta') dice += `<p class="ia-texto aviso">${esc(t('ia.nada'))}</p>`;
-  if(dice) html += `<div class="ia-dice"><img class="ia-mini" src="marca/turi.svg" alt=""><div class="ia-burbuja">${dice}</div></div>`;
-  if(lugares.length) html += `<div class="pv-rail">${lugares.map((p, i) => cardHTML(p, i, '')).join('')}</div>`;
-  if(IA.estado === 'ok' && Number.isInteger(IA.quedan)){
-    html += `<p class="ia-quedan">${esc(IA.quedan === 0 ? t('ia.ultima') : IA.quedan === 1 ? t('ia.queda1') : t('ia.quedan', { n: IA.quedan }))}</p>`;
-  }
-  resp.innerHTML = html;
+  const turi = html => `<div class="ia-dice"><img class="ia-mini" src="marca/turi.svg" alt=""><div class="ia-burbuja">${html}</div></div>`;
+  let html = turi(`<p class="ia-texto">${esc(t('tc.hola'))}</p>`);
+  IA.turnos.forEach((x, i) => {
+    if(x.yo){ html += `<p class="ia-pregunta">${esc(x.yo)}</p>`; return; }
+    const aviso = x.estado !== 'ok';
+    const lugares = (x.ids || []).filter(id => vivos.has(id)).map(byId).filter(Boolean).slice(0, 4);
+    let dice = '';
+    const texto = aviso ? t('ia.' + x.estado) : x.texto;
+    if(texto) dice += `<p class="ia-texto${aviso ? ' aviso' : ''}">${esc(texto)}</p>`;
+    if(!lugares.length && aviso && x.estado !== 'corta') dice += `<p class="ia-texto aviso">${esc(t('ia.nada'))}</p>`;
+    if(dice) html += turi(dice);
+    if(lugares.length) html += `<div class="tc-sugs">${lugares.map(filaSugerencia).join('')}</div>`;
+    if(i === IA.turnos.length - 1 && x.estado === 'ok' && Number.isInteger(x.quedan)){
+      html += `<p class="ia-quedan">${esc(x.quedan === 0 ? t('ia.ultima') : x.quedan === 1 ? t('ia.queda1') : t('ia.quedan', { n: x.quedan }))}</p>`;
+    }
+  });
+  if(IA.ocupada) html += `<div class="ia-pensando"><img class="ia-mini" src="marca/turi.svg" alt=""> ${esc(t('ia.pensando'))}</div>`;
+  caja.innerHTML = html;
+  document.getElementById('ia-enviar').disabled = IA.ocupada;
+  const chips = document.getElementById('tc-chips');
+  chips.hidden = IA.turnos.length > 0;
+  chips.querySelectorAll('button').forEach(b => b.disabled = IA.ocupada);
+  requestAnimationFrame(() => { caja.scrollTop = caja.scrollHeight; });
+}
+
+function abrirChat(pregunta){
+  if(!iaActivo()) return false;
+  const v = document.getElementById('turi-chat');
+  IA.abierto = true;
+  v.hidden = false;
+  ocultarGlobo();
+  document.getElementById('turi').setAttribute('aria-expanded', 'true');
+  ajustarChatTeclado();
+  renderChat();
+  const inp = document.getElementById('ia-pregunta');
+  if(pregunta){ inp.value = pregunta; preguntarAsistente(); }
+  else setTimeout(() => inp.focus({ preventScroll: true }), 60);
+  return true;
+}
+function cerrarChat(){
+  const v = document.getElementById('turi-chat');
+  if(!v || v.hidden) return;
+  v.hidden = true;
+  IA.abierto = false;
+  document.getElementById('turi').setAttribute('aria-expanded', 'false');
+  const a = document.activeElement;
+  if(a && v.contains(a)) a.blur();
+}
+// con el teclado abierto en el celular, la ventanita sube para no quedar tapada
+function ajustarChatTeclado(){
+  const v = document.getElementById('turi-chat'), vv = window.visualViewport;
+  if(!v || !vv) return;
+  const tapado = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+  v.style.setProperty('--teclado', tapado + 'px');
+}
+if(window.visualViewport){
+  visualViewport.addEventListener('resize', () => { if(IA.abierto) ajustarChatTeclado(); });
+  visualViewport.addEventListener('scroll', () => { if(IA.abierto) ajustarChatTeclado(); });
+}
+
+// Tocar una sugerencia: va a la Agenda, muestra ese evento y abre su ficha
+function irAlEvento(id){
+  const p = byId(id);
+  if(!p) return;
+  cerrarChat();
+  if(hayFiltros() && typeof limpiarFiltros === 'function') limpiarFiltros();
+  switchView('agenda');
+  // la Agenda se dibuja un instante después de cambiar de pantalla: se busca la tarjeta unas veces
+  let intentos = 0;
+  const buscar = () => {
+    const tarjeta = [...document.querySelectorAll('#timeline .ev, #timeline .lugar-row, #directorio .lugar-row')]
+      .find(el => el.getAttribute('onclick') === `openSheet('${p.id}')`);
+    if(tarjeta){
+      tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      tarjeta.classList.remove('resaltado'); void tarjeta.offsetWidth; tarjeta.classList.add('resaltado');
+      setTimeout(() => openSheet(p.id), 650);
+    } else if(++intentos < 15) setTimeout(buscar, 100);
+    else openSheet(p.id);
+  };
+  setTimeout(buscar, 80);
 }
 
 // Sugerencias sin IA: palabras de la pregunta, después los intereses, después lo de hoy
@@ -3508,9 +3631,17 @@ function interesesTop(){
 }
 
 function chipAsistente(b){
-  const inp = document.getElementById('ia-pregunta');
-  inp.value = b.textContent.trim();
-  preguntarAsistente();
+  const texto = b.textContent.trim();
+  if(IA.abierto){ document.getElementById('ia-pregunta').value = texto; preguntarAsistente(); }
+  else abrirChat(texto);
+}
+// el acceso de la Agenda: lo escrito pasa al chat
+function preguntarDesdeAgenda(ev){
+  ev.preventDefault();
+  const inp = document.getElementById('ia-ag');
+  const texto = inp.value.trim();
+  inp.value = '';
+  abrirChat(texto);
 }
 
 let iaUltima = 0;
@@ -3520,15 +3651,21 @@ async function preguntarAsistente(ev){
   const inp = document.getElementById('ia-pregunta');
   const pregunta = inp.value.replace(/\s+/g, ' ').trim().slice(0, 300);
   if(document.getElementById('ia-trampa').value) return;
-  if(pregunta.length < 3){ Object.assign(IA, { estado: 'corta', pregunta: '', texto: '', ids: [] }); renderAsistente(); inp.focus(); return; }
+  if(pregunta.length < 3){
+    IA.turnos.push({ estado: 'corta', ids: [] });
+    renderChat(); inp.focus(); return;
+  }
   // un respiro entre preguntas, para no gastar con dobles toques
   if(Date.now() - iaUltima < 3000) return;
   iaUltima = Date.now();
-  IA.pregunta = pregunta;
-  const sinIA = motivo => { Object.assign(IA, { estado: motivo, texto: '', ids: sugerenciasLocales(pregunta) }); };
+  inp.value = '';
+  IA.turnos.push({ yo: pregunta });
+  if(IA.turnos.length > 16) IA.turnos.splice(0, IA.turnos.length - 16);
+  const sinIA = motivo => ({ estado: motivo, ids: sugerenciasLocales(pregunta) });
+  let resp;
   // si este teléfono ya sabe que no le quedan, ni pregunta
-  if(iaCupoLocal() === 0){ sinIA('limite'); renderAsistente(); return; }
-  IA.ocupada = true; renderAsistente();
+  if(iaCupoLocal() === 0){ IA.turnos.push(sinIA('limite')); renderChat(); return; }
+  IA.ocupada = true; renderChat();
   try {
     const r = await fetch(CONFIG.supabase.url + '/functions/v1/asistente', {
       method: 'POST',
@@ -3539,21 +3676,23 @@ async function preguntarAsistente(ev){
     let j = null;
     try { j = await r.json(); } catch(e){}
     if(j && j.ok && typeof j.texto === 'string'){
-      Object.assign(IA, { estado: 'ok', texto: j.texto.slice(0, 600), ids: Array.isArray(j.ids) ? j.ids.filter(idValido).slice(0, 4) : [],
-                          quedan: Number.isInteger(j.quedan) ? j.quedan : null });
-      iaGuardarCupo(IA.quedan);
+      resp = { estado: 'ok', texto: j.texto.slice(0, 600), ids: Array.isArray(j.ids) ? j.ids.filter(idValido).slice(0, 4) : [],
+               quedan: Number.isInteger(j.quedan) ? j.quedan : null };
+      IA.quedan = resp.quedan;
+      iaGuardarCupo(resp.quedan);
     } else {
       const m = j && j.motivo;
-      if(m === 'limite_persona'){ iaGuardarCupo(0); sinIA('limite'); }
-      else if(m === 'limite_dia' || m === 'ocupado') sinIA('ocupado');
-      else if(m === 'pregunta') sinIA('corta');
-      else sinIA('apagado');
+      if(m === 'limite_persona'){ iaGuardarCupo(0); resp = sinIA('limite'); }
+      else if(m === 'limite_dia' || m === 'ocupado') resp = sinIA('ocupado');
+      else if(m === 'pregunta') resp = sinIA('corta');
+      else resp = sinIA('apagado');
     }
   } catch(e){
-    sinIA(navigator.onLine === false ? 'apagado' : 'ocupado');
+    resp = sinIA(navigator.onLine === false ? 'apagado' : 'ocupado');
   }
+  IA.turnos.push(resp);
   IA.ocupada = false;
-  renderAsistente();
+  renderChat();
 }
 
 /* ===================================================================
@@ -4096,6 +4235,7 @@ function switchView(v, opts){
   turiVista();
   if(v==='planes') renderPlanes();
   if(v==='agenda' && paraVosPendiente) renderParaVos();
+  if(v==='agenda') renderAsistente();
   if(v==='explore' && map){
     setTimeout(()=>{
       map.invalidateSize();
@@ -4181,6 +4321,7 @@ function turiGuardar(o){ try { localStorage.setItem('pv-turi', JSON.stringify(o)
 
 function turiOcupado(){
   if(document.hidden || vistaActual !== 'explore') return true;
+  if(IA.abierto) return true;
   if(document.querySelector('#splash:not(.hidden), #overlay.on, #sheet.on, #busca-ov.on, #cancel-overlay.on, #filtros-overlay.on, #ingreso-ov.on, #sos-modal.on, #ticket-overlay.on, #dir-panel.on, .modal.on')) return true;
   const pop = document.getElementById('mpop');
   return !!(pop && !pop.hidden);
@@ -4191,7 +4332,7 @@ function turiVista(){
   if(!b) return;
   const ver = !!CONFIG.turi && vistaActual === 'explore';
   b.hidden = !ver;
-  if(!ver){ ocultarGlobo(); return; }
+  if(!ver){ ocultarGlobo(); cerrarChat(); return; }
   if(!TURI.entrada) TURI.entrada = Date.now();
   if(!TURI.reloj) TURI.reloj = setInterval(turiTic, 2000);
 }
@@ -4262,19 +4403,13 @@ function turiTic(){
 function irDesdeTuri(destino){
   ocultarGlobo();
   if(destino === 'filtros'){ abrirFiltros(); return; }
+  if(destino === 'ia' && abrirChat()) return;
   switchView('agenda');
-  if(destino === 'ia' && iaActivo()){
-    setTimeout(() => {
-      const sec = document.getElementById('asistente');
-      if(!sec || sec.hidden) return;
-      sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => { const i = document.getElementById('ia-pregunta'); if(i) i.focus({ preventScroll: true }); }, 450);
-    }, 250);
-  }
 }
 
-// Tocar a Turi: con asistente, lleva a preguntarle; si no, dice algo
+// Tocar a Turi: con asistente, abre (o cierra) el chat; si no, dice algo
 function tocarTuri(){
+  if(IA.abierto){ cerrarChat(); return; }
   if(iaActivo()){ irDesdeTuri('ia'); return; }
   const g = document.getElementById('turi-globo');
   if(g && !g.hidden) ocultarGlobo(); else decirTuri(true);
@@ -4291,7 +4426,7 @@ function callarTuri(){
 
 // ============ PIE DE LA AGENDA ============
 // Igual a VERSION de sw.js: se ve al pie de la agenda, para saber qué versión tiene cada teléfono
-const APP_VERSION = 'pv-2026-11-12-3';
+const APP_VERSION = 'pv-2026-11-12-4';
 
 function esEquipo(){
   try {
@@ -6498,7 +6633,8 @@ function showTicketSuccess(p, datos, estado){
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
     const on = id => document.getElementById(id).classList.contains('on');
-    if(on('ingreso-ov'))          saltarIngreso();
+    if(IA.abierto && !on('overlay')) cerrarChat();
+    else if(on('ingreso-ov'))          saltarIngreso();
     else if(on('busca-ov'))       cerrarBusqueda();
     else if(on('filtros-overlay')) cerrarFiltros();
     else if(on('cancel-overlay')) cerrarCancelacion();
